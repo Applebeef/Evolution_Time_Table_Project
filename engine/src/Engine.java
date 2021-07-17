@@ -1,4 +1,4 @@
-public class Main_engine {
+public class Engine {
     public void doStuff(){
         System.out.println("Hi Or");
     }
