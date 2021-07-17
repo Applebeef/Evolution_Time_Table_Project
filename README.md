@@ -41,6 +41,7 @@
             * TeacherIsHuman - hard
             * Singularity - hard
             * Knowledgable - hard
+        * Abstract Method: Test rule
     * Fields:
         * int days/week
         * int hours/day
