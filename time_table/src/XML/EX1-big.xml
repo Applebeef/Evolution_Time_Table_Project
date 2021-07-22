@@ -126,6 +126,9 @@
 			<ETT-Rule type="Soft">
 				<ETT-RuleId>Knowledgeable</ETT-RuleId>
 			</ETT-Rule>
+			<ETT-Rule type="Hard">
+				<ETT-RuleId>Satisfactory</ETT-RuleId>
+			</ETT-Rule>
 		</ETT-Rules>
 	</ETT-TimeTable>
 	<ETT-EvolutionEngine>
