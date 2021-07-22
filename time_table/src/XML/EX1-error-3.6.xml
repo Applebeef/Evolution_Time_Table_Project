@@ -23,7 +23,7 @@
 				</ETT-Teaching>
 			</ETT-Teacher>						
 			<ETT-Teacher id="4">
-				<ETT-Name>Sami Pokvar</ETT-Name>
+				<ETT-Name>Sami Po</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="2"/>
 					<ETT-Teaches subject-id="4"/>
@@ -55,10 +55,10 @@
 			<ETT-Class id="3">
 				<ETT-Name>Tikshoret</ETT-Name>
 				<ETT-Requirements>
-					<ETT-Study subject-id="4" hours="2"/>
+					<ETT-Study subject-id="4" hours="3"/>
 					<ETT-Study subject-id="1" hours="4"/>
 					<ETT-Study subject-id="3" hours="6"/>
-					<ETT-Study subject-id="2" hours="4"/>
+					<ETT-Study subject-id="2" hours="8"/>
 				</ETT-Requirements>
 			</ETT-Class>			
 			<ETT-Class id="4">
@@ -86,9 +86,7 @@
 		<ETT-Selection type="Truncation" configuration="TopPercent=10"/>
 		<ETT-Crossover name="DayTimeOriented" cutting-points="2"/>
 		<ETT-Mutations>
-			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=T"/>
-			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=C"/>			
-			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=S"/>			
+			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=C"/>
 		</ETT-Mutations>
 	</ETT-EvolutionEngine>
 </ETT-Descriptor>
