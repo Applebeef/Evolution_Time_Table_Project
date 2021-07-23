@@ -12,10 +12,10 @@
 			<ETT-Teacher id="3">
 				<ETT-Name>Tim Sorly</ETT-Name>
 				<ETT-Teaching>
-					<ETT-Teaches subject-id="3"/>
+					<ETT-Teaches subject-id="13"/>
 				</ETT-Teaching>
 			</ETT-Teacher>			
-			<ETT-Teacher id="5">
+			<ETT-Teacher id="2">
 				<ETT-Name>Sima Zgan</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="2"/>
@@ -77,7 +77,7 @@
 				<ETT-RuleId>Singularity</ETT-RuleId>
 			</ETT-Rule>
 			<ETT-Rule type="Soft">
-				<ETT-RuleId>Knowledgeable</ETT-RuleId>
+				<ETT-RuleId>Knoledgable</ETT-RuleId>
 			</ETT-Rule>
 		</ETT-Rules>
 	</ETT-TimeTable>
@@ -86,7 +86,7 @@
 		<ETT-Selection type="Truncation" configuration="TopPercent=10"/>
 		<ETT-Crossover name="DayTimeOriented" cutting-points="2"/>
 		<ETT-Mutations>
-			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=T"/>
+			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=S"/>
 		</ETT-Mutations>
 	</ETT-EvolutionEngine>
 </ETT-Descriptor>

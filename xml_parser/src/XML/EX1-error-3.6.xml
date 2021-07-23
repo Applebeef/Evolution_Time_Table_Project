@@ -77,7 +77,7 @@
 				<ETT-RuleId>Singularity</ETT-RuleId>
 			</ETT-Rule>
 			<ETT-Rule type="Soft">
-				<ETT-RuleId>Knowledgeable</ETT-RuleId>
+				<ETT-RuleId>Knoledgable</ETT-RuleId>
 			</ETT-Rule>
 		</ETT-Rules>
 	</ETT-TimeTable>
