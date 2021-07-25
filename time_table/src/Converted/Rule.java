@@ -41,7 +41,7 @@ public enum Rule implements Testable {
     }
 
     public void setConfiguration(String configuration) {
-        Configuration = configuration;
+        Configuration = configuration;//TODO ask aviad about configuration handling
     }
 
     public Type getType() {
