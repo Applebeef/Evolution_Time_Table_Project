@@ -1,9 +1,13 @@
+import Menu.MenuOptions;
+
+import java.util.Scanner;
+
 public class UI {
     public static void main(String[] args) {
-        System.out.println("BLABLABLA");
 
-
-        Engine test = new Engine();
-        test.doStuff();
+        for(MenuOptions option : MenuOptions.values()){
+            int choice;
+            System.out.println(option.toString());
+        }
     }
 }
