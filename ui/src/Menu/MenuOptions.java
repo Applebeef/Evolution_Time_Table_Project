@@ -1,5 +1,7 @@
 package Menu;
 
+import UI.UI;
+
 public enum MenuOptions {
     //                * Read Xml
     //                * Display time table
@@ -40,7 +42,7 @@ public enum MenuOptions {
     EXIT(6,"Exit."){
         @Override
         public void start() {
-            //TODO add function
+            UI.exit = true;
         }
     };
 
