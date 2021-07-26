@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="engine" />
     <orderEntry type="module" module-name="time_table" />
+    <orderEntry type="module" module-name="xml_parser" />
   </component>
 </module>

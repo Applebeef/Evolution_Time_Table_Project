@@ -1,6 +1,6 @@
 package UI;
 
-import Menu.MenuOptions;
+import Menu.*;
 
 import java.util.Scanner;
 
