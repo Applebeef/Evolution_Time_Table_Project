@@ -24,4 +24,9 @@ public class SchoolClass {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Class name: " + name + System.getProperty("line.separator") + "ID: " + id + System.getProperty("line.separator") + requirements.toString();
+    }
 }

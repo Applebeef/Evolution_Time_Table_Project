@@ -18,4 +18,9 @@ public class Study {
     public int getHours() {
         return hours;
     }
+
+    @Override
+    public String toString() {
+        return "Subject no. " + subjectId + ": " + hours + " hours.";//TODO add subject name?(optional)
+    }
 }

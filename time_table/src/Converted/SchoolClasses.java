@@ -15,4 +15,14 @@ public class SchoolClasses {
     public List<SchoolClass> getClassList() {
         return classList;
     }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        StringBuilder allClasses = new StringBuilder();
+        for(SchoolClass schoolClass : classList){
+            allClasses.append(schoolClass.toString()).append(lineSeparator);
+        }
+        return "Classes: " + lineSeparator + allClasses;
+    }
 }
