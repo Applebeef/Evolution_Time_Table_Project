@@ -19,7 +19,7 @@ public enum MenuOptions {
     READ_XML(1, "Load data from XML file."){
         @Override
         public void start() {//TODO check file validity.
-            String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-small.xml";
+            String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-big.xml";
             //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
             //filename = scanner.nextLine();
 
@@ -40,7 +40,7 @@ public enum MenuOptions {
     DISPLAY_INFO(2, "Display info about the time table and engine."){
         @Override
         public void start() {
-            System.out.println(UI.descriptor.getTimeTable().getSchoolClasses().toString());
+            System.out.println(UI.descriptor.toString());
         }
     },
     RUN_ENGINE(3, "Run evolutionary algorithm."){

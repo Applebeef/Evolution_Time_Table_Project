@@ -14,7 +14,5 @@ public class InitialPopulation {
     }
 
     @Override
-    public String toString() {
-        return "size - " + this.size;
-    }
+    public String toString() {return "size - " + this.size;}
 }

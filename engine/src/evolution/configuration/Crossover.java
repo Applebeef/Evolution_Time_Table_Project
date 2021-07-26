@@ -42,8 +42,8 @@ public class Crossover {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return "   " + "name - " + this.name + lineSeparator +
-                "   " + "cutting points - " + this.cuttingPoints + lineSeparator;
+        return "   " + "Name - " + this.name + lineSeparator +
+                "   " + "Cutting Points - " + this.cuttingPoints + lineSeparator;
     }
 
 }

@@ -30,6 +30,12 @@ public enum Mutation {
         public String getComponent() {
             return component;
         }
+
+        @Override
+        public String toString() {
+            String lineSeparator = System.getProperty("line.separator");
+            return "Max Tupples: " + maxTupples + ", Component: " + component;
+        }
     }
 
 
@@ -61,8 +67,8 @@ public enum Mutation {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return  "probability - " + probability + lineSeparator +
-                "name - " + name + lineSeparator +
-                "config - " + config + lineSeparator;
+        return  "   " + "Name - " + name + lineSeparator +
+                "   " + "Probability - " + probability + lineSeparator +
+                "   " + "Configuration - " + config;
     }
 }

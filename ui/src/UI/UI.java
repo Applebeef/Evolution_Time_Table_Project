@@ -27,16 +27,15 @@ public class UI {
     }
 
     public static void main(String[] args) {
-        int choice = 1;
+        int choice;
         while(!exit) {
             for (MenuOptions option : MenuOptions.values()) {
                 System.out.println(option.toString());
             }
-            /*Scanner scanner = new Scanner(System.in);
-            choice = scanner.nextInt();*/
+            Scanner scanner = new Scanner(System.in);
+            choice = scanner.nextInt();
             MenuOptions.values()[choice - 1].start();
 
-            //descriptor.getEngine().getMutations().getMutationList().get(0).getConfig().getMaxTupples();
         }
 
 
