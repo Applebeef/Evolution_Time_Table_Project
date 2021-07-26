@@ -1,6 +1,6 @@
 package Menu;
 
-import UI.UI;
+import UI.*;
 
 public enum MenuOptions {
     //                * Read Xml

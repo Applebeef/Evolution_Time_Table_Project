@@ -10,7 +10,7 @@ public class TimeTable implements Problem {
     Teachers teachers;
     Rules rules;
 
-    TimeTable(ETTTimeTable gen){
+    public TimeTable(ETTTimeTable gen){
         days = gen.getDays();
         hours = gen.getHours();
 

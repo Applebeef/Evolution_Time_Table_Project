@@ -8,7 +8,7 @@ public class EvolutionEngine {
     Selection selection;
     Crossover crossover;
 
-    EvolutionEngine(ETTEvolutionEngine gen){
+    public EvolutionEngine(ETTEvolutionEngine gen){
         initialPopulation = new InitialPopulation(gen.getETTInitialPopulation());
         mutations = new Mutations(gen.getETTMutations());
         selection = new Selection(gen.getETTSelection());
