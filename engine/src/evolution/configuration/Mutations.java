@@ -25,4 +25,14 @@ public class Mutations {
     public List<Mutation> getMutationList() {
         return mutationList;
     }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        StringBuilder result = new StringBuilder();
+        for(Mutation m : mutationList){
+            result.append(m.toString()).append(lineSeparator);
+        }
+        return result.toString();
+    }
 }

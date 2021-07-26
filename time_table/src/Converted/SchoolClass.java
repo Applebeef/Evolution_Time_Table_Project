@@ -27,6 +27,9 @@ public class SchoolClass {
 
     @Override
     public String toString() {
-        return "Class name: " + name + System.getProperty("line.separator") + "ID: " + id + System.getProperty("line.separator") + requirements.toString();
+        String lineSeparator = System.getProperty("line.separator");
+        return "Class name: " + name + lineSeparator +
+                "Id: " + id + lineSeparator +
+                "Requirements: " + lineSeparator + requirements.toString();
     }
 }

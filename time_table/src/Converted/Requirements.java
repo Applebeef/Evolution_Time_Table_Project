@@ -23,7 +23,7 @@ public class Requirements {
         for (Study s : studyList) {
             allStudies.append("     ").append(s.toString()).append(lineSeparator);
         }
-        return "Requirements:" + lineSeparator + allStudies;
+        return allStudies.toString();
     }
 
 }

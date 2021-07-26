@@ -57,4 +57,12 @@ public enum Mutation {
     public void setConfig(String config) {
         this.config = new Configuration(config);
     }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        return  "probability - " + probability + lineSeparator +
+                "name - " + name + lineSeparator +
+                "config - " + config + lineSeparator;
+    }
 }

@@ -45,6 +45,8 @@ public class TimeTable implements Problem {
         return rules;
     }
 
+    
+
     @Override
     public Solution Solve() {
         return null;//TODO add new class TimeTableSolution?

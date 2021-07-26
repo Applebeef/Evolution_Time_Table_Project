@@ -12,4 +12,9 @@ public class InitialPopulation {
     public int getSize() {
         return size;
     }
+
+    @Override
+    public String toString() {
+        return "size - " + this.size;
+    }
 }

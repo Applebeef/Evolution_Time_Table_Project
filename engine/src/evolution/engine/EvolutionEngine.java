@@ -12,7 +12,7 @@ public class EvolutionEngine {
     private Selection selection;
     private Crossover crossover;
 
-    public EvolutionEngine(ETTEvolutionEngine gen){
+    public EvolutionEngine(ETTEvolutionEngine gen) {
         initialPopulation = new InitialPopulation(gen.getETTInitialPopulation());
         mutations = new Mutations(gen.getETTMutations());
         selection = new Selection(gen.getETTSelection());
@@ -33,5 +33,14 @@ public class EvolutionEngine {
 
     public Crossover getCrossover() {
         return crossover;
+    }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        return  "initial population - " + initialPopulation + lineSeparator +
+                "mutations - " + mutations + lineSeparator +
+                "selection - " + selection + lineSeparator +
+                "crossover - " + crossover + lineSeparator;
     }
 }

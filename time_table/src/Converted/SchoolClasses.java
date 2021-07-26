@@ -23,6 +23,6 @@ public class SchoolClasses {
         for(SchoolClass schoolClass : classList){
             allClasses.append(schoolClass.toString()).append(lineSeparator);
         }
-        return "Classes: " + lineSeparator + allClasses;
+        return allClasses.toString();
     }
 }
