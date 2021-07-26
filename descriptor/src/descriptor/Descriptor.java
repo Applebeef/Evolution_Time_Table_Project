@@ -3,9 +3,6 @@ package descriptor;
 import Converted.TimeTable;
 import EvolutionEngine.Engine;
 
-import javax.xml.bind.annotation.*;
-import java.sql.Time;
-
 public class Descriptor {
         protected TimeTable timeTable;
         protected Engine evolutionEngine;
