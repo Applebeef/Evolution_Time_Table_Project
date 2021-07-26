@@ -8,15 +8,16 @@ public enum Mutation {
 
     double probability;
     String name;
-    public class Configuration{
+    Configuration config;
 
+    public class Configuration{
         int maxTupples;
         String component;
 
         Configuration(String configString){
             Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");//TODO ask Aviad about configuration being a string
             Matcher m = pattern.matcher(configString);
-            while(m.find()) {
+            if(m.find()) {
                 maxTupples = Integer.parseInt(m.group(1));
                 component = m.group(2);
             }
@@ -31,7 +32,7 @@ public enum Mutation {
         }
     }
 
-    Configuration config;
+
 
     Mutation(String name){
         this.name = name;

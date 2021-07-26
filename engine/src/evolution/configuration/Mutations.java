@@ -3,12 +3,14 @@ package evolution.configuration;
 import Generated.ETTMutation;
 import Generated.ETTMutations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mutations {
     private List<Mutation> mutationList;
 
     public Mutations(ETTMutations gen){
+        mutationList = new ArrayList<>();
         Mutation mutation;
         for(ETTMutation m : gen.getETTMutation()){
             if(m.getName().equals("Flipping")){
@@ -18,5 +20,9 @@ public class Mutations {
                 mutationList.add(mutation);
             }
         }
+    }
+
+    public List<Mutation> getMutationList() {
+        return mutationList;
     }
 }

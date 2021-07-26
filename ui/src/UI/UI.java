@@ -1,5 +1,6 @@
 package UI;
 
+import Converted.Teacher;
 import Menu.*;
 import descriptor.Descriptor;
 import java.util.Scanner;
@@ -35,7 +36,7 @@ public class UI {
             choice = scanner.nextInt();
             MenuOptions.values()[choice - 1].start();
 
-            System.out.println(descriptor.getTimeTable().getTeachers().getTeacherList().get(1).getName());
+            descriptor.getEngine().getMutations().getMutationList().get(0).getConfig().getMaxTupples();
         }
 
 
