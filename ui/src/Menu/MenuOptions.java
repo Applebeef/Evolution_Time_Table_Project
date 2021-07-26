@@ -6,7 +6,7 @@ import descriptor.Descriptor;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
+import java.io.*;
 import java.util.Scanner;
 
 public enum MenuOptions {
@@ -37,10 +37,22 @@ public enum MenuOptions {
 
         }
     },
-    DISPLAY_INFO(2, "Display info about the time table and engine."){
+    DISPLAY_INFO(2, "Display info about the time table and engine.") {
         @Override
         public void start() {
-            System.out.println(UI.descriptor.toString());
+            System.out.println(UI.descriptor);
+
+//            try (Writer out1 = new BufferedWriter(
+//                    new OutputStreamWriter(
+//                            new FileOutputStream("text.txt"), "UTF-8"))) {
+//                out1.write(UI.descriptor.toString());
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     },
     RUN_ENGINE(3, "Run evolutionary algorithm."){

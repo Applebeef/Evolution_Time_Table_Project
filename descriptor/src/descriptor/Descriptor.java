@@ -33,6 +33,6 @@ public class Descriptor {
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
         return "Time Table:" + lineSeparator + timeTable + lineSeparator + lineSeparator +
-                "Evolution Engine:" + lineSeparator + evolutionEngine + lineSeparator;
+                "Evolution Engine:" + lineSeparator + evolutionEngine;
     }
 }

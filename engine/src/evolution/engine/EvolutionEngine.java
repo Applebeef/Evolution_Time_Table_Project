@@ -38,9 +38,9 @@ public class EvolutionEngine {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return  "Initial population - " + initialPopulation + lineSeparator +
-                "Mutations - " + lineSeparator + mutations +
-                "Selection - " + selection + lineSeparator +
-                "Crossover - " + lineSeparator + crossover + lineSeparator;
+        return  "Initial population - " + initialPopulation + lineSeparator + lineSeparator +
+                "Mutations - " + lineSeparator + mutations + lineSeparator +
+                "Selection - " + selection + lineSeparator + lineSeparator +
+                "Crossover - " + lineSeparator + crossover;
     }
 }
