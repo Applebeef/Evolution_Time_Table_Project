@@ -1,6 +1,7 @@
 package Converted;
-import Generated.ETTRule;
-import Rules.*;
+import evolution.rules.*;
+
+
 
 public enum Rule implements Testable {
     TEACHER_IS_HUMAN("TeacherIsHuman"){

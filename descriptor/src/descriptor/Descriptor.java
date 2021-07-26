@@ -1,7 +1,7 @@
 package descriptor;
 
 import Converted.TimeTable;
-import Converted.EvolutionEngine;
+import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
 public class Descriptor {

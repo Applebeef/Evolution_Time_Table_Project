@@ -1,7 +1,8 @@
 package Converted;
 
 import Generated.ETTTimeTable;
-import Interfaces.*;
+import evolution.engine.problem_solution.*;
+
 
 public class TimeTable implements Problem {
     int days,hours;

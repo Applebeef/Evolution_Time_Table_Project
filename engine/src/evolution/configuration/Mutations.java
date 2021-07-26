@@ -1,4 +1,4 @@
-package Converted;
+package evolution.configuration;
 
 import Generated.ETTMutation;
 import Generated.ETTMutations;

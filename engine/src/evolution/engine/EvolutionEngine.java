@@ -1,9 +1,9 @@
-package EvolutionEngine;
+package evolution.engine;
 
-import Converted.Crossover;
-import Converted.InitialPopulation;
-import Converted.Mutations;
-import Converted.Selection;
+import evolution.configuration.Crossover;
+import evolution.configuration.InitialPopulation;
+import evolution.configuration.Mutations;
+import evolution.configuration.Selection;
 import Generated.ETTEvolutionEngine;
 
 public class EvolutionEngine {

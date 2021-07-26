@@ -2,7 +2,7 @@ package Converted;
 
 import Generated.ETTRule;
 import Generated.ETTRules;
-import Rules.Type;
+import evolution.rules.Type;
 
 import java.util.ArrayList;
 import java.util.List;

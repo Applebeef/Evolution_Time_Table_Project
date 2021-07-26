@@ -1,4 +1,4 @@
-package Rules;
+package evolution.rules;
 
 public enum Type {
     HARD("Hard"),
