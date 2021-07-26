@@ -1,14 +1,18 @@
-package Converted;
+package EvolutionEngine;
 
+import Converted.Crossover;
+import Converted.InitialPopulation;
+import Converted.Mutations;
+import Converted.Selection;
 import Generated.ETTEvolutionEngine;
 
 public class EvolutionEngine {
-    InitialPopulation initialPopulation;
-    Mutations mutations;
-    Selection selection;
-    Crossover crossover;
+    private InitialPopulation initialPopulation;
+    private Mutations mutations;
+    private Selection selection;
+    private Crossover crossover;
 
-    EvolutionEngine(ETTEvolutionEngine gen){
+    public EvolutionEngine(ETTEvolutionEngine gen){
         initialPopulation = new InitialPopulation(gen.getETTInitialPopulation());
         mutations = new Mutations(gen.getETTMutations());
         selection = new Selection(gen.getETTSelection());

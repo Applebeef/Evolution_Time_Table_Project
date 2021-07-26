@@ -3,10 +3,9 @@ package Converted;
 import Generated.ETTInitialPopulation;
 
 public class InitialPopulation {
+    private int size;
 
-    int size;
-
-    InitialPopulation(ETTInitialPopulation gen){
+    public InitialPopulation(ETTInitialPopulation gen){
         size = gen.getSize();
     }
 
