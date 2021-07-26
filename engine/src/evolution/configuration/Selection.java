@@ -22,4 +22,9 @@ public class Selection {
     public int getTopPercent() {
         return topPercent;
     }
+
+    @Override
+    public String toString() {
+        return "Selection of type: " + type + ", while choosing top " + topPercent + "%.";
+    }
 }

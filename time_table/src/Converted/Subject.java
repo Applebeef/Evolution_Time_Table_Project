@@ -18,4 +18,9 @@ public class Subject {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "    Name: " + name + ", ID: " + id;
+    }
 }

@@ -52,4 +52,9 @@ public enum Rule implements Testable {
     public void setType(Type type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return ruleId +" is a " + type + " rule.";
+    }
 }

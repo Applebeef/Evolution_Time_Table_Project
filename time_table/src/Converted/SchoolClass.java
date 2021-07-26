@@ -28,8 +28,8 @@ public class SchoolClass {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return "Class name: " + name + lineSeparator +
-                "Id: " + id + lineSeparator +
-                "Requirements: " + lineSeparator + requirements.toString();
+        return "   Class name: " + name + lineSeparator +
+                "   Id: " + id + lineSeparator +
+                "   Requirements: " + lineSeparator + requirements.toString();
     }
 }

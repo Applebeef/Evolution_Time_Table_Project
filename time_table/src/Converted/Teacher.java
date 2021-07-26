@@ -24,4 +24,12 @@ public class Teacher {
     public Teaching getTeaching() {
         return teaching;
     }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        return "   Name: " + name + lineSeparator +
+                "   ID: " + id + lineSeparator +
+                "   Teaches: " + teaching.toString() + lineSeparator;
+    }
 }

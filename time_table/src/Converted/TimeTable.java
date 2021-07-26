@@ -51,4 +51,15 @@ public class TimeTable implements Problem {
     public Solution Solve() {
         return null;//TODO add new class TimeTableSolution?
     }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        return "Total days: " + days + lineSeparator +
+                "Hours per day: " + hours + lineSeparator +
+                "The classes are: " + lineSeparator +  schoolClasses + lineSeparator +
+                "The subjects are: " + lineSeparator + subjects + lineSeparator +
+                "The teachers are: " + lineSeparator + teachers + lineSeparator +
+                "The rules are: "  + rules;
+    }
 }

@@ -12,4 +12,9 @@ public class Teaches {
     public int getSubjectId() {
         return subjectId;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(subjectId);
+    }
 }

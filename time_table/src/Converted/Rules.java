@@ -2,6 +2,7 @@ package Converted;
 
 import Generated.ETTRule;
 import Generated.ETTRules;
+import evolution.configuration.Mutation;
 import evolution.rules.Type;
 
 import java.util.ArrayList;
@@ -37,5 +38,16 @@ public class Rules {
 
     public int getHardRulesWeight() {
         return hardRulesWeight;
+    }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        StringBuilder result = new StringBuilder();
+        for(Rule rule : ruleList){
+            result.append("    ").append(rule.toString()).append(lineSeparator);
+        }
+        return lineSeparator +  result + "The weight of Hard rules is: " + hardRulesWeight;
+
     }
 }

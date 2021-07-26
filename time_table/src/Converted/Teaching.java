@@ -1,6 +1,7 @@
 package Converted;
 
 import Generated.ETTTeaching;
+import evolution.configuration.Mutation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,5 +15,16 @@ public class Teaching {
 
     public List<Teaches> getTeachesList() {
         return teachesList;
+    }
+
+    @Override
+    public String toString() {
+
+        String lineSeparator = System.getProperty("line.separator");
+        StringBuilder result = new StringBuilder();
+        for(Teaches teaches : teachesList){
+            result.append(teaches.toString()).append(", ");
+        }
+        return result.toString();
     }
 }

@@ -32,7 +32,7 @@ public class Descriptor {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return "Time Table:" + lineSeparator + timeTable + lineSeparator +
+        return "Time Table:" + lineSeparator + timeTable + lineSeparator + lineSeparator +
                 "Evolution Engine:" + lineSeparator + evolutionEngine + lineSeparator;
     }
 }

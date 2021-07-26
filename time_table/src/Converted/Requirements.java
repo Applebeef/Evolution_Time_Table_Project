@@ -21,7 +21,7 @@ public class Requirements {
         String lineSeparator = System.getProperty("line.separator");
         StringBuilder allStudies = new StringBuilder();
         for (Study s : studyList) {
-            allStudies.append("     ").append(s.toString()).append(lineSeparator);
+            allStudies.append("       ").append(s.toString()).append(lineSeparator);
         }
         return allStudies.toString();
     }
