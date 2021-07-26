@@ -5,20 +5,21 @@ import java.util.regex.*;
 
 public class Selection {
     protected String type;
-    protected int configuration;
+    protected int topPercent;
 
     public Selection(ETTSelection gen) {
         this.type = gen.getType();
         Pattern pattern = Pattern.compile("^TopPercent=(\\d+)$");
         Matcher m = pattern.matcher(gen.getConfiguration());
-        configuration = Integer.parseInt(m.group(1));
+        if(m.find())
+            topPercent = Integer.parseInt(m.group(1));
     }
 
     public String getType() {
         return type;
     }
 
-    public int getConfiguration() {
-        return configuration;
+    public int getTopPercent() {
+        return topPercent;
     }
 }

@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Mutations {
     private List<Mutation> mutationList;
-    private Mutation mutation;
 
     public Mutations(ETTMutations gen){
+        Mutation mutation;
         for(ETTMutation m : gen.getETTMutation()){
             if(m.getName().equals("Flipping")){
                 mutation = Mutation.Flipping;

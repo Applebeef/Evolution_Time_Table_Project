@@ -1,6 +1,13 @@
 package Menu;
 
+import Generated.ETTDescriptor;
 import UI.*;
+import descriptor.Descriptor;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.util.Scanner;
 
 public enum MenuOptions {
     //                * Read Xml
@@ -12,7 +19,22 @@ public enum MenuOptions {
     READ_XML(1, "Load data from XML file."){
         @Override
         public void start() {
-            //TODO add function
+            String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-small.xml";
+            //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
+            //filename = scanner.nextLine();
+
+            try {
+                File file = new File(filename);
+                JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
+
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
+                UI.setDescriptor(new Descriptor(ettdescriptor));
+
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+
         }
     },
     DISPLAY_TIME_TABLE(2, "Display info about the time table."){
@@ -42,7 +64,7 @@ public enum MenuOptions {
     EXIT(6,"Exit."){
         @Override
         public void start() {
-            UI.exit = true;
+            UI.setExit(true);
         }
     };
 
