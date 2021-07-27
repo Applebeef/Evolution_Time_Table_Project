@@ -1,16 +1,16 @@
 package descriptor;
 
 import Converted.TimeTable;
-import evolution.engine.EvolutionEngine;
+import evolution.engine.EvolutionEngineData;
 import Generated.ETTDescriptor;
 
 public class Descriptor {
     protected TimeTable timeTable;
-    protected EvolutionEngine evolutionEngine;
+    protected EvolutionEngineData evolutionEngine;
 
     public Descriptor(ETTDescriptor gen) {
         timeTable = new TimeTable(gen.getETTTimeTable());
-        evolutionEngine = new EvolutionEngine(gen.getETTEvolutionEngine());
+        evolutionEngine = new EvolutionEngineData(gen.getETTEvolutionEngine());
     }
 
     public TimeTable getTimeTable() {
@@ -21,11 +21,11 @@ public class Descriptor {
         this.timeTable = value;
     }
 
-    public EvolutionEngine getEngine() {
+    public EvolutionEngineData getEngine() {
         return evolutionEngine;
     }
 
-    public void setEvolutionEngine(EvolutionEngine value) {
+    public void setEvolutionEngine(EvolutionEngineData value) {
         this.evolutionEngine = value;
     }
 

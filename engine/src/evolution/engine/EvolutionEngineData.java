@@ -6,13 +6,13 @@ import evolution.configuration.Mutations;
 import evolution.configuration.Selection;
 import Generated.ETTEvolutionEngine;
 
-public class EvolutionEngine {
+public class EvolutionEngineData {
     private InitialPopulation initialPopulation;
     private Mutations mutations;
     private Selection selection;
     private Crossover crossover;
 
-    public EvolutionEngine(ETTEvolutionEngine gen) {
+    public EvolutionEngineData(ETTEvolutionEngine gen) {
         initialPopulation = new InitialPopulation(gen.getETTInitialPopulation());
         mutations = new Mutations(gen.getETTMutations());
         selection = new Selection(gen.getETTSelection());
