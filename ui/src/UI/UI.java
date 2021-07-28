@@ -113,7 +113,7 @@ public class UI {
                 if (ui.fileLoaded) {
                     if (ui.descriptor.getEngine().isEngineStarted()) {
                         System.out.println("Engine already initialized, do you wish to overwrite previous run? (Y/N)");
-                        if(scanner.nextLine() == "Y") {
+                        if(scanner.nextLine().equals("Y")) {
                             ui.descriptor.getEngine().initializePopulation(ui.descriptor.getTimeTable());
                             System.out.println("Initial population initialized.");
                             ui.descriptor.getEngine().runEvolution();
@@ -127,7 +127,6 @@ public class UI {
                 } else {
                     System.out.println("No file loaded, please load an XML file first (1).");
                 }
-                //TODO add function
             }
         },
         SHOW_BEST_SOLUTION(4, "Display best solution.") {
