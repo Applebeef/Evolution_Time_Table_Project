@@ -41,15 +41,15 @@ public class UI {
         this.fileLoaded = fileLoaded;
     }
 
-    public static void main(String[] args) {
+    public void runMenu() {
         int choice;
-        while() {
+        while(!exit) {
             for (MenuOptions option : MenuOptions.values()) {
                 System.out.println(option.toString());
             }
             Scanner scanner = new Scanner(System.in);
             choice = scanner.nextInt();
-            MenuOptions.values()[choice - 1].start();
+            MenuOptions.values()[choice - 1].start(this);
 
         }
 
@@ -65,7 +65,7 @@ public class UI {
         //                * Exit
         READ_XML(1, "Load data from XML file."){
             @Override
-            public void start() {//TODO check file validity.
+            public void start(UI ui) {//TODO check file validity.
                 String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-big.xml";
                 //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
                 //filename = scanner.nextLine();
@@ -76,21 +76,21 @@ public class UI {
 
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                     ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
-                    setDescriptor(new Descriptor(ettdescriptor));
+                    ui.setDescriptor(new Descriptor(ettdescriptor));
 
                 } catch (JAXBException e) {
                     e.printStackTrace();
                 }
-                fileLoaded = true;
+                ui.fileLoaded = true;
                 System.out.println("Loading from XML completed.");
 
             }
         },
         DISPLAY_INFO(2, "Display info about the time table and engine.") {
             @Override
-            public void start() {
-                if(UI.fileLoaded)
-                    System.out.println(UI.descriptor);
+            public void start(UI ui) {
+                if(ui.fileLoaded)
+                    System.out.println(ui.descriptor);
                 else
                     System.out.println("No file loaded, please load an XML file first (1).");
 
@@ -109,9 +109,9 @@ public class UI {
         },
         RUN_ENGINE(3, "Run evolutionary algorithm."){
             @Override
-            public void start() {
-                if(UI.fileLoaded){
-                    Engine engine = new Engine(UI.descriptor.getTimeTable(),UI.getDescriptor().getEngine().getInitialPopulation().getSize());
+            public void start(UI ui) {
+                if(ui.fileLoaded){
+                    Engine engine = new Engine(ui.descriptor.getTimeTable(),ui.getDescriptor().getEngine().getInitialPopulation().getSize());
                 }
                 else{
                     System.out.println("No file loaded, please load an XML file first (1).");
@@ -121,20 +121,20 @@ public class UI {
         },
         SHOW_BEST_SOLUTION(4, "Display best solution."){
             @Override
-            public void start() {
+            public void start(UI ui) {
                 //TODO add function
             }
         },
         VIEW_PROGRESS(5, "View progress."){
             @Override
-            public void start() {
+            public void start(UI ui) {
                 //TODO add function
             }
         },
         EXIT(6,"Exit."){
             @Override
-            public void start() {
-                UI.setExit(true);
+            public void start(UI ui) {
+                ui.setExit(true);
             }
         };
 
@@ -146,7 +146,7 @@ public class UI {
             this.action = action;
         }
 
-        abstract public void start();
+        abstract public void start(UI ui);
 
         @Override
         public String toString() {
