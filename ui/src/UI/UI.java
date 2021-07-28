@@ -2,7 +2,6 @@ package UI;
 
 import Generated.ETTDescriptor;
 import descriptor.Descriptor;
-import evolution.engine.Engine;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -43,11 +42,11 @@ public class UI {
 
     public void runMenu() {
         int choice;
-        while(!exit) {
+        Scanner scanner = new Scanner(System.in);
+        while (!exit) {
             for (MenuOptions option : MenuOptions.values()) {
                 System.out.println(option.toString());
             }
-            Scanner scanner = new Scanner(System.in);
             choice = scanner.nextInt();
             MenuOptions.values()[choice - 1].start(this);
 
@@ -63,7 +62,7 @@ public class UI {
         //                * Show best solution
         //                * View engine progression
         //                * Exit
-        READ_XML(1, "Load data from XML file."){
+        READ_XML(1, "Load data from XML file.") {
             @Override
             public void start(UI ui) {//TODO check file validity.
                 String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-big.xml";
@@ -89,7 +88,7 @@ public class UI {
         DISPLAY_INFO(2, "Display info about the time table and engine.") {
             @Override
             public void start(UI ui) {
-                if(ui.fileLoaded)
+                if (ui.fileLoaded)
                     System.out.println(ui.descriptor);
                 else
                     System.out.println("No file loaded, please load an XML file first (1).");
@@ -107,31 +106,43 @@ public class UI {
 //            }
             }
         },
-        RUN_ENGINE(3, "Run evolutionary algorithm."){
+        RUN_ENGINE(3, "Run evolutionary algorithm.") {
             @Override
             public void start(UI ui) {
-                if(ui.fileLoaded){
-                    Engine engine = new Engine(ui.descriptor.getTimeTable(),ui.getDescriptor().getEngine().getInitialPopulation().getSize());
-                }
-                else{
+                Scanner scanner = new Scanner(System.in);
+                if (ui.fileLoaded) {
+                    if (ui.descriptor.getEngine().isEngineStarted()) {
+                        System.out.println("Engine already initialized, do you wish to overwrite previous run? (Y/N)");
+                        if(scanner.nextLine() == "Y") {
+                            ui.descriptor.getEngine().initializePopulation(ui.descriptor.getTimeTable());
+                            System.out.println("Initial population initialized.");
+                            ui.descriptor.getEngine().runEvolution();
+                        }
+                    }
+                    else{
+                        ui.descriptor.getEngine().initializePopulation(ui.descriptor.getTimeTable());
+                        System.out.println("Initial population initialized.");
+                        ui.descriptor.getEngine().runEvolution();
+                    }
+                } else {
                     System.out.println("No file loaded, please load an XML file first (1).");
                 }
                 //TODO add function
             }
         },
-        SHOW_BEST_SOLUTION(4, "Display best solution."){
+        SHOW_BEST_SOLUTION(4, "Display best solution.") {
             @Override
             public void start(UI ui) {
                 //TODO add function
             }
         },
-        VIEW_PROGRESS(5, "View progress."){
+        VIEW_PROGRESS(5, "View progress.") {
             @Override
             public void start(UI ui) {
                 //TODO add function
             }
         },
-        EXIT(6,"Exit."){
+        EXIT(6, "Exit.") {
             @Override
             public void start(UI ui) {
                 ui.setExit(true);
@@ -141,7 +152,7 @@ public class UI {
         int number;
         String action;
 
-        MenuOptions(int number, String action){
+        MenuOptions(int number, String action) {
             this.number = number;
             this.action = action;
         }
