@@ -16,6 +16,7 @@ public class Day {
         }
     }
 
-
-
+    public List<Hour> getHourList() {
+        return hourList;
+    }
 }

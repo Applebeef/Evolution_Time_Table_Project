@@ -1,5 +1,8 @@
 package evolution.engine.problem_solution;
 
-public interface Solution {
-    public Integer calculateFitness();
+import evolution.configuration.Crossover;
+
+public interface Solution extends Comparable<Solution> {
+    void calculateFitness();
+    Solution createNewSolution(Solution solution, Crossover crossover);
 }

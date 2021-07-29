@@ -51,5 +51,8 @@ public class Hour {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
+    public List<SchoolClassTeacherSubject> getSchoolClassTeacherSubjectList() {
+        return schoolClassTeacherSubjectList;
+    }
     //TODO:WRITE A NON RANDOM CONSTRUCTOR
 }

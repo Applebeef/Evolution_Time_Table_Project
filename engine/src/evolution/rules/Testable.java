@@ -2,6 +2,8 @@ package evolution.rules;
 
 //used for rules.
 
+import evolution.engine.problem_solution.Solution;
+
 public interface Testable {
-    boolean Test();
+    int test(Solution solution);
 }

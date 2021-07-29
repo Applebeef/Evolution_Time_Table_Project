@@ -9,6 +9,7 @@ import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EvolutionEngine {
@@ -25,7 +26,8 @@ public class EvolutionEngine {
         mutations = new Mutations(gen.getETTMutations());
         selection = new Selection(gen.getETTSelection());
         crossover = new Crossover(gen.getETTCrossover());
-        number_of_generations = 100;
+
+        solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
     }
 
     public InitialPopulation getInitialSolutionPopulation() {
@@ -53,12 +55,17 @@ public class EvolutionEngine {
     }
 
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
-        solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
-        for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
-            solutionList.add(problem.solve());
-        }
-        engineStarted = true;
+        double fitness;
+        Solution solution;
         this.number_of_generations = number_of_generations;
+
+        for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
+            solution = problem.solve();
+            solution.calculateFitness();
+            solutionList.add(solution);
+        }
+        Collections.sort(solutionList);
+        engineStarted = true;
     }
 
     public void runEvolution() {
