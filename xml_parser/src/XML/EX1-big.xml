@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V1.xsd">
-	<ETT-TimeTable days="6" hours="8">
+<ETT-descriptor.Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V1.xsd">
+	<ETT-Converted.TimeTable days="6" hours="8">
 		<ETT-Teachers>
 			<ETT-Teacher id="1">
 				<ETT-Name>Alma Nedaber</ETT-Name>
@@ -130,7 +130,7 @@
 				<ETT-RuleId>Satisfactory</ETT-RuleId>
 			</ETT-Rule>
 		</ETT-Rules>
-	</ETT-TimeTable>
+	</ETT-Converted.TimeTable>
 	<ETT-EvolutionEngine>
 		<ETT-InitialPopulation size="150"/>
 		<ETT-Selection type="Truncation" configuration="TopPercent=20"/>
@@ -139,4 +139,4 @@
 			<ETT-Mutation name="Flipping" probability="0.4" configuration="MaxTupples=3,Component=D"/>
 		</ETT-Mutations>
 	</ETT-EvolutionEngine>
-</ETT-Descriptor>
+</ETT-descriptor.Descriptor>

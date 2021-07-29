@@ -12,22 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EvolutionEngine {
-    private InitialPopulation initialPopulation;
+    private InitialPopulation initialSolutionPopulation;
     private Mutations mutations;
     private Selection selection;
     private Crossover crossover;
     private List<Solution> solutionList;
     private boolean engineStarted = false;
+    private Integer number_of_generations;
 
     public EvolutionEngine(ETTEvolutionEngine gen) {
-        initialPopulation = new InitialPopulation(gen.getETTInitialPopulation());
+        initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
         mutations = new Mutations(gen.getETTMutations());
         selection = new Selection(gen.getETTSelection());
         crossover = new Crossover(gen.getETTCrossover());
+        number_of_generations = 100;
     }
 
-    public InitialPopulation getInitialPopulation() {
-        return initialPopulation;
+    public InitialPopulation getInitialSolutionPopulation() {
+        return initialSolutionPopulation;
     }
 
     public Mutations getMutations() {
@@ -42,32 +44,33 @@ public class EvolutionEngine {
         return crossover;
     }
 
-    @Override
-    public String toString() {
-        String lineSeparator = System.getProperty("line.separator");
-        return  "Initial population - " + initialPopulation + lineSeparator + lineSeparator +
-                "Mutations - " + lineSeparator + mutations + lineSeparator +
-                "Selection - " + selection + lineSeparator + lineSeparator +
-                "Crossover - " + lineSeparator + crossover;
-    }
-
-    public void initializePopulation(Problem problem){
-        solutionList = new ArrayList<>(initialPopulation.getSize());
-        for(int i=0;i<initialPopulation.getSize();i++){
-            solutionList.add(problem.solve());
-        }
-        engineStarted = true;
-    }
-
-    public void runEvolution(){
-
-    }
-
     public List<Solution> getSolutionList() {
         return solutionList;
     }
 
     public boolean isEngineStarted() {
         return engineStarted;
+    }
+
+    public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
+        solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
+        for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
+            solutionList.add(problem.solve());
+        }
+        engineStarted = true;
+        this.number_of_generations = number_of_generations;
+    }
+
+    public void runEvolution() {
+
+    }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        return "Initial population - " + initialSolutionPopulation + lineSeparator + lineSeparator +
+                "Mutations - " + lineSeparator + mutations + lineSeparator +
+                "Selection - " + selection + lineSeparator + lineSeparator +
+                "Crossover - " + lineSeparator + crossover;
     }
 }

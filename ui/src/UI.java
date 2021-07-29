@@ -1,5 +1,3 @@
-package UI;
-
 import Generated.ETTDescriptor;
 import descriptor.Descriptor;
 
@@ -10,51 +8,13 @@ import java.io.File;
 import java.util.Scanner;
 
 public class UI {
-
-    public boolean exit = false;
+    //Singleton instance:
+    private static final UI instance = new UI();
+    public boolean exit;
+    public boolean fileLoaded;
     public Descriptor descriptor;
-    public boolean fileLoaded = false;
 
-
-    public boolean isExit() {
-        return exit;
-    }
-
-    public void setExit(boolean exit) {
-        this.exit = exit;
-    }
-
-    public Descriptor getDescriptor() {
-        return descriptor;
-    }
-
-    public void setDescriptor(Descriptor descriptor) {
-        this.descriptor = descriptor;
-    }
-
-    public boolean isFileLoaded() {
-        return fileLoaded;
-    }
-
-    public void setFileLoaded(boolean fileLoaded) {
-        this.fileLoaded = fileLoaded;
-    }
-
-    public void runMenu() {
-        int choice;
-        Scanner scanner = new Scanner(System.in);
-        while (!exit) {
-            for (MenuOptions option : MenuOptions.values()) {
-                System.out.println(option.toString());
-            }
-            choice = scanner.nextInt();
-            MenuOptions.values()[choice - 1].start(this);
-
-        }
-
-
-    }
-
+    // Inner enum MenuOptions:
     public enum MenuOptions {
         //                * Read Xml
         //                * Display time table
@@ -72,7 +32,6 @@ public class UI {
                 try {
                     File file = new File(filename);
                     JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
-
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                     ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
                     ui.setDescriptor(new Descriptor(ettdescriptor));
@@ -111,22 +70,32 @@ public class UI {
             public void start(UI ui) {
                 Scanner scanner = new Scanner(System.in);
                 if (ui.fileLoaded) {
-                    if (ui.descriptor.getEngine().isEngineStarted()) {
+                    if (ui.descriptor.getEngine().isEngineStarted()) {// Engine is started:
                         System.out.println("Engine already initialized, do you wish to overwrite previous run? (Y/N)");
-                        if(scanner.nextLine().equals("Y")) {
-                            ui.descriptor.getEngine().initializePopulation(ui.descriptor.getTimeTable());
-                            System.out.println("Initial population initialized.");
-                            ui.descriptor.getEngine().runEvolution();
+                        if (scanner.nextLine().equals("Y")) {
+                            runEngineHelper(ui);
                         }
-                    }
-                    else{
-                        ui.descriptor.getEngine().initializePopulation(ui.descriptor.getTimeTable());
-                        System.out.println("Initial population initialized.");
-                        ui.descriptor.getEngine().runEvolution();
+                    } else {// Engine is not started:
+                        runEngineHelper(ui);
                     }
                 } else {
                     System.out.println("No file loaded, please load an XML file first (1).");
                 }
+            }
+
+            private void runEngineHelper(UI ui) {
+                Scanner scanner = new Scanner(System.in);
+                int number_of_generations;
+                // Recieve number of generations from user:
+                System.out.println("Enter requested amount of generations: ");
+                number_of_generations = scanner.nextInt();//TODO: verify input>=100
+                ui.descriptor.
+                        getEngine().
+                        initSolutionPopulation(
+                                ui.descriptor.getTimeTable(), number_of_generations
+                        );
+                System.out.println("Initial population initialized.");
+                ui.descriptor.getEngine().runEvolution();
             }
         },
         SHOW_BEST_SOLUTION(4, "Display best solution.") {
@@ -163,4 +132,54 @@ public class UI {
             return number + " - " + action;
         }
     }
+
+    // Private constructor for singleton:
+    private UI() {
+        this.exit = false;
+        this.fileLoaded = false;
+        this.descriptor = null;
+    }
+
+    // Static method getinstance for singleton:
+    public static UI getInstance() {
+        return instance;
+    }
+
+    public void runMenu() {
+        int choice;
+        Scanner scanner = new Scanner(System.in);
+        while (!this.exit) {
+            for (MenuOptions option : MenuOptions.values()) {
+                System.out.println(option.toString());
+            }
+            choice = scanner.nextInt();
+            MenuOptions.values()[choice - 1].start(this);
+        }
+    }
+
+    public boolean isExit() {
+        return exit;
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
+    }
+
+    public Descriptor getDescriptor() {
+        return descriptor;
+    }
+
+    public void setDescriptor(Descriptor descriptor) {
+        this.descriptor = descriptor;
+    }
+
+    public boolean isFileLoaded() {
+        return fileLoaded;
+    }
+
+    public void setFileLoaded(boolean fileLoaded) {
+        this.fileLoaded = fileLoaded;
+    }
+
+
 }

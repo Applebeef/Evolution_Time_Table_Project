@@ -1,6 +1,5 @@
-package Converted;
+package time_table;
 
-import Generated.ETTClass;
 import Generated.ETTClasses;
 import java.util.List;
 import java.util.stream.Collectors;

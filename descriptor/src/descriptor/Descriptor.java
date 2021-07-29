@@ -1,6 +1,6 @@
 package descriptor;
 
-import Converted.TimeTable;
+import time_table.TimeTable;
 import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
