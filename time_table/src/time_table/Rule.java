@@ -48,10 +48,10 @@ public enum Rule {
                 }
 
                 //Check if the current subject/teacher is equal to the one currently saved in the map.
-                if(!tripletsSubjectMap.get(integerTriplets).equals(fifth.getSubject())){
+                if (!tripletsSubjectMap.get(integerTriplets).equals(fifth.getSubject())) {
                     return 0;
                 }
-                if(!tripletsTeacherMap.get(integerTriplets).equals(fifth.getTeacher())){
+                if (!tripletsTeacherMap.get(integerTriplets).equals(fifth.getTeacher())) {
                     return 0;
                 }
             }
@@ -80,8 +80,33 @@ public enum Rule {
     SATISFACTORY("Satisfactory") {
         @Override
         public int test(TimeTableSolution timeTableSolution) {
+            //Map mapping Classes to a map mapping subjects to hours learned:.
+            Map<Integer, Map<Integer, Integer>> mapSchoolClassToSubjectHoursMapMap = new HashMap<>();
 
-            return 0;//TODO add test
+            for (Fifth fifth : timeTableSolution.getFifthsList()) {
+                //If this is the first time we encounter this class, add the class to the map:.
+                if(!mapSchoolClassToSubjectHoursMapMap.containsKey(fifth.getSchoolClass())) {
+                    mapSchoolClassToSubjectHoursMapMap.put(fifth.getSchoolClass(), new HashMap<>());
+                }
+                //If this is the first time we encounter this subject, add the subject to the class map:.
+                if(!mapSchoolClassToSubjectHoursMapMap.get(fifth.getSchoolClass()).containsKey(fifth.getSubject())){
+                    mapSchoolClassToSubjectHoursMapMap.get(fifth.getSchoolClass()).put(fifth.getSubject(),0);
+                }
+                //Increment total amount of hours learned in subject:.
+                Integer hours = mapSchoolClassToSubjectHoursMapMap.get(fifth.getSchoolClass()).get(fifth.getSubject());
+                hours++;
+                mapSchoolClassToSubjectHoursMapMap.get(fifth.getSchoolClass()).put(fifth.getSubject(),hours);
+            }
+            //Check if the total amount of learned hours is equal to the required amount of hours per subject:.
+            for(SchoolClass schoolClass : timeTableSolution.getTimeTable().getSchoolClasses().getClassList()){
+                for(Study study : schoolClass.requirements.studyList){
+                    if(!mapSchoolClassToSubjectHoursMapMap.get(schoolClass.getId()).get(study.subjectId).equals(study.hours)){
+                        return 0;
+                    }
+                }
+            }
+
+            return 100;
         }
     };
 

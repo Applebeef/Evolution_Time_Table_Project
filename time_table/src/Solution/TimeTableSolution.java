@@ -26,12 +26,10 @@ public class TimeTableSolution implements Solution {
                 }
             }
         }
-
     }
 
     @Override
     public double calculateFitness() {
-        double fitness;
         double hardRulesWeight = (double) timeTable.getRules().getHardRulesWeight() / 100;
         int hardTotal = 0, softTotal = 0;
         int hardCount = 0, softCount = 0;
@@ -71,6 +69,11 @@ public class TimeTableSolution implements Solution {
 
     @Override
     public int compareTo(Solution o) {
-        return this.getFitness().compareTo(((TimeTableSolution) o).getFitness());
+        if (o.getClass().getSimpleName().equals(TimeTableSolution.class.getSimpleName())){
+            return this.getFitness().compareTo(((TimeTableSolution) o).getFitness());
+        }
+        else{
+            return 0;
+        }
     }
 }

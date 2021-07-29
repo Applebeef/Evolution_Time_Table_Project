@@ -55,7 +55,6 @@ public class EvolutionEngine {
     }
 
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
-        double fitness;
         Solution solution;
         this.number_of_generations = number_of_generations;
 
