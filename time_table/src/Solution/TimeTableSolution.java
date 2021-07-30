@@ -7,6 +7,7 @@ import time_table.Rule;
 import time_table.TimeTable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TimeTableSolution implements Solution {
@@ -52,7 +53,11 @@ public class TimeTableSolution implements Solution {
     }
 
     @Override
-    public Solution createNewSolution(Solution solution, Crossover crossover) {
+    public Solution crossover(Solution solution, Crossover crossover) {
+        return null;
+    }
+
+    public Solution crossover(TimeTableSolution solution, Crossover cross){
         return null;
     }
 

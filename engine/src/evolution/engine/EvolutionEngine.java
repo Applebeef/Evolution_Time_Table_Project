@@ -73,6 +73,9 @@ public class EvolutionEngine {
         for (int i = 0; i < number_of_generations; i++) {
             topAmount = (int) Math.floor(solutionList.size() * ((double) selection.getTopPercent() / 100));
             List<Solution> selectionList = solutionList.stream().limit(topAmount).collect(Collectors.toList());
+            for(Solution solution : selectionList){
+                //TODO
+            }
         }
     }
 

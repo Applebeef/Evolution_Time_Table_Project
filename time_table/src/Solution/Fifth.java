@@ -1,7 +1,7 @@
 package Solution;
 
-public class Fifth {
-    private int day,hour,schoolClass,teacher,subject;
+public class Fifth implements Comparable<Fifth> {
+    private Integer day, hour, schoolClass, teacher, subject;
 
     public Fifth(int day, int hour, int schoolClass, int teacher, int subject) {
         this.day = day;
@@ -11,44 +11,59 @@ public class Fifth {
         this.subject = subject;
     }
 
-    public int getDay() {
+    public Integer getDay() {
         return day;
     }
 
-    public void setDay(int day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 
-    public int getHour() {
+    public Integer getHour() {
         return hour;
     }
 
-    public void setHour(int hour) {
+    public void setHour(Integer hour) {
         this.hour = hour;
     }
 
-    public int getSchoolClass() {
+    public Integer getSchoolClass() {
         return schoolClass;
     }
 
-    public void setSchoolClass(int schoolClass) {
+    public void setSchoolClass(Integer schoolClass) {
         this.schoolClass = schoolClass;
     }
 
-    public int getTeacher() {
+    public Integer getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(int teacher) {
+    public void setTeacher(Integer teacher) {
         this.teacher = teacher;
     }
 
-    public int getSubject() {
+    public Integer getSubject() {
         return subject;
     }
 
-    public void setSubject(int subject) {
+    public void setSubject(Integer subject) {
         this.subject = subject;
     }
 
+    @Override
+    public int compareTo(Fifth o) {
+        int cmp;
+        cmp = this.getDay().compareTo(o.getDay());
+        if (cmp == 0) {
+            cmp = this.getHour().compareTo(o.getHour());
+            if (cmp == 0) {
+                cmp = this.getSchoolClass().compareTo(o.getSchoolClass());
+                if (cmp == 0) {
+                    cmp = this.getTeacher().compareTo(o.getTeacher());
+                }
+            }
+        }
+        return cmp;
+    }
 }
