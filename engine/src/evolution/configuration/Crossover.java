@@ -4,7 +4,7 @@ import Generated.ETTCrossover;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Crossover {
+public class Crossover { //TODO make implement Comparator?
     //protected String configuration;
     protected String name;
     protected int cuttingPoints;
