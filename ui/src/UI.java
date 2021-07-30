@@ -51,18 +51,6 @@ public class UI {
                     System.out.println(ui.descriptor);
                 else
                     System.out.println("No file loaded, please load an XML file first (1).");
-
-//            try (Writer out1 = new BufferedWriter(
-//                    new OutputStreamWriter(
-//                            new FileOutputStream("text.txt"), "UTF-8"))) {
-//                out1.write(UI.descriptor.toString());
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             }
         },
         RUN_ENGINE(3, "Run evolutionary algorithm.") {
@@ -85,6 +73,7 @@ public class UI {
 
             private void runEngineHelper(UI ui) {
                 Scanner scanner = new Scanner(System.in);
+                int frequency;
                 int number_of_generations;
                 // Recieve number of generations from user:
                 System.out.println("Enter requested amount of generations: ");
@@ -95,7 +84,9 @@ public class UI {
                                 ui.descriptor.getTimeTable(), number_of_generations
                         );
                 System.out.println("Initial population initialized.");
-                ui.descriptor.getEngine().runEvolution();
+                System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
+                frequency = scanner.nextInt();
+                ui.descriptor.getEngine().runEvolution(frequency);
             }
         },
         SHOW_BEST_SOLUTION(4, "Display best solution.") {

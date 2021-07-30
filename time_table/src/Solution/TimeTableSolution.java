@@ -47,6 +47,11 @@ public class TimeTableSolution implements Solution {
     }
 
     @Override
+    public void mutate() {
+
+    }
+
+    @Override
     public Solution createNewSolution(Solution solution, Crossover crossover) {
         return null;
     }

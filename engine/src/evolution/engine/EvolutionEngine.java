@@ -11,6 +11,7 @@ import evolution.engine.problem_solution.Solution;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EvolutionEngine {
     private InitialPopulation initialSolutionPopulation;
@@ -63,12 +64,16 @@ public class EvolutionEngine {
             solution.calculateFitness();
             solutionList.add(solution);
         }
-        Collections.sort(solutionList);
+        solutionList.sort(Collections.reverseOrder());
         engineStarted = true;
     }
 
-    public void runEvolution() {
-
+    public void runEvolution(int frequency) {
+        int topAmount;
+        for (int i = 0; i < number_of_generations; i++) {
+            topAmount = (int) Math.floor(solutionList.size() * ((double) selection.getTopPercent() / 100));
+            List<Solution> selectionList = solutionList.stream().limit(topAmount).collect(Collectors.toList());
+        }
     }
 
     @Override
