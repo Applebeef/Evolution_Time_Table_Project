@@ -60,7 +60,7 @@ public class UI {
                 if (ui.fileLoaded) {
                     if (ui.descriptor.getEngine().isEngineStarted()) {// Engine is started:
                         System.out.println("Engine already initialized, do you wish to overwrite previous run? (Y/N)");
-                        if (scanner.nextLine().equals("Y")) {
+                        if (scanner.nextLine().equalsIgnoreCase("Y")) {
                             runEngineHelper(ui);
                         }
                     } else {// Engine is not started:
@@ -76,8 +76,14 @@ public class UI {
                 int frequency;
                 int number_of_generations;
                 // Recieve number of generations from user:
-                System.out.println("Enter requested amount of generations: ");
-                number_of_generations = scanner.nextInt();//TODO: verify input>=100
+                System.out.println("Enter requested amount of generations (at least 100): ");
+                do {
+                    number_of_generations = scanner.nextInt();
+                    if (number_of_generations<100){
+                        System.out.println("Number of generations needs to be at least 100.");
+                    }
+                }while (number_of_generations<100);
+
                 ui.descriptor.
                         getEngine().
                         initSolutionPopulation(

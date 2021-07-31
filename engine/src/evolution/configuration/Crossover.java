@@ -1,27 +1,29 @@
 package evolution.configuration;
 
 import Generated.ETTCrossover;
+import evolution.engine.problem_solution.Solution;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.Comparator;
 
-public class Crossover { //TODO make implement Comparator?
-    //protected String configuration;
+
+public class Crossover {
+    protected String configuration;
     protected String name;
     protected int cuttingPoints;
 
     public Crossover(ETTCrossover ettCrossover) {
-        //this.configuration = ettCrossover.getConfiguration();
+        this.configuration = ettCrossover.getConfiguration();
         this.name = ettCrossover.getName();
         this.cuttingPoints = ettCrossover.getCuttingPoints();
     }
 
-   /* public String getConfiguration() {
+    public String getConfiguration() {
         return configuration;
     }
 
     public void setConfiguration(String configuration) {
         this.configuration = configuration;
-    }*/
+    }
 
     public String getName() {
         return name;
@@ -45,5 +47,4 @@ public class Crossover { //TODO make implement Comparator?
         return "   " + "Name - " + this.name + lineSeparator +
                 "   " + "Cutting Points - " + this.cuttingPoints + lineSeparator;
     }
-
 }

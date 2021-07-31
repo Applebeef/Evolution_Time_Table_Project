@@ -18,15 +18,27 @@ public class TimeTableSolution implements Solution {
     public TimeTableSolution(TimeTable timeTable) {
         this.timeTable = timeTable;
         fifthsList = new ArrayList<>();
-        for (int day = 1; day <= timeTable.getDays(); day++) {
-            for (int hour = 1; hour <= timeTable.getHours(); hour++) {
-                for (int schoolClass = 1; schoolClass <= timeTable.getAmountofSchoolClasses(); schoolClass++) {
-                    int teacher = getRandomNumber(1, timeTable.getAmountofTeachers());
-                    int subject = getRandomNumber(1, timeTable.getAmountofSubjects());
+        int day, hour, schoolClass, teacher, subject;
+        for (day = 1; day <= timeTable.getDays(); day++) {
+            for (hour = 1; hour <= timeTable.getHours(); hour++) {
+                for (schoolClass = 1; schoolClass <= timeTable.getAmountofSchoolClasses(); schoolClass++) {
+                    teacher = getRandomNumber(0, timeTable.getAmountofTeachers());
+                    if (teacher == 0) {
+                        subject = 0;
+                    } else {
+                        subject = getRandomNumber(1, timeTable.getAmountofSubjects());
+                    }
                     fifthsList.add(new Fifth(day, hour, schoolClass, teacher, subject));
                 }
             }
         }
+    }
+
+    public TimeTableSolution(TimeTable timeTable, List<List<Fifth>> fifths) {
+        this.timeTable = timeTable;
+        this.fifthsList = new ArrayList<>();
+        fifths.forEach(list -> fifthsList.addAll(list));
+        this.calculateFitness();
     }
 
     @Override
@@ -53,13 +65,60 @@ public class TimeTableSolution implements Solution {
     }
 
     @Override
-    public Solution crossover(Solution solution, Crossover crossover) {
-        return null;
+    public List<Solution> crossover(Solution solution, Crossover crossover) {
+        List<Solution> res = new ArrayList<>();
+        if (solution instanceof TimeTableSolution) {
+            TimeTableSolution timeTableSolution = (TimeTableSolution) solution;
+            //TODO check crossover type for different sorts.
+            Collections.sort(this.getFifthsList());
+            Collections.sort(timeTableSolution.getFifthsList());
+
+            List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), crossover.getCuttingPoints());
+            List<List<Fifth>> subLists2 = chopIntoParts(timeTableSolution.getFifthsList(), crossover.getCuttingPoints());
+            List<List<Fifth>> crossOverList1 = new ArrayList<>();
+            List<List<Fifth>> crossOverList2 = new ArrayList<>();
+
+            for (int i = 0; i < subLists1.size(); i++) {
+                if(i%2==0){
+                    crossOverList1.add(subLists1.get(i));
+                    crossOverList2.add(subLists2.get(i));
+                }
+                else{
+                    crossOverList1.add(subLists2.get(i));
+                    crossOverList2.add(subLists1.get(i));
+                }
+            }
+
+            TimeTableSolution solutionKid1 = new TimeTableSolution(this.getTimeTable(), crossOverList1);
+            TimeTableSolution solutionKid2 = new TimeTableSolution(timeTableSolution.getTimeTable(),crossOverList2);
+            res.add(solutionKid1);
+            res.add(solutionKid2);
+
+        }
+        return res;
     }
 
-    public Solution crossover(TimeTableSolution solution, Crossover cross){
-        return null;
+    private List<List<Fifth>> chopIntoParts(final List<Fifth> ls, final int Parts) {
+        final List<List<Fifth>> lsParts = new ArrayList<>();
+        final int ChunkSize = ls.size() / Parts;
+        int LeftOver = ls.size() % Parts;
+        int Take;
+
+        for (int i = 0, iT = ls.size(); i < iT; i += Take) {
+            if (LeftOver > 0) {
+                LeftOver--;
+
+                Take = ChunkSize + 1;
+            } else {
+                Take = ChunkSize;
+            }
+
+            lsParts.add(new ArrayList<>(ls.subList(i, Math.min(iT, i + Take))));
+        }
+
+        return lsParts;
     }
+
 
     public List<Fifth> getFifthsList() {
         return fifthsList;
@@ -79,11 +138,18 @@ public class TimeTableSolution implements Solution {
 
     @Override
     public int compareTo(Solution o) {
-        if (o.getClass().getSimpleName().equals(TimeTableSolution.class.getSimpleName())){
+        if (o instanceof TimeTableSolution) {
             return this.getFitness().compareTo(((TimeTableSolution) o).getFitness());
-        }
-        else{
+        } else {
             return 0;
         }
+    }
+
+    @Override
+    public String toString() {
+        //TODO make better toString.
+        return "TimeTableSolution{" +
+                "fitness=" + fitness +
+                '}';
     }
 }
