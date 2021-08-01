@@ -137,15 +137,15 @@ public class TimeTableSolution implements Solution {
         List<List<Fifth>> partsList = new ArrayList<>();
         Collections.sort(cuttingPoints);
         int min;
-        int max = -1;
+        int max = 0;
         for (Integer cuttingPoint : cuttingPoints) {
-            min = max + 1;
+            min = max;
             max = cuttingPoint;
             partsList.add(ls.subList(min, max));
         }
-        if (max < ls.size() - 1) {
-            min = max + 1;
-            partsList.add(ls.subList(min, ls.size() - 1));
+        if (max < ls.size()) {
+            min = max;
+            partsList.add(ls.subList(min, ls.size()));
         }
         return partsList;
     }

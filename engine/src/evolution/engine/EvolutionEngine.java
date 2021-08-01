@@ -80,7 +80,6 @@ public class EvolutionEngine {
             tempSolutionList = new ArrayList<>();
             topAmount = (int) Math.floor(solutionList.size() * ((double) selection.getTopPercent() / 100));
             List<Solution> selectionList = solutionList.stream().limit(topAmount).collect(Collectors.toList());
-
             while (tempSolutionList.size() < initialSolutionPopulation.getSize()) {
                 tempSolutionList.addAll(selectionList.get(Randomizer.getRandomNumber(0, topAmount-1)).crossover(selectionList.get(Randomizer.getRandomNumber(0, topAmount-1)), crossover));
             }
