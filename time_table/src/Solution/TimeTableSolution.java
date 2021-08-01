@@ -1,5 +1,6 @@
 package Solution;
 
+import evolution.util.Randomizer;
 import evolution.configuration.Crossover;
 import evolution.configuration.Mutation;
 import evolution.configuration.Mutations;
@@ -25,11 +26,11 @@ public class TimeTableSolution implements Solution {
         for (day = 1; day <= timeTable.getDays(); day++) {
             for (hour = 1; hour <= timeTable.getHours(); hour++) {
                 for (schoolClass = 1; schoolClass <= timeTable.getAmountofSchoolClasses(); schoolClass++) {
-                    teacher = getRandomNumber(0, timeTable.getAmountofTeachers());
+                    teacher = Randomizer.getRandomNumber(0,timeTable.getAmountofTeachers());
                     if (teacher == 0) {
                         subject = 0;
                     } else {
-                        subject = getRandomNumber(1, timeTable.getAmountofSubjects());
+                        subject = Randomizer.getRandomNumber(1, timeTable.getAmountofSubjects());
                     }
                     fifthsList.add(new Fifth(day, hour, schoolClass, teacher, subject));
                 }
@@ -47,7 +48,7 @@ public class TimeTableSolution implements Solution {
     @Override
     public double calculateFitness() {
         double hardRulesWeight = (double) timeTable.getRules().getHardRulesWeight() / 100;
-        int hardTotal = 0, softTotal = 0;
+        double hardTotal = 0, softTotal = 0;
         int hardCount = 0, softCount = 0;
         for (Rule rule : timeTable.getRules().getRuleList()) {
             if (rule.getType() == Type.HARD) {
@@ -58,7 +59,7 @@ public class TimeTableSolution implements Solution {
                 softTotal += rule.test(this);
             }
         }
-        this.fitness = ((double) hardTotal / (double) hardCount) * (hardRulesWeight) + ((double) softTotal / (double) softCount) * (1 - hardRulesWeight);
+        this.fitness = (hardTotal / (double) hardCount) * (hardRulesWeight) + (softTotal / (double) softCount) * (1 - hardRulesWeight);
         return this.fitness;
     }
 
@@ -67,24 +68,24 @@ public class TimeTableSolution implements Solution {
         for (Mutation mutation : mutations.getMutationList()) {
             double probability = Math.random();
             if (probability <= mutation.getProbability()) {
-                int mutatedNumber = getRandomNumber(1, mutation.getConfig().getMaxTupples());
+                int mutatedNumber = Randomizer.getRandomNumber(1, mutation.getConfig().getMaxTupples());
                 List<Fifth> toBeMutated = this.getFifthsList().stream().unordered().limit(mutatedNumber).collect(Collectors.toList());
                 String component = mutation.getConfig().getComponent();
                 switch (component) {
                     case "D":
-                        toBeMutated.forEach(fifth -> fifth.setDay(getRandomNumber(1, timeTable.getDays())));
+                        toBeMutated.forEach(fifth -> fifth.setDay(Randomizer.getRandomNumber(1, timeTable.getDays())));
                         break;
                     case "H":
-                        toBeMutated.forEach(fifth -> fifth.setHour(getRandomNumber(1, timeTable.getHours())));
+                        toBeMutated.forEach(fifth -> fifth.setHour(Randomizer.getRandomNumber(1, timeTable.getHours())));
                         break;
                     case "C":
-                        toBeMutated.forEach(fifth -> fifth.setSchoolClass(getRandomNumber(1, timeTable.getAmountofSchoolClasses())));
+                        toBeMutated.forEach(fifth -> fifth.setSchoolClass(Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses())));
                         break;
                     case "T":
-                        toBeMutated.forEach(fifth -> fifth.setTeacher(getRandomNumber(0, timeTable.getAmountofTeachers())));
+                        toBeMutated.forEach(fifth -> fifth.setTeacher(Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers())));
                         break;
                     case "S":
-                        toBeMutated.forEach(fifth -> fifth.setSubject(getRandomNumber(0, timeTable.getAmountofSubjects())));
+                        toBeMutated.forEach(fifth -> fifth.setSubject(Randomizer.getRandomNumber(0, timeTable.getAmountofSubjects())));
                         break;
                 }
             }
@@ -160,9 +161,7 @@ public class TimeTableSolution implements Solution {
         return timeTable;
     }
 
-    private int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
+
 
     @Override
     public int compareTo(Solution o) {
@@ -177,7 +176,7 @@ public class TimeTableSolution implements Solution {
     public String toString() {
         //TODO make better toString.
         return "TimeTableSolution{" +
-                "fitness=" + fitness +
+                "fitness=" + String.format("%.1f", fitness) +
                 '}';
     }
 }

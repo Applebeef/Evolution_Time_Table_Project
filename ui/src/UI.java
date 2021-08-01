@@ -25,7 +25,7 @@ public class UI {
         READ_XML(1, "Load data from XML file.") {
             @Override
             public void start(UI ui) {//TODO check file validity.
-                String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-big.xml";
+                String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-small.xml";
                 //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
                 //filename = scanner.nextLine();
 

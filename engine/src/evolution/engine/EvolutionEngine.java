@@ -7,11 +7,11 @@ import evolution.configuration.Selection;
 import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
+import evolution.util.Randomizer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class EvolutionEngine {
@@ -82,7 +82,7 @@ public class EvolutionEngine {
             List<Solution> selectionList = solutionList.stream().limit(topAmount).collect(Collectors.toList());
 
             while (tempSolutionList.size() < initialSolutionPopulation.getSize()) {
-                tempSolutionList.addAll(selectionList.get(getRandomNumber(0, topAmount)).crossover(selectionList.get(getRandomNumber(0, topAmount)), crossover));
+                tempSolutionList.addAll(selectionList.get(Randomizer.getRandomNumber(0, topAmount)).crossover(selectionList.get(Randomizer.getRandomNumber(0, topAmount)), crossover));
             }
             if (tempSolutionList.size() != initialSolutionPopulation.getSize()) {
                 solutionList = tempSolutionList.subList(0, initialSolutionPopulation.getSize());
@@ -94,14 +94,10 @@ public class EvolutionEngine {
 
             solutionList.sort(Collections.reverseOrder());
             if (i % frequency == 0) {
-                System.out.println(solutionList.get(0));
+                System.out.println("Generation " + i + " " + solutionList.get(0));
                 bestSolutions.add(solutionList.get(0));
             }
         }
-    }
-
-    private int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
     }
 
     @Override
