@@ -9,9 +9,7 @@ import evolution.rules.Type;
 import time_table.Rule;
 import time_table.TimeTable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TimeTableSolution implements Solution {
@@ -26,7 +24,7 @@ public class TimeTableSolution implements Solution {
         for (day = 1; day <= timeTable.getDays(); day++) {
             for (hour = 1; hour <= timeTable.getHours(); hour++) {
                 for (schoolClass = 1; schoolClass <= timeTable.getAmountofSchoolClasses(); schoolClass++) {
-                    teacher = Randomizer.getRandomNumber(0,timeTable.getAmountofTeachers());
+                    teacher = Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers());
                     if (teacher == 0) {
                         subject = 0;
                     } else {
@@ -103,8 +101,16 @@ public class TimeTableSolution implements Solution {
             Collections.sort(this.getFifthsList());
             Collections.sort(timeTableSolution.getFifthsList());
 
-            List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), crossover.getCuttingPoints());
-            List<List<Fifth>> subLists2 = chopIntoParts(timeTableSolution.getFifthsList(), crossover.getCuttingPoints());
+            List<Integer> cuttingPointsList = new ArrayList<>();
+            Integer cuttingPoint;
+            for (int i = 0; i < crossover.getCuttingPoints(); i++) {
+                do {
+                    cuttingPoint = Randomizer.getRandomNumber(1, this.getFifthsList().size() - 1);
+                } while (cuttingPointsList.contains(cuttingPoint));
+                cuttingPointsList.add(cuttingPoint);
+            }
+            List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), cuttingPointsList);
+            List<List<Fifth>> subLists2 = chopIntoParts(timeTableSolution.getFifthsList(), cuttingPointsList);
             List<List<Fifth>> crossOverList1 = new ArrayList<>();
             List<List<Fifth>> crossOverList2 = new ArrayList<>();
 
@@ -127,25 +133,21 @@ public class TimeTableSolution implements Solution {
         return res;
     }
 
-    private List<List<Fifth>> chopIntoParts(final List<Fifth> ls, final int Parts) {
-        final List<List<Fifth>> lsParts = new ArrayList<>();
-        final int ChunkSize = ls.size() / Parts;
-        int LeftOver = ls.size() % Parts;
-        int Take;
-
-        for (int i = 0, iT = ls.size(); i < iT; i += Take) {
-            if (LeftOver > 0) {
-                LeftOver--;
-
-                Take = ChunkSize + 1;
-            } else {
-                Take = ChunkSize;
-            }
-
-            lsParts.add(new ArrayList<>(ls.subList(i, Math.min(iT, i + Take))));
+    private List<List<Fifth>> chopIntoParts(List<Fifth> ls, List<Integer> cuttingPoints) {
+        List<List<Fifth>> partsList = new ArrayList<>();
+        Collections.sort(cuttingPoints);
+        int min;
+        int max = -1;
+        for (Integer cuttingPoint : cuttingPoints) {
+            min = max + 1;
+            max = cuttingPoint;
+            partsList.add(ls.subList(min, max));
         }
-
-        return lsParts;
+        if (max < ls.size() - 1) {
+            min = max + 1;
+            partsList.add(ls.subList(min, ls.size() - 1));
+        }
+        return partsList;
     }
 
 
@@ -160,7 +162,6 @@ public class TimeTableSolution implements Solution {
     public TimeTable getTimeTable() {
         return timeTable;
     }
-
 
 
     @Override

@@ -112,7 +112,7 @@ public enum Rule {
                     Map<Integer, Integer> subjectHoursMap = mapSchoolClassToSubjectHoursMapMap.get(classID);
                     Integer studiedHours = subjectHoursMap.get(subjectID);
                     //!mapSchoolClassToSubjectHoursMapMap.get(schoolClass.getId()).get(study.subjectId).equals(study.hours)
-                    if (studiedHours!=hours) {
+                    if (studiedHours == null || studiedHours != hours) {
                         score -= reduction;
                     }
                 }

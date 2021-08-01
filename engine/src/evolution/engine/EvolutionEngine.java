@@ -82,7 +82,7 @@ public class EvolutionEngine {
             List<Solution> selectionList = solutionList.stream().limit(topAmount).collect(Collectors.toList());
 
             while (tempSolutionList.size() < initialSolutionPopulation.getSize()) {
-                tempSolutionList.addAll(selectionList.get(Randomizer.getRandomNumber(0, topAmount)).crossover(selectionList.get(Randomizer.getRandomNumber(0, topAmount)), crossover));
+                tempSolutionList.addAll(selectionList.get(Randomizer.getRandomNumber(0, topAmount-1)).crossover(selectionList.get(Randomizer.getRandomNumber(0, topAmount-1)), crossover));
             }
             if (tempSolutionList.size() != initialSolutionPopulation.getSize()) {
                 solutionList = tempSolutionList.subList(0, initialSolutionPopulation.getSize());
