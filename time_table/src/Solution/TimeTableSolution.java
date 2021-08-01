@@ -1,6 +1,8 @@
 package Solution;
 
 import evolution.configuration.Crossover;
+import evolution.configuration.Mutation;
+import evolution.configuration.Mutations;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
 import time_table.Rule;
@@ -9,6 +11,7 @@ import time_table.TimeTable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TimeTableSolution implements Solution {
     private List<Fifth> fifthsList;
@@ -60,9 +63,35 @@ public class TimeTableSolution implements Solution {
     }
 
     @Override
-    public void mutate() {
-
+    public void mutate(Mutations mutations) {
+        for (Mutation mutation : mutations.getMutationList()) {
+            double probability = Math.random();
+            if (probability <= mutation.getProbability()) {
+                int mutatedNumber = getRandomNumber(1, mutation.getConfig().getMaxTupples());
+                List<Fifth> toBeMutated = this.getFifthsList().stream().unordered().limit(mutatedNumber).collect(Collectors.toList());
+                String component = mutation.getConfig().getComponent();
+                switch (component) {
+                    case "D":
+                        toBeMutated.forEach(fifth -> fifth.setDay(getRandomNumber(1, timeTable.getDays())));
+                        break;
+                    case "H":
+                        toBeMutated.forEach(fifth -> fifth.setHour(getRandomNumber(1, timeTable.getHours())));
+                        break;
+                    case "C":
+                        toBeMutated.forEach(fifth -> fifth.setSchoolClass(getRandomNumber(1, timeTable.getAmountofSchoolClasses())));
+                        break;
+                    case "T":
+                        toBeMutated.forEach(fifth -> fifth.setTeacher(getRandomNumber(0, timeTable.getAmountofTeachers())));
+                        break;
+                    case "S":
+                        toBeMutated.forEach(fifth -> fifth.setSubject(getRandomNumber(0, timeTable.getAmountofSubjects())));
+                        break;
+                }
+            }
+        }
+        calculateFitness();
     }
+
 
     @Override
     public List<Solution> crossover(Solution solution, Crossover crossover) {
@@ -79,18 +108,17 @@ public class TimeTableSolution implements Solution {
             List<List<Fifth>> crossOverList2 = new ArrayList<>();
 
             for (int i = 0; i < subLists1.size(); i++) {
-                if(i%2==0){
+                if (i % 2 == 0) {
                     crossOverList1.add(subLists1.get(i));
                     crossOverList2.add(subLists2.get(i));
-                }
-                else{
+                } else {
                     crossOverList1.add(subLists2.get(i));
                     crossOverList2.add(subLists1.get(i));
                 }
             }
 
             TimeTableSolution solutionKid1 = new TimeTableSolution(this.getTimeTable(), crossOverList1);
-            TimeTableSolution solutionKid2 = new TimeTableSolution(timeTableSolution.getTimeTable(),crossOverList2);
+            TimeTableSolution solutionKid2 = new TimeTableSolution(timeTableSolution.getTimeTable(), crossOverList2);
             res.add(solutionKid1);
             res.add(solutionKid2);
 

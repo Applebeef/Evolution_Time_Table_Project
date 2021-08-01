@@ -90,13 +90,13 @@ public class EvolutionEngine {
                 solutionList = tempSolutionList;
             }
 
+            solutionList.forEach(solution -> solution.mutate(mutations));
+
             solutionList.sort(Collections.reverseOrder());
             if (i % frequency == 0) {
                 System.out.println(solutionList.get(0));
                 bestSolutions.add(solutionList.get(0));
             }
-
-            solutionList.forEach(Solution::mutate);
         }
     }
 
