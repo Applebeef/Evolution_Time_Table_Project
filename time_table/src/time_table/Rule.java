@@ -16,16 +16,20 @@ public enum Rule {
         public double test(TimeTableSolution timeTableSolution) {
             double score = 100;
             double reduction = score / timeTableSolution.getFifthsList().size();
-            Map<Integer, Set<Pair<Integer, Integer>>> teacherDayHourMap = new HashMap<>();//Maps each teacher to all his assigned days/hours.
+            //Maps each teacher to all his assigned days/hours.
+            Map<Integer, Set<Pair<Integer, Integer>>> teacherDayHourMap = new HashMap<>();
             for (Fifth fifth : timeTableSolution.getFifthsList()) {
-                if (!teacherDayHourMap.containsKey(fifth.getTeacher())) {//If this is the first time we encounter this teacher, add him to the map.
+                //If this is the first time we encounter this teacher, add him to the map.
+                if (!teacherDayHourMap.containsKey(fifth.getTeacher())) {
                     teacherDayHourMap.put(fifth.getTeacher(), new HashSet<>());
                 }
                 Pair<Integer, Integer> pair = new Pair<>(fifth.getDay(), fifth.getHour());
-                if (teacherDayHourMap.get(fifth.getTeacher()).contains(pair)) {//Check if current day/hour combo is already in the set.
+                //Check if current day/hour combo is already in the set.
+                if (teacherDayHourMap.get(fifth.getTeacher()).contains(pair)) {
                     score -= reduction;
                 } else {
-                    teacherDayHourMap.get(fifth.getTeacher()).add(pair);//If the pair isn't in the set, we add it for the next checks.
+                    //If the pair isn't in the set, we add it for the next checks.
+                    teacherDayHourMap.get(fifth.getTeacher()).add(pair);
                 }
             }
             return score;
@@ -71,9 +75,11 @@ public enum Rule {
                         stream().filter(teacher -> teacher.getId() == teacherID).limit(1).collect(Collectors.toList());
 
                 for (Teacher teacher : singleTeacherList) {
+                    //List of all the subject ids the teacher is allowed to teach:
                     List<Integer> subjectIDList = teacher.getTeaching().getTeachesList().
-                            stream().map(Teaches::getSubjectId).collect(Collectors.toList());//List of all the subject ids the teacher is allowed to teach.
-                    if (!subjectIDList.contains(fifth.getSubject())) {//If the subject isn't taught by the teacher, the test failed.
+                            stream().map(Teaches::getSubjectId).collect(Collectors.toList());
+                    //If the subject isn't taught by the teacher, the test failed:
+                    if (!subjectIDList.contains(fifth.getSubject())) {
                         score -= reduction;
                     }
                 }

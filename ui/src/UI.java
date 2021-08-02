@@ -25,7 +25,7 @@ public class UI {
         READ_XML(1, "Load data from XML file.") {
             @Override
             public void start(UI ui) {//TODO check file validity.
-                String filename = "C:\\Users\\oroth\\IdeaProjects\\Evolution Time Project\\xml_parser\\src\\XML\\EX1-small.xml";
+                String filename = "xml_parser\\src\\XML\\EX1-small.xml";
                 //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
                 //filename = scanner.nextLine();
 
@@ -145,6 +145,10 @@ public class UI {
     public void runMenu() {
         int choice;
         Scanner scanner = new Scanner(System.in);
+        //TODO: change at the end
+        MenuOptions.values()[0].start(this);
+        MenuOptions.values()[2].start(this);
+
         while (!this.exit) {
             for (MenuOptions option : MenuOptions.values()) {
                 System.out.println(option.toString());

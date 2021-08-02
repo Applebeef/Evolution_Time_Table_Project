@@ -45,30 +45,46 @@ public class TimeTableSolution implements Solution {
 
     @Override
     public double calculateFitness() {
+        // Get weight of hard\soft rules:
         double hardRulesWeight = (double) timeTable.getRules().getHardRulesWeight() / 100;
-        double hardTotal = 0, softTotal = 0;
+        double sofRulesWeight = 1 - hardRulesWeight;
+        double hardTotalScore = 0, softTotalScore = 0;
         int hardCount = 0, softCount = 0;
+        // Iterate through Rules list and calculate data:
         for (Rule rule : timeTable.getRules().getRuleList()) {
             if (rule.getType() == Type.HARD) {
                 hardCount++;
-                hardTotal += rule.test(this);
+                hardTotalScore += rule.test(this);
             } else {
                 softCount++;
-                softTotal += rule.test(this);
+                softTotalScore += rule.test(this);
             }
         }
-        this.fitness = (hardTotal / (double) hardCount) * (hardRulesWeight) + (softTotal / (double) softCount) * (1 - hardRulesWeight);
+        // Calculate total fitness according to percentage given by user:
+        this.fitness = (hardTotalScore / (double) hardCount) * hardRulesWeight +
+                (softTotalScore / (double) softCount) * sofRulesWeight;
         return this.fitness;
     }
 
     @Override
     public void mutate(Mutations mutations) {
+        double probability;
+        int mutatedNumber;
+        // Iterate through mutations:
         for (Mutation mutation : mutations.getMutationList()) {
-            double probability = Math.random();
+            // Randomize a real number from 0 to 1:
+            probability = Math.random();
+            // If the random number "hits" the mutation probability then the mutation will happend:
             if (probability <= mutation.getProbability()) {
-                int mutatedNumber = Randomizer.getRandomNumber(1, mutation.getConfig().getMaxTupples());
-                List<Fifth> toBeMutated = this.getFifthsList().stream().unordered().limit(mutatedNumber).collect(Collectors.toList());
+                // mutatedNumber = maximum amount of tupples with the mutation:
+                mutatedNumber = Randomizer.getRandomNumber(1, mutation.getConfig().getMaxTupples());
+                List<Fifth> toBeMutated = this.getFifthsList().
+                        stream().
+                        unordered().
+                        limit(mutatedNumber).
+                        collect(Collectors.toList());
                 String component = mutation.getConfig().getComponent();
+                // Mutate the toBeMutated's according to the component in the mutation:
                 switch (component) {
                     case "D":
                         toBeMutated.forEach(fifth -> fifth.setDay(Randomizer.getRandomNumber(1, timeTable.getDays())));
@@ -96,56 +112,69 @@ public class TimeTableSolution implements Solution {
     public List<Solution> crossover(Solution solution, Crossover crossover) {
         List<Solution> res = new ArrayList<>();
         if (solution instanceof TimeTableSolution) {
-            TimeTableSolution timeTableSolution = (TimeTableSolution) solution;
             //TODO check crossover type for different sorts.
+            TimeTableSolution other_timeTable_solution = (TimeTableSolution) solution;
+            // Sort my fifths:
             Collections.sort(this.getFifthsList());
-            Collections.sort(timeTableSolution.getFifthsList());
+            // Sort other's fifths:
+            Collections.sort(other_timeTable_solution.getFifthsList());
 
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
             for (int i = 0; i < crossover.getCuttingPoints(); i++) {
+                // Randomize cutting points. Amount according to CuttingPoints:
                 do {
                     cuttingPoint = Randomizer.getRandomNumber(1, this.getFifthsList().size() - 1);
                 } while (cuttingPointsList.contains(cuttingPoint));
                 cuttingPointsList.add(cuttingPoint);
             }
+
+            Collections.sort(cuttingPointsList);
+
+
             List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), cuttingPointsList);
-            List<List<Fifth>> subLists2 = chopIntoParts(timeTableSolution.getFifthsList(), cuttingPointsList);
-            List<List<Fifth>> crossOverList1 = new ArrayList<>();
-            List<List<Fifth>> crossOverList2 = new ArrayList<>();
+            List<List<Fifth>> subLists2 = chopIntoParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
+
+            /*System.out.println("s1 size: " + subLists1.size());
+            System.out.println("s2 size: " + subLists2.size());*/
+
+            List<List<Fifth>> crossoverList1 = new ArrayList<>();
+            List<List<Fifth>> crossoverList2 = new ArrayList<>();
 
             for (int i = 0; i < subLists1.size(); i++) {
+              /*  System.out.println("s1["+i+"] size: " + subLists1.get(i).size());
+                System.out.println("s2["+i+"] size: " + subLists2.get(i).size());*/
                 if (i % 2 == 0) {
-                    crossOverList1.add(subLists1.get(i));
-                    crossOverList2.add(subLists2.get(i));
+                    crossoverList1.add(subLists1.get(i));
+                    crossoverList2.add(subLists2.get(i));
                 } else {
-                    crossOverList1.add(subLists2.get(i));
-                    crossOverList2.add(subLists1.get(i));
+                    crossoverList1.add(subLists2.get(i));
+                    crossoverList2.add(subLists1.get(i));
                 }
             }
 
-            TimeTableSolution solutionKid1 = new TimeTableSolution(this.getTimeTable(), crossOverList1);
-            TimeTableSolution solutionKid2 = new TimeTableSolution(timeTableSolution.getTimeTable(), crossOverList2);
-            res.add(solutionKid1);
-            res.add(solutionKid2);
+            TimeTableSolution solutionOffspring1 = new TimeTableSolution(this.getTimeTable(), crossoverList1);
+            TimeTableSolution solutionOffspring2 = new TimeTableSolution(other_timeTable_solution.getTimeTable(), crossoverList2);
+            res.add(solutionOffspring1);
+            res.add(solutionOffspring2);
 
         }
         return res;
     }
 
-    private List<List<Fifth>> chopIntoParts(List<Fifth> ls, List<Integer> cuttingPoints) {
+    // Return a list of sublists according to cutting points:
+    private List<List<Fifth>> chopIntoParts(List<Fifth> fifthList, List<Integer> cuttingPointsList) {
         List<List<Fifth>> partsList = new ArrayList<>();
-        Collections.sort(cuttingPoints);
         int min;
         int max = 0;
-        for (Integer cuttingPoint : cuttingPoints) {
+        for (Integer cuttingPoint : cuttingPointsList) {
             min = max;
             max = cuttingPoint;
-            partsList.add(ls.subList(min, max));
+            partsList.add(fifthList.subList(min, max));
         }
-        if (max < ls.size()) {
+        if (max < fifthList.size()) {
             min = max;
-            partsList.add(ls.subList(min, ls.size()));
+            partsList.add(fifthList.subList(min, fifthList.size()));
         }
         return partsList;
     }

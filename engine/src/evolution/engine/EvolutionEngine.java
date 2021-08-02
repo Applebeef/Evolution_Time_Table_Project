@@ -12,7 +12,6 @@ import evolution.util.Randomizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EvolutionEngine {
     private InitialPopulation initialSolutionPopulation;
@@ -21,7 +20,7 @@ public class EvolutionEngine {
     private Crossover crossover;
 
     private List<Solution> solutionList;
-    private List<Solution> tempSolutionList;
+    private List<Solution> offspringSolutionsList;
     private List<Solution> bestSolutions;
 
     private boolean engineStarted = false;
@@ -66,37 +65,59 @@ public class EvolutionEngine {
         this.number_of_generations = number_of_generations;
 
         for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
+            // Create solution:
             solution = problem.solve();
+            // Calculate solution fitness:
             solution.calculateFitness();
+            // Add to solutionList:
             solutionList.add(solution);
         }
+        // Sort list:
         solutionList.sort(Collections.reverseOrder());
         engineStarted = true;
     }
 
     public void runEvolution(int frequency) {
-        int topAmount;
+        int bestSolutionsAmount;
+        // Main loop: #itarations = number of generations
         for (int i = 0; i < number_of_generations; i++) {
-            tempSolutionList = new ArrayList<>();
-            topAmount = (int) Math.floor(solutionList.size() * ((double) selection.getTopPercent() / 100));
-            List<Solution> selectionList = solutionList.stream().limit(topAmount).collect(Collectors.toList());
-            while (tempSolutionList.size() < initialSolutionPopulation.getSize()) {
-                tempSolutionList.addAll(selectionList.get(Randomizer.getRandomNumber(0, topAmount-1)).crossover(selectionList.get(Randomizer.getRandomNumber(0, topAmount-1)), crossover));
-            }
-            if (tempSolutionList.size() != initialSolutionPopulation.getSize()) {
-                solutionList = tempSolutionList.subList(0, initialSolutionPopulation.getSize());
-            } else {
-                solutionList = tempSolutionList;
-            }
-
+            // Spawn new generation:
+            spawnGeneration();
+            // Mutate each solution (includes calculate fitness):
             solutionList.forEach(solution -> solution.mutate(mutations));
-
+            // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
+            // Handle generation by frequency:
             if (i % frequency == 0) {
                 System.out.println("Generation " + i + " " + solutionList.get(0));
                 bestSolutions.add(solutionList.get(0));
             }
         }
+    }
+
+    private void spawnGeneration() {
+        int bestSolutionsAmount;
+        List<Solution> bestSolutionsList = new ArrayList<>();
+        this.offspringSolutionsList = new ArrayList<>();
+        // bestSolutionsAmount = the amount of the X% best solution (X is given)
+        bestSolutionsAmount = (int) Math.floor(solutionList.size() * ((double) selection.getTopPercent() / 100));
+        if (bestSolutionsAmount > 0) {
+            // Get best solutions into "bestSolutionsList":
+            bestSolutionsList = solutionList.subList(0, bestSolutionsAmount);
+        }
+        // Using crossover (class EvolutionEngine), create an offspring Solution List:
+        while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
+            Solution s1 = bestSolutionsList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1));
+            Solution s2 = bestSolutionsList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1));
+            offspringSolutionsList.addAll(s1.crossover(s2, this.crossover));
+        }
+        // Shrink to initial population size:
+        if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {
+            this.solutionList = offspringSolutionsList.subList(0, initialSolutionPopulation.getSize());
+        } else {
+            this.solutionList = offspringSolutionsList;
+        }
+        return;
     }
 
     @Override
