@@ -78,11 +78,10 @@ public class TimeTableSolution implements Solution {
             if (probability <= mutation.getProbability()) {
                 // mutatedNumber = maximum amount of tupples with the mutation:
                 mutatedNumber = Randomizer.getRandomNumber(1, mutation.getConfig().getMaxTupples());
-                List<Fifth> toBeMutated = this.getFifthsList().
-                        stream().
-                        unordered().
-                        limit(mutatedNumber).
-                        collect(Collectors.toList());
+                List<Fifth> toBeMutated = new ArrayList<>();
+                for (int i = 0; i < mutatedNumber; i++) {
+                    toBeMutated.add(this.getFifthsList().get(Randomizer.getRandomNumber(0, this.getFifthsList().size() - 1)));
+                }
                 String component = mutation.getConfig().getComponent();
                 // Mutate the toBeMutated's according to the component in the mutation:
                 switch (component) {

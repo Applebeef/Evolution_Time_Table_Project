@@ -117,7 +117,6 @@ public class EvolutionEngine {
         } else {
             this.solutionList = offspringSolutionsList;
         }
-        return;
     }
 
     @Override
