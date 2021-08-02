@@ -66,4 +66,15 @@ public class Fifth implements Comparable<Fifth> {
         }
         return cmp;
     }
+
+    @Override
+    public String toString() {
+        return "<" +
+                day + "," +
+                hour + "," +
+                schoolClass + "," +
+                teacher + "," +
+                subject + "," +
+                ">";
+    }
 }

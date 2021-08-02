@@ -1,5 +1,6 @@
 package Solution;
 
+import Generated.ETTDescriptor;
 import evolution.util.Randomizer;
 import evolution.configuration.Crossover;
 import evolution.configuration.Mutation;
@@ -7,8 +8,14 @@ import evolution.configuration.Mutations;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
 import time_table.Rule;
+import time_table.SchoolClass;
+import time_table.Teacher;
 import time_table.TimeTable;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,6 +23,63 @@ public class TimeTableSolution implements Solution {
     private List<Fifth> fifthsList;
     private Double fitness;
     private TimeTable timeTable;
+    private PresentationOptions presentationOption;
+
+
+    // Inner enum PresentationOptions:
+    public enum PresentationOptions {
+        //                * Fifths list
+        //                * Teacher oriented timetable
+        //                * Class oriented timetable
+        FIFTHS_LIST(1, "Display solution as a fifths list.") {
+            @Override
+            public String getDisplayString(TimeTableSolution timeTableSolution) {
+                String res = "{";
+                int i;
+                for (i = 0; i < timeTableSolution.fifthsList.size() - 1; i++) {
+                    res += timeTableSolution.fifthsList.get(i);
+                    res += ",";
+                }
+                res += timeTableSolution.fifthsList.get(i);
+                res += '}';
+                return res;
+            }
+        },
+        TEACHER_ORIENTED(2, "Display solution teacher oriented.") {
+            @Override
+            public String getDisplayString(TimeTableSolution timeTableSolution) {
+                String res = "";
+                // Show TimeTableSolution for each teacher:
+                for (Teacher teacher : timeTableSolution.timeTable.getTeachers().getTeacherList()) {
+                    res += "Id: " + teacher.getId() +
+                            "Name: " + teacher.getName() + ":";
+                    res += timeTableSolution.getDisplay(teacher);
+                }
+                return res;
+            }
+        },
+        SCHOOLCLASS_ORIENTED(3, "Display solution class oriented.") {
+            @Override
+            public String getDisplayString(TimeTableSolution timeTableSolution) {
+                return null;
+            }
+        };
+
+        int number;
+        String action;
+
+        PresentationOptions(int number, String action) {
+            this.number = number;
+            this.action = action;
+        }
+
+        abstract public String getDisplayString(TimeTableSolution timeTableSolution);
+
+        @Override
+        public String toString() {
+            return number + " - " + action;
+        }
+    }
 
     public TimeTableSolution(TimeTable timeTable) {
         this.timeTable = timeTable;
@@ -34,11 +98,15 @@ public class TimeTableSolution implements Solution {
                 }
             }
         }
+        // Default presentation option is FIFTS_LIST:
+        this.presentationOption = PresentationOptions.FIFTHS_LIST;
     }
 
     public TimeTableSolution(TimeTable timeTable, List<List<Fifth>> fifths) {
         this.timeTable = timeTable;
         this.fifthsList = new ArrayList<>();
+        // Default presentation option is FIFTS_LIST:
+        this.presentationOption = PresentationOptions.FIFTHS_LIST;
         fifths.forEach(list -> fifthsList.addAll(list));
         this.calculateFitness();
     }
@@ -179,6 +247,13 @@ public class TimeTableSolution implements Solution {
         return partsList;
     }
 
+    @Override
+    public void setPresentationOption(int presentationOption) {
+        if (presentationOption < 0 || presentationOption >= PresentationOptions.values().length) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        this.presentationOption = PresentationOptions.values()[presentationOption];
+    }
 
     public List<Fifth> getFifthsList() {
         return fifthsList;
@@ -190,6 +265,76 @@ public class TimeTableSolution implements Solution {
 
     public TimeTable getTimeTable() {
         return timeTable;
+    }
+
+    private String getDisplay(Teacher teacher) {
+        /* Line of action: 1. Create a 2D array of fifths
+                           2. Add to 2D array relevant fifths
+                           3. Compute corresponding table
+         */
+        // 2D fifths array:
+        List<List<Fifth>> fifthsArray = new ArrayList<>(this.timeTable.getHours());
+        // Create arrays:
+        for (int i = 0; i < this.timeTable.getHours(); i++) {
+            fifthsArray.set(i, new ArrayList<Fifth>());
+        }
+        // Iterate through all fifths and add relevant fifths to 2D array:
+        for (Fifth fifth : this.fifthsList) {
+            if (fifth.getTeacher() == teacher.getId()) {
+                // Set the fifth in the 2D array:
+                fifthsArray.
+                        get(fifth.getHour()).
+                        set(fifth.getDay(), fifth);
+            }
+        }
+        // Create and return relevant table:
+        return getDisplayHelper(fifthsArray);
+    }
+
+    private String getDisplay(SchoolClass schoolClass) {
+        String lineSeparator = System.getProperty("line.separator");
+        String res = "";
+        return res;
+    }
+
+    private String getDisplayHelper(List<List<Fifth>> fifths2DList) {
+        String lineSeparator = System.getProperty("line.separator");
+        String res = "  ";
+        int i, j;
+        // Add days:
+        for (i = 0; i < this.timeTable.getDays(); i++) {
+            res += " |  " + (i + 1) + " ";
+        }
+        res += lineSeparator;
+        i = 0;
+        // Insert fifths by hours:
+        for (List<Fifth> fls : fifths2DList) {
+            res += " " + (i + 1);
+            for (j = 0; j < this.timeTable.getDays(); j++) {
+                res += " | <";
+                switch (this.presentationOption) {
+                    case TEACHER_ORIENTED:
+                        if (fls.get(j).getSchoolClass() == -1 || fls.get(j).getSubject() == -1) {
+                            res += " , >";
+                        } else {
+                            res += fls.get(j).getSchoolClass() + ",";
+                            res += fls.get(j).getSubject() + ">";
+                        }
+                        break;
+                    case SCHOOLCLASS_ORIENTED:
+                        if (fls.get(j).getTeacher() == -1 || fls.get(j).getSubject() == -1) {
+                            res += " , >";
+                        } else {
+                            res += fls.get(j).getTeacher() + ",";
+                            res += fls.get(j).getSubject() + ">";
+                        }
+                        break;
+                }
+            }
+            res += lineSeparator;
+            i++;
+        }
+        return res;
     }
 
 
@@ -204,9 +349,6 @@ public class TimeTableSolution implements Solution {
 
     @Override
     public String toString() {
-        //TODO make better toString.
-        return "TimeTableSolution{" +
-                "fitness=" + String.format("%.1f", fitness) +
-                '}';
+        return this.presentationOption.getDisplayString(this);
     }
 }

@@ -1,4 +1,5 @@
 import Generated.ETTDescriptor;
+import Solution.TimeTableSolution;
 import descriptor.Descriptor;
 
 import javax.xml.bind.JAXBContext;
@@ -79,10 +80,10 @@ public class UI {
                 System.out.println("Enter requested amount of generations (at least 100): ");
                 do {
                     number_of_generations = scanner.nextInt();
-                    if (number_of_generations<100){
+                    if (number_of_generations < 100) {
                         System.out.println("Number of generations needs to be at least 100.");
                     }
-                }while (number_of_generations<100);
+                } while (number_of_generations < 100);
 
                 ui.descriptor.
                         getEngine().
@@ -98,7 +99,25 @@ public class UI {
         SHOW_BEST_SOLUTION(4, "Display best solution.") {
             @Override
             public void start(UI ui) {
-                //TODO add function
+                int choice;
+                Scanner scanner = new Scanner(System.in);
+                Exception exception = new Exception();
+                // Show TimeTableSolution's display options:
+                for (TimeTableSolution.PresentationOptions option : TimeTableSolution.PresentationOptions.values()) {
+                    System.out.println(option.toString());
+                }
+                // While is used to handle exceptions (e.g. outOfBound)
+                while (exception != null) {
+                    // Recieve display choice from user:
+                    choice = scanner.nextInt();
+                    // Print according to display choice:
+                    try {
+                        System.out.println(ui.descriptor.getEngine().getBestSolutionDisplay(choice));
+                        exception = null;
+                    } catch (Exception e) {
+                        exception = e;
+                    }
+                }
             }
         },
         VIEW_PROGRESS(5, "View progress.") {
@@ -128,6 +147,7 @@ public class UI {
         public String toString() {
             return number + " - " + action;
         }
+
     }
 
     // Private constructor for singleton:

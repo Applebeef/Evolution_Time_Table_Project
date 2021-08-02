@@ -95,6 +95,14 @@ public class EvolutionEngine {
         }
     }
 
+    public String getBestSolutionDisplay(int choice) throws ArrayIndexOutOfBoundsException{
+        // Sort solutionList by fitness:
+        solutionList.sort(Collections.reverseOrder());
+        // Set presentation option to choice. Note: might throw outOfBound exception:
+        solutionList.get(0).setPresentationOption(choice);
+        return solutionList.get(0).toString();
+    }
+
     private void spawnGeneration() {
         int bestSolutionsAmount;
         List<Solution> bestSolutionsList = new ArrayList<>();
@@ -119,6 +127,7 @@ public class EvolutionEngine {
         }
         return;
     }
+
 
     @Override
     public String toString() {
