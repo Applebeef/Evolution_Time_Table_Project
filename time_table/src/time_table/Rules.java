@@ -1,8 +1,7 @@
-package Converted;
+package time_table;
 
 import Generated.ETTRule;
 import Generated.ETTRules;
-import evolution.configuration.Mutation;
 import evolution.rules.Type;
 
 import java.util.ArrayList;

@@ -15,7 +15,7 @@ public enum Mutation {
         String component;
 
         Configuration(String configString){
-            Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");//TODO ask Aviad about configuration being a string
+            Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");
             Matcher m = pattern.matcher(configString);
             if(m.find()) {
                 maxTupples = Integer.parseInt(m.group(1));

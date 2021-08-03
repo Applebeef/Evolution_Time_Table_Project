@@ -1,4 +1,4 @@
-package Converted;
+package time_table;
 
 import Generated.ETTStudy;
 

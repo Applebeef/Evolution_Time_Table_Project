@@ -1,7 +1,6 @@
-package Converted;
+package time_table;
 
 import Generated.ETTSubjects;
-import evolution.configuration.Mutation;
 
 import java.util.List;
 import java.util.stream.Collectors;
