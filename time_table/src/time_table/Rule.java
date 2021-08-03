@@ -91,7 +91,12 @@ public enum Rule {
         @Override
         public double test(TimeTableSolution timeTableSolution) {
             double score = 100;
-            double reduction = score / timeTableSolution.getTimeTable().getAmountofSchoolClasses();
+            double reduction;
+            int requiredSubjectsToCheck = 0;
+            for (SchoolClass schoolClass : timeTableSolution.getTimeTable().getSchoolClasses().getClassList()) {
+                requiredSubjectsToCheck += schoolClass.requirements.studyList.size();
+            }
+            reduction = score / (double) requiredSubjectsToCheck;
             //Map mapping Classes to a map mapping subjects to hours learned:.
             Map<Integer, Map<Integer, Integer>> mapSchoolClassToSubjectHoursMapMap = new HashMap<>();
 
@@ -123,7 +128,6 @@ public enum Rule {
                     }
                 }
             }
-
             return score;
         }
     };
