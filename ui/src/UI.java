@@ -35,7 +35,7 @@ public class UI {
                 //filename = scanner.nextLine();
 
                 try {
-                    File file = new File(filename);
+                    File file = new File(filename);//TODO check file name validity.
                     JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                     ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
