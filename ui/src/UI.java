@@ -79,7 +79,8 @@ public class UI {
                 // Recieve number of generations from user:
                 System.out.println("Enter requested amount of generations (at least 100): ");
                 do {
-                    number_of_generations = scanner.nextInt();
+                    //number_of_generations = scanner.nextInt(); TODO:REMOVE COMMENT
+                    number_of_generations = 100;
                     if (number_of_generations < 100) {
                         System.out.println("Number of generations needs to be at least 100.");
                     }
@@ -92,7 +93,8 @@ public class UI {
                         );
                 System.out.println("Initial population initialized.");
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
-                frequency = scanner.nextInt();
+                //frequency = scanner.nextInt(); TODO: REMOVE COMMENT
+                frequency = 500;
                 ui.descriptor.getEngine().runEvolution(frequency);
             }
         },
@@ -110,6 +112,7 @@ public class UI {
                 while (exception != null) {
                     // Recieve display choice from user:
                     choice = scanner.nextInt();
+
                     // Print according to display choice:
                     try {
                         System.out.println(ui.descriptor.getEngine().getBestSolutionDisplay(choice));
@@ -168,6 +171,7 @@ public class UI {
         //TODO: change at the end
         MenuOptions.values()[0].start(this);
         MenuOptions.values()[2].start(this);
+        MenuOptions.values()[3].start(this);
 
         while (!this.exit) {
             for (MenuOptions option : MenuOptions.values()) {

@@ -24,6 +24,7 @@ public class TimeTableSolution implements Solution {
     private Double fitness;
     private TimeTable timeTable;
     private PresentationOptions presentationOption;
+    private static String lineSeparator = System.getProperty("line.separator");
 
 
     // Inner enum PresentationOptions:
@@ -45,23 +46,32 @@ public class TimeTableSolution implements Solution {
                 return res;
             }
         },
-        TEACHER_ORIENTED(2, "Display solution teacher oriented.") {
+        TEACHER_ORIENTED(2, "Display solution - teacher oriented.") {
             @Override
             public String getDisplayString(TimeTableSolution timeTableSolution) {
                 String res = "";
                 // Show TimeTableSolution for each teacher:
                 for (Teacher teacher : timeTableSolution.timeTable.getTeachers().getTeacherList()) {
-                    res += "Id: " + teacher.getId() +
+                    res += "Id: " + teacher.getId() + ", " +
                             "Name: " + teacher.getName() + ":";
+                    res += lineSeparator;
                     res += timeTableSolution.getDisplay(teacher);
                 }
                 return res;
             }
         },
-        SCHOOLCLASS_ORIENTED(3, "Display solution class oriented.") {
+        SCHOOLCLASS_ORIENTED(3, "Display solution - class oriented.") {
             @Override
             public String getDisplayString(TimeTableSolution timeTableSolution) {
-                return null;
+                String res = "";
+                // Show TimeTableSolution for each teacher:
+                for (SchoolClass schoolClass : timeTableSolution.timeTable.getSchoolClasses().getClassList()) {
+                    res += "Id: " + schoolClass.getId() + ", " +
+                            "Name: " + schoolClass.getName() + ":";
+                    res += lineSeparator;
+                    res += timeTableSolution.getDisplay(schoolClass);
+                }
+                return res;
             }
         };
 
@@ -203,15 +213,11 @@ public class TimeTableSolution implements Solution {
             List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), cuttingPointsList);
             List<List<Fifth>> subLists2 = chopIntoParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
 
-            /*System.out.println("s1 size: " + subLists1.size());
-            System.out.println("s2 size: " + subLists2.size());*/
 
             List<List<Fifth>> crossoverList1 = new ArrayList<>();
             List<List<Fifth>> crossoverList2 = new ArrayList<>();
 
             for (int i = 0; i < subLists1.size(); i++) {
-              /*  System.out.println("s1["+i+"] size: " + subLists1.get(i).size());
-                System.out.println("s2["+i+"] size: " + subLists2.get(i).size());*/
                 if (i % 2 == 0) {
                     crossoverList1.add(subLists1.get(i));
                     crossoverList2.add(subLists2.get(i));
@@ -248,11 +254,8 @@ public class TimeTableSolution implements Solution {
     }
 
     @Override
-    public void setPresentationOption(int presentationOption) {
-        if (presentationOption < 0 || presentationOption >= PresentationOptions.values().length) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        this.presentationOption = PresentationOptions.values()[presentationOption];
+    public void setPresentationOption(int requested_presentation_option) {
+        this.presentationOption = PresentationOptions.values()[requested_presentation_option];
     }
 
     public List<Fifth> getFifthsList() {
@@ -274,17 +277,21 @@ public class TimeTableSolution implements Solution {
          */
         // 2D fifths array:
         List<List<Fifth>> fifthsArray = new ArrayList<>(this.timeTable.getHours());
+        Fifth null_fifth = new Fifth(-1, -1, -1, -1, -1);
         // Create arrays:
         for (int i = 0; i < this.timeTable.getHours(); i++) {
-            fifthsArray.set(i, new ArrayList<Fifth>());
+            fifthsArray.add(i, new ArrayList<Fifth>(this.timeTable.getDays()));
+            for (int j = 0; j < this.timeTable.getDays(); j++) {
+                fifthsArray.get(i).add(null_fifth);
+            }
         }
         // Iterate through all fifths and add relevant fifths to 2D array:
         for (Fifth fifth : this.fifthsList) {
             if (fifth.getTeacher() == teacher.getId()) {
                 // Set the fifth in the 2D array:
                 fifthsArray.
-                        get(fifth.getHour()).
-                        set(fifth.getDay(), fifth);
+                        get(fifth.getHour() - 1).
+                        set(fifth.getDay() - 1, fifth);
             }
         }
         // Create and return relevant table:
@@ -292,24 +299,47 @@ public class TimeTableSolution implements Solution {
     }
 
     private String getDisplay(SchoolClass schoolClass) {
-        String lineSeparator = System.getProperty("line.separator");
-        String res = "";
-        return res;
+        /* Line of action: 1. Create a 2D array of fifths
+                           2. Add to 2D array relevant fifths
+                           3. Compute corresponding table
+         */
+        // 2D fifths array:
+        List<List<Fifth>> fifthsArray = new ArrayList<>(this.timeTable.getHours());
+        Fifth null_fifth = new Fifth(-1, -1, -1, -1, -1);
+        // Create arrays:
+        for (int i = 0; i < this.timeTable.getHours(); i++) {
+            fifthsArray.add(i, new ArrayList<Fifth>());
+            for (int j = 0; j < this.timeTable.getDays(); j++) {
+                fifthsArray.get(i).add(null_fifth);
+            }
+        }
+        // Iterate through all fifths and add relevant fifths to 2D array:
+        for (Fifth fifth : this.fifthsList) {
+            if (fifth.getSchoolClass() == schoolClass.getId()) {
+                // Set the fifth in the 2D array:
+                fifthsArray.
+                        get(fifth.getHour() - 1).
+                        add(fifth.getDay() - 1, fifth);
+            }
+        }
+        // Create and return relevant table:
+        return getDisplayHelper(fifthsArray);
     }
 
     private String getDisplayHelper(List<List<Fifth>> fifths2DList) {
-        String lineSeparator = System.getProperty("line.separator");
         String res = "  ";
         int i, j;
         // Add days:
         for (i = 0; i < this.timeTable.getDays(); i++) {
-            res += " |  " + (i + 1) + " ";
+            res += " |   " + (i + 1) + "  ";
         }
         res += lineSeparator;
         i = 0;
         // Insert fifths by hours:
         for (List<Fifth> fls : fifths2DList) {
+            // Hour no.:
             res += " " + (i + 1);
+            // Fifths (presented as tuples according to presentationOption):
             for (j = 0; j < this.timeTable.getDays(); j++) {
                 res += " | <";
                 switch (this.presentationOption) {
