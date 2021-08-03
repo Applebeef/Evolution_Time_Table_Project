@@ -1,6 +1,7 @@
 import Generated.ETTDescriptor;
 import Solution.TimeTableSolution;
 import descriptor.Descriptor;
+import evolution.engine.problem_solution.Solution;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -110,7 +111,7 @@ public class UI {
                 }
                 // While is used to handle exceptions (e.g. outOfBound)
                 while (exception != null) {
-                    // Recieve display choice from user:
+                    // Receive display choice from user:
                     choice = scanner.nextInt();
 
                     // Print according to display choice:
@@ -126,6 +127,11 @@ public class UI {
         VIEW_PROGRESS(5, "View progress.") {
             @Override
             public void start(UI ui) {
+                int prev;
+                for (Solution solution : ui.descriptor.getEngine().getBestSolutions()) {
+                    System.out.println( solution.getFitness());
+                }
+
                 //TODO add function
             }
         },

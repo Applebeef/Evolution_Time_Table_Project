@@ -88,7 +88,7 @@ public class EvolutionEngine {
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
-            if (i % frequency == 0) {
+            if (i % frequency == 0 || i == number_of_generations - 1) {
                 //TODO: REMOVE SOUT FROM ENGINE - ONLY IN UI
                 System.out.println("Generation " + i + " " + solutionList.get(0));
                 bestSolutions.add(solutionList.get(0));
@@ -96,7 +96,7 @@ public class EvolutionEngine {
         }
     }
 
-    public String getBestSolutionDisplay(int choice){
+    public String getBestSolutionDisplay(int choice) {
         // Sort solutionList by fitness:
         solutionList.sort(Collections.reverseOrder());
         // Set presentation option to choice. Note: might throw outOfBound exception:
@@ -136,5 +136,9 @@ public class EvolutionEngine {
                 "Mutations - " + lineSeparator + mutations + lineSeparator +
                 "Selection - " + selection + lineSeparator + lineSeparator +
                 "Crossover - " + lineSeparator + crossover;
+    }
+
+    public List<Solution> getBestSolutions() {
+        return bestSolutions;
     }
 }
