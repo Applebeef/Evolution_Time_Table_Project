@@ -35,7 +35,17 @@ public class UI {
                 //filename = scanner.nextLine();
 
                 try {
-                    File file = new File(filename);//TODO check file name validity.
+                    File file = new File(filename);
+                    String xml = ".xml";
+                    if (!filename.substring(filename.length() - xml.length()).equalsIgnoreCase(".xml")) {
+                        System.out.println("The file isn't an xml file, please enter a valid xml file.");
+                        return;
+                    }
+                    else if (!file.exists()) {
+                        System.out.println("The file specified doesnt exist.");
+                        return;
+                    }
+
                     JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                     ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
