@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class UI {
     //Singleton instance:
@@ -38,14 +39,22 @@ public class UI {
                     JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                     ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
-                    ui.setDescriptor(new Descriptor(ettdescriptor));
+                    Descriptor descriptor = new Descriptor(ettdescriptor);
+                    Set<String> errorSet = descriptor.checkValidity();
+                    if (errorSet.size() == 1 && errorSet.contains("")) {
+                        ui.setDescriptor(descriptor);
+                        ui.fileLoaded = true;
+                        System.out.println("Loading from XML completed.");
+                    } else {
+                        System.out.println("Errors found: ");
+                        for (String error : errorSet) {
+                            System.out.println(error);
+                        }
+                    }
 
                 } catch (JAXBException e) {
                     e.printStackTrace();
                 }
-                ui.fileLoaded = true;
-                System.out.println("Loading from XML completed.");
-
             }
         },
         DISPLAY_INFO(2, "Display info about the time table and engine.") {
@@ -131,11 +140,9 @@ public class UI {
             public void start(UI ui) {
                 if (!ui.isFileLoaded()) {
                     System.out.println("No file loaded, please load an XML file first (1).");
-                }
-                else if (!ui.getDescriptor().getEngine().isEngineStarted()) {
+                } else if (!ui.getDescriptor().getEngine().isEngineStarted()) {
                     System.out.println("Evolution hasn't been started yet, please start the evolutionary algorithm first (3)");
-                }
-                else {
+                } else {
                     Double prevFitness = 0.0;
                     Double currentFitness;
                     List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutions();
