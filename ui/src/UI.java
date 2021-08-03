@@ -29,7 +29,7 @@ public class UI {
         //                * Exit
         READ_XML(1, "Load data from XML file.") {
             @Override
-            public void start(UI ui) {//TODO check file validity.
+            public void start(UI ui) {
                 String filename = "xml_parser\\src\\XML\\EX1-small.xml";
                 //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
                 //filename = scanner.nextLine();
