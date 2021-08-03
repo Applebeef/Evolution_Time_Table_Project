@@ -2,7 +2,7 @@ package time_table;
 
 import Generated.ETTClass;
 
-public class SchoolClass {
+public class SchoolClass implements SchoolClassOrTeacher{
     String name;
     Requirements requirements;
     int id;
@@ -20,7 +20,7 @@ public class SchoolClass {
     public Requirements getRequirements() {
         return requirements;
     }
-
+    @Override
     public int getId() {
         return id;
     }

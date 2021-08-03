@@ -1,4 +1,6 @@
-package Solution;
+package solution;
+
+import java.util.Objects;
 
 public class Fifth implements Comparable<Fifth> {
     private Integer day, hour, schoolClass, teacher, subject;
@@ -76,5 +78,18 @@ public class Fifth implements Comparable<Fifth> {
                 teacher + "," +
                 subject + "," +
                 ">";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Fifth fifth = (Fifth) o;
+        return Objects.equals(day, fifth.day) && Objects.equals(hour, fifth.hour) && Objects.equals(schoolClass, fifth.schoolClass) && Objects.equals(teacher, fifth.teacher) && Objects.equals(subject, fifth.subject);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(day, hour, schoolClass, teacher, subject);
     }
 }

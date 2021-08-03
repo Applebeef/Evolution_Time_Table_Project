@@ -1,10 +1,10 @@
 package time_table;
 
-import Util.Triplets;
+import util.Triplets;
 
 import evolution.rules.*;
-import Solution.*;
-import Util.Pair;
+import solution.*;
+import util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;

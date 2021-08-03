@@ -1,5 +1,5 @@
 import Generated.ETTDescriptor;
-import Solution.TimeTableSolution;
+import solution.TimeTableSolution;
 import descriptor.Descriptor;
 import evolution.engine.problem_solution.Solution;
 
@@ -177,7 +177,6 @@ public class UI {
         //TODO: change at the end
         MenuOptions.values()[0].start(this);
         MenuOptions.values()[2].start(this);
-        MenuOptions.values()[3].start(this);
 
         while (!this.exit) {
             for (MenuOptions option : MenuOptions.values()) {

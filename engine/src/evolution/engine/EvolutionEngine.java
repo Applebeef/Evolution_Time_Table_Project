@@ -90,7 +90,7 @@ public class EvolutionEngine {
             // Handle generation by frequency:
             if (i % frequency == 0 || i == number_of_generations - 1) {
                 //TODO: REMOVE SOUT FROM ENGINE - ONLY IN UI
-                System.out.println("Generation " + i + " " + solutionList.get(0));
+                System.out.println("Generation " + i + " " + solutionList.get(0).getFitness());
                 bestSolutions.add(solutionList.get(0));
             }
         }
