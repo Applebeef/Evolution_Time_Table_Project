@@ -89,17 +89,18 @@ public class EvolutionEngine {
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
             if (i % frequency == 0) {
+                //TODO: REMOVE SOUT FROM ENGINE - ONLY IN UI
                 System.out.println("Generation " + i + " " + solutionList.get(0));
                 bestSolutions.add(solutionList.get(0));
             }
         }
     }
 
-    public String getBestSolutionDisplay(int choice) throws ArrayIndexOutOfBoundsException{
+    public String getBestSolutionDisplay(int choice){
         // Sort solutionList by fitness:
         solutionList.sort(Collections.reverseOrder());
         // Set presentation option to choice. Note: might throw outOfBound exception:
-        solutionList.get(0).setPresentationOption(choice);
+        solutionList.get(0).setPresentationOption(choice - 1);
         return solutionList.get(0).toString();
     }
 
