@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class TimeTableSolution implements Solution {
     private List<Fifth> fifthsList;
     private Double fitness;
-    private Integer generation;
     private TimeTable timeTable;
     private PresentationOptions presentationOption;
     private static String lineSeparator = System.getProperty("line.separator");
@@ -371,11 +370,7 @@ public class TimeTableSolution implements Solution {
 
     @Override
     public int compareTo(Solution o) {
-        if (o instanceof TimeTableSolution) {
-            return this.getFitness().compareTo(((TimeTableSolution) o).getFitness());
-        } else {
-            return 0;
-        }
+            return this.getFitness().compareTo(o.getFitness());
     }
 
     @Override

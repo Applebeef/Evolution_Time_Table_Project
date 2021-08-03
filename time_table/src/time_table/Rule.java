@@ -4,7 +4,7 @@ import Util.Triplets;
 
 import evolution.rules.*;
 import Solution.*;
-import Util.Pair;
+import evolution.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -2,11 +2,13 @@ import Generated.ETTDescriptor;
 import Solution.TimeTableSolution;
 import descriptor.Descriptor;
 import evolution.engine.problem_solution.Solution;
+import evolution.util.Pair;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -80,8 +82,8 @@ public class UI {
                 // Recieve number of generations from user:
                 System.out.println("Enter requested amount of generations (at least 100): ");
                 do {
-                    //number_of_generations = scanner.nextInt(); TODO:REMOVE COMMENT
-                    number_of_generations = 100;
+                    number_of_generations = scanner.nextInt();
+                    //number_of_generations = 100;
                     if (number_of_generations < 100) {
                         System.out.println("Number of generations needs to be at least 100.");
                     }
@@ -94,8 +96,8 @@ public class UI {
                         );
                 System.out.println("Initial population initialized.");
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
-                //frequency = scanner.nextInt(); TODO: REMOVE COMMENT
-                frequency = 500;
+                frequency = scanner.nextInt();
+                //frequency = 500;
                 ui.descriptor.getEngine().runEvolution(frequency);
             }
         },
@@ -127,12 +129,26 @@ public class UI {
         VIEW_PROGRESS(5, "View progress.") {
             @Override
             public void start(UI ui) {
-                int prev;
-                for (Solution solution : ui.descriptor.getEngine().getBestSolutions()) {
-                    System.out.println( solution.getFitness());
+                if (!ui.isFileLoaded()) {
+                    System.out.println("No file loaded, please load an XML file first (1).");
                 }
-
-                //TODO add function
+                else if (!ui.getDescriptor().getEngine().isEngineStarted()) {
+                    System.out.println("Evolution hasn't been started yet, please start the evolutionary algorithm first (3)");
+                }
+                else {
+                    Double prevFitness = 0.0;
+                    Double currentFitness;
+                    List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutions();
+                    for (Pair<Integer, Solution> pair : bestSolutions) {
+                        currentFitness = pair.getV2().getFitness();
+                        System.out.println("Generation no. " + pair.getV1() + " Fitness: " + String.format("%.1f", currentFitness) + ".");
+                        if (pair.getV1() != 1) {
+                            System.out.println("The difference in fitness from the last generation is: " + String.format("%.1f", currentFitness - prevFitness));
+                        }
+                        System.out.println();
+                        prevFitness = currentFitness;
+                    }
+                }
             }
         },
         EXIT(6, "Exit.") {
@@ -175,9 +191,9 @@ public class UI {
         int choice;
         Scanner scanner = new Scanner(System.in);
         //TODO: change at the end
-        MenuOptions.values()[0].start(this);
-        MenuOptions.values()[2].start(this);
-        MenuOptions.values()[3].start(this);
+        //MenuOptions.values()[0].start(this);
+        //MenuOptions.values()[2].start(this);
+        //MenuOptions.values()[3].start(this);
 
         while (!this.exit) {
             for (MenuOptions option : MenuOptions.values()) {
