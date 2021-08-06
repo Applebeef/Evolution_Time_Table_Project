@@ -1,5 +1,5 @@
 package time_table;
 
-public interface SchoolClassOrTeacher {
+public interface Identifiable {
     int getId();
 }

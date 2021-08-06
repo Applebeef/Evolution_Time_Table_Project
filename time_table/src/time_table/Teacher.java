@@ -2,7 +2,7 @@ package time_table;
 
 import Generated.ETTTeacher;
 
-public class Teacher implements SchoolClassOrTeacher {
+public class Teacher implements Identifiable {
     String name;
     int id;
     Teaching teaching;

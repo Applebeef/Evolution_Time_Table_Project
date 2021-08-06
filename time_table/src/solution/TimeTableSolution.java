@@ -262,7 +262,7 @@ public class TimeTableSolution implements Solution {
         return timeTable;
     }
 
-    private String getDisplay(SchoolClassOrTeacher schoolclass_or_teacher) {
+    private String getDisplay(Identifiable schoolclass_or_teacher) {
         /* Line of action: 1. Create a 2D array of fifths
                            2. Add to 2D array relevant fifths
                            3. Compute corresponding table
