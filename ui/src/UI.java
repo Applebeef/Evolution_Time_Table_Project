@@ -1,5 +1,5 @@
 import Generated.ETTDescriptor;
-import Solution.TimeTableSolution;
+import solution.TimeTableSolution;
 import descriptor.Descriptor;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;

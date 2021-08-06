@@ -1,9 +1,9 @@
 package time_table;
 
-import Util.Triplets;
+import evolution.util.Triplets;
 
 import evolution.rules.*;
-import Solution.*;
+import solution.*;
 import evolution.util.Pair;
 
 import java.util.*;

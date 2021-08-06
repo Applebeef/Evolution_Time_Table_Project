@@ -1,23 +1,15 @@
-package Solution;
+package solution;
 
-import Generated.ETTDescriptor;
 import evolution.util.Randomizer;
 import evolution.configuration.Crossover;
 import evolution.configuration.Mutation;
 import evolution.configuration.Mutations;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
-import time_table.Rule;
-import time_table.SchoolClass;
-import time_table.Teacher;
-import time_table.TimeTable;
+import time_table.*;
+import evolution.util.Pair;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TimeTableSolution implements Solution {
     private List<Fifth> fifthsList;
@@ -270,73 +262,61 @@ public class TimeTableSolution implements Solution {
         return timeTable;
     }
 
-    private String getDisplay(Teacher teacher) {
+    private String getDisplay(SchoolClassOrTeacher schoolclass_or_teacher) {
         /* Line of action: 1. Create a 2D array of fifths
                            2. Add to 2D array relevant fifths
                            3. Compute corresponding table
          */
-        // 2D fifths array:
-        List<List<Fifth>> fifthsArray = new ArrayList<>(this.timeTable.getHours());
-        Fifth null_fifth = new Fifth(-1, -1, -1, -1, -1);
+        // 2D fifths array (Pair<Fifth,Boolean> indicates multiple values in a specific day/hour:
+        List<List<Pair<Fifth, Boolean>>> fifthsArray = new ArrayList<>(this.timeTable.getHours());
+        // Initializing fifth:
+        final Fifth null_fifth = new Fifth(-1, -1, -1, -1, -1);
         // Create arrays:
         for (int i = 0; i < this.timeTable.getHours(); i++) {
-            fifthsArray.add(i, new ArrayList<Fifth>(this.timeTable.getDays()));
+            fifthsArray.add(i, new ArrayList<>());
             for (int j = 0; j < this.timeTable.getDays(); j++) {
-                fifthsArray.get(i).add(null_fifth);
+                fifthsArray.get(i).add(new Pair<>(null_fifth, false));
             }
         }
+        int i =0;
+        boolean multiple_arguments_flag;
         // Iterate through all fifths and add relevant fifths to 2D array:
         for (Fifth fifth : this.fifthsList) {
-            if (fifth.getTeacher() == teacher.getId()) {
+            multiple_arguments_flag = false;
+            if ((schoolclass_or_teacher.getClass().equals(SchoolClass.class) &&
+                    fifth.getSchoolClass() == schoolclass_or_teacher.getId())
+                    ||
+                    (schoolclass_or_teacher.getClass().equals(Teacher.class) &&
+                            fifth.getTeacher() == schoolclass_or_teacher.getId())
+            ) {
+                if (!fifthsArray.
+                        get(fifth.getHour() - 1).
+                        get(fifth.getDay() - 1).
+                        getV1().
+                        equals(null_fifth)) {
+                    multiple_arguments_flag = true;
+                }
                 // Set the fifth in the 2D array:
                 fifthsArray.
                         get(fifth.getHour() - 1).
-                        set(fifth.getDay() - 1, fifth);
+                        add(fifth.getDay() - 1, new Pair<>(fifth, multiple_arguments_flag));
             }
         }
         // Create and return relevant table:
         return getDisplayHelper(fifthsArray);
     }
 
-    private String getDisplay(SchoolClass schoolClass) {
-        /* Line of action: 1. Create a 2D array of fifths
-                           2. Add to 2D array relevant fifths
-                           3. Compute corresponding table
-         */
-        // 2D fifths array:
-        List<List<Fifth>> fifthsArray = new ArrayList<>(this.timeTable.getHours());
-        Fifth null_fifth = new Fifth(-1, -1, -1, -1, -1);
-        // Create arrays:
-        for (int i = 0; i < this.timeTable.getHours(); i++) {
-            fifthsArray.add(i, new ArrayList<Fifth>());
-            for (int j = 0; j < this.timeTable.getDays(); j++) {
-                fifthsArray.get(i).add(null_fifth);
-            }
-        }
-        // Iterate through all fifths and add relevant fifths to 2D array:
-        for (Fifth fifth : this.fifthsList) {
-            if (fifth.getSchoolClass() == schoolClass.getId()) {
-                // Set the fifth in the 2D array:
-                fifthsArray.
-                        get(fifth.getHour() - 1).
-                        add(fifth.getDay() - 1, fifth);
-            }
-        }
-        // Create and return relevant table:
-        return getDisplayHelper(fifthsArray);
-    }
-
-    private String getDisplayHelper(List<List<Fifth>> fifths2DList) {
+    private String getDisplayHelper(List<List<Pair<Fifth, Boolean>>> fifths2DList) {
         String res = "  ";
         int i, j;
         // Add days:
         for (i = 0; i < this.timeTable.getDays(); i++) {
-            res += " |   " + (i + 1) + "  ";
+            res += " |   " + (i + 1) + "   ";
         }
         res += lineSeparator;
         i = 0;
         // Insert fifths by hours:
-        for (List<Fifth> fls : fifths2DList) {
+        for (List<Pair<Fifth, Boolean>> fls : fifths2DList) {
             // Hour no.:
             res += " " + (i + 1);
             // Fifths (presented as tuples according to presentationOption):
@@ -344,21 +324,27 @@ public class TimeTableSolution implements Solution {
                 res += " | <";
                 switch (this.presentationOption) {
                     case TEACHER_ORIENTED:
-                        if (fls.get(j).getSchoolClass() == -1 || fls.get(j).getSubject() == -1) {
+                        if (fls.get(j).getV1().getSchoolClass() == -1 || fls.get(j).getV1().getSubject() == -1) {
                             res += " , >";
                         } else {
-                            res += fls.get(j).getSchoolClass() + ",";
-                            res += fls.get(j).getSubject() + ">";
+                            res += fls.get(j).getV1().getSchoolClass() + ",";
+                            res += fls.get(j).getV1().getSubject() + ">";
                         }
                         break;
                     case SCHOOLCLASS_ORIENTED:
-                        if (fls.get(j).getTeacher() == -1 || fls.get(j).getSubject() == -1) {
+                        if (fls.get(j).getV1().getTeacher() == -1 || fls.get(j).getV1().getSubject() == -1) {
                             res += " , >";
                         } else {
-                            res += fls.get(j).getTeacher() + ",";
-                            res += fls.get(j).getSubject() + ">";
+                            res += fls.get(j).getV1().getTeacher() + ",";
+                            res += fls.get(j).getV1().getSubject() + ">";
                         }
                         break;
+                }
+                // Add note for multiple values:
+                if (fls.get(j).getV2()) {
+                    res += "*";
+                } else {
+                    res += " ";
                 }
             }
             res += lineSeparator;

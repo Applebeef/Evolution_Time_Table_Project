@@ -2,7 +2,7 @@ package time_table;
 
 import Generated.ETTTimeTable;
 import evolution.engine.problem_solution.*;
-import Solution.*;
+import solution.*;
 
 public class TimeTable implements Problem {
     int days, hours;
