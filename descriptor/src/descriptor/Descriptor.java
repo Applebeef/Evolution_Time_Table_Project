@@ -4,6 +4,11 @@ import time_table.TimeTable;
 import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Descriptor {
     protected TimeTable timeTable;
     protected EvolutionEngine evolutionEngine;
@@ -34,5 +39,17 @@ public class Descriptor {
         String lineSeparator = System.getProperty("line.separator");
         return "Time Table:" + lineSeparator + timeTable + lineSeparator + lineSeparator +
                 "Evolution Engine:" + lineSeparator + evolutionEngine;
+    }
+
+    public Set<String> checkValidity() {
+        Set<String> errorSet = new HashSet<>();
+        errorSet.add(timeTable.getSchoolClasses().checkValidity());
+        errorSet.add(timeTable.getSchoolClasses().checkSubjectValidity(timeTable.getSubjects()));
+        errorSet.add(timeTable.getSchoolClasses().checkHourValidity(timeTable.getHours(),timeTable.getDays()));
+        errorSet.add(timeTable.getTeachers().checkIDValidity());
+        errorSet.add(timeTable.getTeachers().checkSubjectValidity(timeTable.getSubjects()));
+        errorSet.add(timeTable.getSubjects().checkValidity());
+        errorSet.add(timeTable.getRules().checkValidity());
+        return errorSet;
     }
 }

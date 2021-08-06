@@ -7,6 +7,7 @@ import evolution.configuration.Selection;
 import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
+import evolution.util.Pair;
 import evolution.util.Randomizer;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class EvolutionEngine {
 
     private List<Solution> solutionList;
     private List<Solution> offspringSolutionsList;
-    private List<Solution> bestSolutions;
+    private List<Pair<Integer, Solution>> bestSolutions;
 
     private boolean engineStarted = false;
     private Integer number_of_generations;
@@ -80,7 +81,7 @@ public class EvolutionEngine {
     public void runEvolution(int frequency) {
         int bestSolutionsAmount;
         // Main loop: #itarations = number of generations
-        for (int i = 0; i < number_of_generations; i++) {
+        for (int i = 1; i <= number_of_generations; i++) {
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
@@ -88,10 +89,11 @@ public class EvolutionEngine {
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
-            if (i % frequency == 0 || i == number_of_generations - 1) {
+            if (i % frequency == 0 || i == 1) {
                 //TODO: REMOVE SOUT FROM ENGINE - ONLY IN UI
-                System.out.println("Generation " + i + " " + solutionList.get(0).getFitness());
-                bestSolutions.add(solutionList.get(0));
+                Solution solution = solutionList.get(0);
+                System.out.println("Generation " + i + " " + String.format("%.1f",solution.getFitness()) );
+                bestSolutions.add(new Pair<>(i, solution));
             }
         }
     }
@@ -138,7 +140,7 @@ public class EvolutionEngine {
                 "Crossover - " + lineSeparator + crossover;
     }
 
-    public List<Solution> getBestSolutions() {
+    public List<Pair<Integer, Solution>> getBestSolutions() {
         return bestSolutions;
     }
 }
