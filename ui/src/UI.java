@@ -30,8 +30,25 @@ public class UI {
         READ_XML(1, "Load data from XML file.") {
             @Override
             public void start(UI ui) {
+                String check;
+                Scanner scanner = new Scanner(System.in);
+                if (ui.engine_thread != null && ui.engine_thread.isAlive()) {
+                    System.out.println("Engine is already running, would you like to stop and load a new file? (Y/N)");
+                    check = scanner.nextLine();
+                    if (check.equalsIgnoreCase("Y")) {
+                        ui.engine_thread.interrupt();
+                        try {
+                            ui.engine_thread.join();
+                        } catch (InterruptedException ignored) {
+
+                        }
+                        ui.getDescriptor().getEngine().reset();
+                    } else {
+                        return;
+                    }
+                }
                 String filename = "xml_parser\\src\\XML\\EX1-small.xml";
-                //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
+                //TODO uncomment before submitting.
                 //filename = scanner.nextLine();
 
                 try {
@@ -79,10 +96,32 @@ public class UI {
             @Override
             public void start(UI ui) {
                 Scanner scanner = new Scanner(System.in);
-                if (ui.fileLoaded) {
+                String check;
+                if (ui.engine_thread == null) {
+                    if(!ui.fileLoaded){
+                        System.out.println("No file loaded, please load an XML file first (1).");
+                    }
+                    else{
+                        runEngineHelper(ui);
+                    }
+                } else if (ui.engine_thread.isAlive()) {
+                    System.out.println("Engine is already running, would you like to start over? (Y/N)");
+                    check = scanner.nextLine();
+                    if (check.equalsIgnoreCase("Y")) {
+                        ui.engine_thread.interrupt();
+                        try {
+                            ui.engine_thread.join();
+                        } catch (InterruptedException ignored) {
+
+                        }
+                        ui.getDescriptor().getEngine().reset();
+                        runEngineHelper(ui);
+                    }
+                } else if (ui.fileLoaded) {
                     if (ui.descriptor.getEngine().isEngineStarted()) {// Engine is started:
                         System.out.println("Engine already initialized, do you wish to overwrite previous run? (Y/N)");
                         if (scanner.nextLine().equalsIgnoreCase("Y")) {//TODO check valid input
+                            ui.getDescriptor().getEngine().reset();
                             runEngineHelper(ui);
                         }
                     } else {// Engine is not started:
@@ -93,12 +132,13 @@ public class UI {
                 }
             }
 
+
             private void runEngineHelper(UI ui) {
                 Scanner scanner = new Scanner(System.in);
                 int frequency;
                 int number_of_generations;
                 int max_fitness = 101;//if user doesnt choose a max fitness, we send 101, which shouldn't be a possible fitness score.
-                // Recieve number of generations from user:
+                // Receive number of generations from user:
                 System.out.println("Enter requested amount of generations (at least 100): ");
                 do {
                     number_of_generations = scanner.nextInt();
@@ -115,16 +155,13 @@ public class UI {
                     max_fitness = scanner.nextInt();
                 }
 
-                ui.descriptor.
-                        getEngine().
-                        initSolutionPopulation(
-                                ui.descriptor.getTimeTable(), number_of_generations
-                        );
+                ui.descriptor.getEngine().initSolutionPopulation(ui.descriptor.getTimeTable(), number_of_generations);
                 System.out.println("Initial population initialized.");
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
                 frequency = scanner.nextInt();
-                //frequency = 500;
-                ui.descriptor.getEngine().runEvolution(frequency, max_fitness, System.out::println);
+                ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness, System.out::println);
+                ui.createNewEngineThread();
+                ui.engine_thread.start();
             }
         },
         SHOW_BEST_SOLUTION(4, "Display best solution.") {
@@ -134,50 +171,75 @@ public class UI {
                 Scanner scanner = new Scanner(System.in);
                 Exception exception = new Exception();
                 // Show TimeTableSolution's display options:
-                for (TimeTableSolution.PresentationOptions option : TimeTableSolution.PresentationOptions.values()) {
-                    System.out.println(option.toString());
-                }
-                // While is used to handle exceptions (e.g. outOfBound)
-                while (exception != null) {
-                    // Receive display choice from user:
-                    choice = scanner.nextInt();
+                if (ui.isFileNotLoaded()) {
+                    System.out.println("No file loaded, please load an XML file first (1).");
+                } else if (!ui.descriptor.getEngine().isEngineStarted()) {
+                    System.out.println("Evolution hasn't been started yet, please start the evolutionary algorithm first (3)");
+                } else {
+                    for (TimeTableSolution.PresentationOptions option : TimeTableSolution.PresentationOptions.values()) {
+                        System.out.println(option.toString());
+                    }
+                    // While is used to handle exceptions (e.g. outOfBound)
+                    while (exception != null) {
+                        // Receive display choice from user:
+                        choice = scanner.nextInt();
 
-                    // Print according to display choice:
-                    try {
-                        System.out.println(ui.descriptor.getEngine().getBestSolutionDisplay(choice));
-                        exception = null;
-                    } catch (Exception e) {
-                        exception = e;
+                        // Print according to display choice:
+                        try {
+                            System.out.println(ui.descriptor.getEngine().getBestSolutionDisplay(choice));
+                            exception = null;
+                        } catch (Exception e) {
+                            exception = e;
+                        }
                     }
                 }
+
             }
         },
         VIEW_PROGRESS(5, "View progress.") {
             @Override
             public void start(UI ui) {
-                if (!ui.isFileLoaded()) {
+                if (ui.isFileNotLoaded()) {
                     System.out.println("No file loaded, please load an XML file first (1).");
                 } else if (!ui.getDescriptor().getEngine().isEngineStarted()) {
                     System.out.println("Evolution hasn't been started yet, please start the evolutionary algorithm first (3)");
                 } else {
-                    Double prevFitness = 0.0;
-                    Double currentFitness;
-                    List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutions();
-                    for (Pair<Integer, Solution> pair : bestSolutions) {
-                        currentFitness = pair.getV2().getFitness();
-                        System.out.println("Generation no. " + pair.getV1() + " Fitness: " + String.format("%.1f", currentFitness) + ".");
-                        if (pair.getV1() != 1) {
-                            System.out.println("The difference in fitness from the last generation is: " + String.format("%.1f", currentFitness - prevFitness));
+
+                    if (!ui.engine_thread.isAlive()) {
+                        List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutions();
+                        printBestSolutions(bestSolutions);
+                    } else {
+                        synchronized (ui.descriptor.getEngine().getBestSolutions()) {
+                            List<Pair<Integer, Solution>> pairList = ui.descriptor.getEngine().getBestSolutions();
+                            if (ui.descriptor.getEngine().getBestSolutions().size() > 10) {
+                                pairList = pairList.subList(pairList.size() - 10, pairList.size());
+                            }
+                            printBestSolutions(pairList);
                         }
-                        System.out.println();
-                        prevFitness = currentFitness;
                     }
+                }
+            }
+
+            private void printBestSolutions(List<Pair<Integer, Solution>> bestSolutions) {
+                Double prevFitness = 0.0;
+                Double currentFitness;
+                for (Pair<Integer, Solution> pair : bestSolutions) {
+                    currentFitness = pair.getV2().getFitness();
+                    System.out.println("Generation no. " + pair.getV1() + " Fitness: " + String.format("%.1f", currentFitness) + ".");
+                    if (pair.getV1() != 1) {
+                        System.out.println("The difference in fitness from the last generation is: " + String.format("%.1f", currentFitness - prevFitness));
+                    }
+                    System.out.println();
+                    prevFitness = currentFitness;
                 }
             }
         },
         EXIT(6, "Exit.") {
             @Override
             public void start(UI ui) {
+                if (ui.engine_thread != null && ui.engine_thread.isAlive()) {
+                    ui.engine_thread.interrupt();
+                }
                 ui.setExit(true);
             }
         };
@@ -206,7 +268,7 @@ public class UI {
         this.descriptor = null;
     }
 
-    // Static method getinstance for singleton:
+    // Static method getInstance for singleton:
     public static UI getInstance() {
         return instance;
     }
@@ -214,10 +276,6 @@ public class UI {
     public void runMenu() {
         int choice;
         Scanner scanner = new Scanner(System.in);
-        //TODO: change at the end
-        //MenuOptions.values()[0].start(this);
-        //MenuOptions.values()[2].start(this);
-        //MenuOptions.values()[3].start(this);
 
         while (!this.exit) {
             for (MenuOptions option : MenuOptions.values()) {
@@ -228,9 +286,6 @@ public class UI {
         }
     }
 
-    public boolean isExit() {
-        return exit;
-    }
 
     public void setExit(boolean exit) {
         this.exit = exit;
@@ -244,13 +299,13 @@ public class UI {
         this.descriptor = descriptor;
     }
 
-    public boolean isFileLoaded() {
-        return fileLoaded;
+    public boolean isFileNotLoaded() {
+        return !fileLoaded;
     }
 
-    public void setFileLoaded(boolean fileLoaded) {
-        this.fileLoaded = fileLoaded;
+    private void createNewEngineThread() {
+        engine_thread = new Thread(descriptor.getEngine());
+        engine_thread.setName("Engine");
     }
-
 
 }

@@ -10,12 +10,10 @@ import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
 import evolution.util.Randomizer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
-public class EvolutionEngine {
+public class EvolutionEngine implements Runnable {
     private InitialPopulation initialSolutionPopulation;
     private Mutations mutations;
     private Selection selection;
@@ -27,6 +25,11 @@ public class EvolutionEngine {
 
     private boolean engineStarted = false;
     private Integer number_of_generations;
+
+    private int frequency;
+    private int max_fitness;
+    private Consumer<String> consumer;
+    static int debug = 1;
 
     public EvolutionEngine(ETTEvolutionEngine gen) {
         initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
@@ -79,11 +82,10 @@ public class EvolutionEngine {
         engineStarted = true;
     }
 
-    public void runEvolution(int frequency, int max_fitness, Consumer<String> consumer) {
-        int bestSolutionsAmount;
-        // Main loop: #itarations = number of generations
+    public void runEvolution() {
+        // Main loop: #iterations = number of generations
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
-        for (int i = 1; i <= number_of_generations && solutionList.get(0).getFitness() < max_fitness; i++) {
+        for (int i = 1; i <= number_of_generations && solutionList.get(0).getFitness() < max_fitness && engineStarted; i++) {
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
@@ -91,21 +93,31 @@ public class EvolutionEngine {
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
-            if (i % frequency == 0 || i == 1) {
-                //TODO: REMOVE SOUT FROM ENGINE - ONLY IN UI
-                Solution solution = solutionList.get(0);
-                consumer.accept("Generation " + i + " " + String.format("%.1f", solution.getFitness()));
-                bestSolutions.add(new Pair<>(i, solution));
+            synchronized (bestSolutions) {
+                if (i % frequency == 0 || i == 1) {
+                    Solution solution = solutionList.get(0);
+                    //consumer.accept("Generation " + i + " " + String.format("%.1f", solution.getFitness()));
+                    bestSolutions.add(new Pair<>(i, solution));
+                }
+            }
+            if (Thread.currentThread().isInterrupted()) {
+                return;
             }
         }
     }
 
     public String getBestSolutionDisplay(int choice) {
-        // Sort solutionList by fitness:
-        solutionList.sort(Collections.reverseOrder());
+        // Sort bestSolutions by fitness:
+        Pair<Integer, Solution> var;
+        synchronized (bestSolutions) {
+            var = bestSolutions.stream().max(Comparator.comparing(o -> o.getV2().getFitness())).get();
+        }
         // Set presentation option to choice. Note: might throw outOfBound exception:
-        solutionList.get(0).setPresentationOption(choice - 1);
-        return solutionList.get(0).toString();
+        var.getV2().setPresentationOption(choice - 1);
+        return "Generation: " + var.getV1() +
+                ", fitness: " + String.format("%.1f", var.getV2().getFitness()) +
+                System.getProperty("line.separator") +
+                var.getV2().toString();
     }
 
     private void spawnGeneration() {
@@ -144,5 +156,27 @@ public class EvolutionEngine {
 
     public List<Pair<Integer, Solution>> getBestSolutions() {
         return bestSolutions;
+    }
+
+    @Override
+    public void run() {
+        runEvolution();
+    }
+
+    public void initThreadParameters(int frequency, int max_fitness, Consumer<String> consumer) {
+        this.frequency = frequency;
+        this.max_fitness = max_fitness;
+        this.consumer = consumer;
+    }
+
+    public void setEngineStarted(boolean engineStarted) {
+        this.engineStarted = engineStarted;
+    }
+
+    public void reset() {
+        solutionList.clear();
+        bestSolutions.clear();
+        offspringSolutionsList.clear();
+        engineStarted = false;
     }
 }
