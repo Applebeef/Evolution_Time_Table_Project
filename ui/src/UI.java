@@ -40,8 +40,7 @@ public class UI {
                     if (!filename.substring(filename.length() - xml.length()).equalsIgnoreCase(".xml")) {
                         System.out.println("The file isn't an xml file, please enter a valid xml file.");
                         return;
-                    }
-                    else if (!file.exists()) {
+                    } else if (!file.exists()) {
                         System.out.println("The file specified doesnt exist.");
                         return;
                     }
@@ -83,7 +82,7 @@ public class UI {
                 if (ui.fileLoaded) {
                     if (ui.descriptor.getEngine().isEngineStarted()) {// Engine is started:
                         System.out.println("Engine already initialized, do you wish to overwrite previous run? (Y/N)");
-                        if (scanner.nextLine().equalsIgnoreCase("Y")) {
+                        if (scanner.nextLine().equalsIgnoreCase("Y")) {//TODO check valid input
                             runEngineHelper(ui);
                         }
                     } else {// Engine is not started:
@@ -98,6 +97,7 @@ public class UI {
                 Scanner scanner = new Scanner(System.in);
                 int frequency;
                 int number_of_generations;
+                int max_fitness = 101;//if user doesnt choose a max fitness, we send 101, which shouldn't be a possible fitness score.
                 // Recieve number of generations from user:
                 System.out.println("Enter requested amount of generations (at least 100): ");
                 do {
@@ -107,6 +107,13 @@ public class UI {
                         System.out.println("Number of generations needs to be at least 100.");
                     }
                 } while (number_of_generations < 100);
+                System.out.println("Would you like to choose a maximum fitness score? (Y/N)");
+                scanner.nextLine();
+                String check = scanner.nextLine();
+                if (check.equalsIgnoreCase("Y")) {//TODO check valid input
+                    System.out.println("Please enter a fitness score (0-100): ");
+                    max_fitness = scanner.nextInt();
+                }
 
                 ui.descriptor.
                         getEngine().
@@ -117,7 +124,7 @@ public class UI {
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
                 frequency = scanner.nextInt();
                 //frequency = 500;
-                ui.descriptor.getEngine().runEvolution(frequency);
+                ui.descriptor.getEngine().runEvolution(frequency, max_fitness, System.out::println);
             }
         },
         SHOW_BEST_SOLUTION(4, "Display best solution.") {

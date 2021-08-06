@@ -13,6 +13,7 @@ import evolution.util.Randomizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class EvolutionEngine {
     private InitialPopulation initialSolutionPopulation;
@@ -78,10 +79,11 @@ public class EvolutionEngine {
         engineStarted = true;
     }
 
-    public void runEvolution(int frequency) {
+    public void runEvolution(int frequency, int max_fitness, Consumer<String> consumer) {
         int bestSolutionsAmount;
         // Main loop: #itarations = number of generations
-        for (int i = 1; i <= number_of_generations; i++) {
+        //Stop the loop if we reach the desired amount of generations or reach max fitness.
+        for (int i = 1; i <= number_of_generations && solutionList.get(0).getFitness() < max_fitness; i++) {
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
@@ -92,7 +94,7 @@ public class EvolutionEngine {
             if (i % frequency == 0 || i == 1) {
                 //TODO: REMOVE SOUT FROM ENGINE - ONLY IN UI
                 Solution solution = solutionList.get(0);
-                System.out.println("Generation " + i + " " + String.format("%.1f",solution.getFitness()) );
+                consumer.accept("Generation " + i + " " + String.format("%.1f", solution.getFitness()));
                 bestSolutions.add(new Pair<>(i, solution));
             }
         }
