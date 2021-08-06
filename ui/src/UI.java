@@ -47,7 +47,7 @@ public class UI {
                         return;
                     }
                 }
-                String filename = "xml_parser\\src\\XML\\EX1-small.xml";
+                String filename = "xml_parser\\src\\XML\\EX1-error-3.6.xml";
                 //TODO uncomment before submitting.
                 //filename = scanner.nextLine();
 

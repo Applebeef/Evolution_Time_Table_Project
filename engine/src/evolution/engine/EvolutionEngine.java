@@ -85,7 +85,7 @@ public class EvolutionEngine implements Runnable {
     public void runEvolution() {
         // Main loop: #iterations = number of generations
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
-        for (int i = 1; i <= number_of_generations && solutionList.get(0).getFitness() < max_fitness && engineStarted; i++) {
+        for (int i = 1; i <= number_of_generations && solutionList.get(0).getFitness() < max_fitness && !Thread.currentThread().isInterrupted(); i++) {
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
@@ -100,10 +100,8 @@ public class EvolutionEngine implements Runnable {
                     bestSolutions.add(new Pair<>(i, solution));
                 }
             }
-            if (Thread.currentThread().isInterrupted()) {
-                return;
-            }
         }
+        consumer.accept("Engine is finished.");
     }
 
     public String getBestSolutionDisplay(int choice) {
