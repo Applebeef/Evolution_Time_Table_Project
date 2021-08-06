@@ -7,7 +7,7 @@ import evolution.configuration.Mutations;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
 import time_table.*;
-import util.Pair;
+import evolution.util.Pair;
 
 import java.util.*;
 
@@ -279,7 +279,7 @@ public class TimeTableSolution implements Solution {
             }
         }
         int i =0;
-        Boolean multiple_arguments_flag;
+        boolean multiple_arguments_flag;
         // Iterate through all fifths and add relevant fifths to 2D array:
         for (Fifth fifth : this.fifthsList) {
             multiple_arguments_flag = false;

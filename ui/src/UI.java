@@ -2,12 +2,15 @@ import Generated.ETTDescriptor;
 import solution.TimeTableSolution;
 import descriptor.Descriptor;
 import evolution.engine.problem_solution.Solution;
+import evolution.util.Pair;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class UI {
     //Singleton instance:
@@ -26,24 +29,42 @@ public class UI {
         //                * Exit
         READ_XML(1, "Load data from XML file.") {
             @Override
-            public void start(UI ui) {//TODO check file validity.
+            public void start(UI ui) {
                 String filename = "xml_parser\\src\\XML\\EX1-small.xml";
                 //Scanner scanner = new Scanner(System.in);/TODO uncomment before submitting.
                 //filename = scanner.nextLine();
 
                 try {
                     File file = new File(filename);
+                    String xml = ".xml";
+                    if (!filename.substring(filename.length() - xml.length()).equalsIgnoreCase(".xml")) {
+                        System.out.println("The file isn't an xml file, please enter a valid xml file.");
+                        return;
+                    }
+                    else if (!file.exists()) {
+                        System.out.println("The file specified doesnt exist.");
+                        return;
+                    }
+
                     JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                     ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
-                    ui.setDescriptor(new Descriptor(ettdescriptor));
+                    Descriptor descriptor = new Descriptor(ettdescriptor);
+                    Set<String> errorSet = descriptor.checkValidity();
+                    if (errorSet.size() == 1 && errorSet.contains("")) {
+                        ui.setDescriptor(descriptor);
+                        ui.fileLoaded = true;
+                        System.out.println("Loading from XML completed.");
+                    } else {
+                        System.out.println("Errors found: ");
+                        for (String error : errorSet) {
+                            System.out.println(error);
+                        }
+                    }
 
                 } catch (JAXBException e) {
                     e.printStackTrace();
                 }
-                ui.fileLoaded = true;
-                System.out.println("Loading from XML completed.");
-
             }
         },
         DISPLAY_INFO(2, "Display info about the time table and engine.") {
@@ -80,8 +101,8 @@ public class UI {
                 // Recieve number of generations from user:
                 System.out.println("Enter requested amount of generations (at least 100): ");
                 do {
-                    //number_of_generations = scanner.nextInt(); TODO:REMOVE COMMENT
-                    number_of_generations = 100;
+                    number_of_generations = scanner.nextInt();
+                    //number_of_generations = 100;
                     if (number_of_generations < 100) {
                         System.out.println("Number of generations needs to be at least 100.");
                     }
@@ -94,8 +115,8 @@ public class UI {
                         );
                 System.out.println("Initial population initialized.");
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
-                //frequency = scanner.nextInt(); TODO: REMOVE COMMENT
-                frequency = 500;
+                frequency = scanner.nextInt();
+                //frequency = 500;
                 ui.descriptor.getEngine().runEvolution(frequency);
             }
         },
@@ -127,12 +148,24 @@ public class UI {
         VIEW_PROGRESS(5, "View progress.") {
             @Override
             public void start(UI ui) {
-                int prev;
-                for (Solution solution : ui.descriptor.getEngine().getBestSolutions()) {
-                    System.out.println( solution.getFitness());
+                if (!ui.isFileLoaded()) {
+                    System.out.println("No file loaded, please load an XML file first (1).");
+                } else if (!ui.getDescriptor().getEngine().isEngineStarted()) {
+                    System.out.println("Evolution hasn't been started yet, please start the evolutionary algorithm first (3)");
+                } else {
+                    Double prevFitness = 0.0;
+                    Double currentFitness;
+                    List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutions();
+                    for (Pair<Integer, Solution> pair : bestSolutions) {
+                        currentFitness = pair.getV2().getFitness();
+                        System.out.println("Generation no. " + pair.getV1() + " Fitness: " + String.format("%.1f", currentFitness) + ".");
+                        if (pair.getV1() != 1) {
+                            System.out.println("The difference in fitness from the last generation is: " + String.format("%.1f", currentFitness - prevFitness));
+                        }
+                        System.out.println();
+                        prevFitness = currentFitness;
+                    }
                 }
-
-                //TODO add function
             }
         },
         EXIT(6, "Exit.") {
@@ -175,8 +208,9 @@ public class UI {
         int choice;
         Scanner scanner = new Scanner(System.in);
         //TODO: change at the end
-        MenuOptions.values()[0].start(this);
-        MenuOptions.values()[2].start(this);
+        //MenuOptions.values()[0].start(this);
+        //MenuOptions.values()[2].start(this);
+        //MenuOptions.values()[3].start(this);
 
         while (!this.exit) {
             for (MenuOptions option : MenuOptions.values()) {
