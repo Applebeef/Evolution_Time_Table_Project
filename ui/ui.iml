@@ -7,9 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="engine" />
-    <orderEntry type="module" module-name="xml_parser" />
-    <orderEntry type="module" module-name="descriptor" />
-    <orderEntry type="module" module-name="time_table" />
+    <orderEntry type="module" module-name="engine" exported="" />
+    <orderEntry type="module" module-name="xml_parser" exported="" />
+    <orderEntry type="module" module-name="descriptor" exported="" />
+    <orderEntry type="module" module-name="time_table" exported="" />
   </component>
 </module>

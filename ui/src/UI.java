@@ -168,10 +168,10 @@ public class UI {
                 System.out.println("Initial population initialized.");
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
                 frequency = -1;
-                while (frequency < 0 || frequency > number_of_generations) {
+                while (frequency < 1 || frequency > number_of_generations) {
                     frequency = ui.numberInput();
-                    if (frequency < 0 || frequency > number_of_generations) {
-                        System.out.println("Please choose a number between 0 and " + number_of_generations + ".");
+                    if (frequency < 1 || frequency > number_of_generations) {
+                        System.out.println("Please choose a number between 1 and " + number_of_generations + ".");
                     }
                 }
                 ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness, System.out::println);
