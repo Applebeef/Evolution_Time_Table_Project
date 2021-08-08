@@ -32,9 +32,12 @@ public class UI {
             @Override
             public void start(UI ui) {
                 Scanner scanner = new Scanner(System.in);
+                String filename;
+                boolean wantsToLoadFile = ui.isFileNotLoaded();
                 if (ui.engine_thread != null && ui.engine_thread.isAlive()) {
-                    System.out.println("Engine is already running, would you like to stop and load a new file?");
-                    if (ui.yesOrNo()) {
+                    System.out.println("Engine is already running, would you like to stop the current run and load a new file?");
+                    wantsToLoadFile = ui.yesOrNo();
+                    if (wantsToLoadFile) {
                         ui.engine_thread.interrupt();
                         try {
                             ui.engine_thread.join();
@@ -46,39 +49,47 @@ public class UI {
                         return;
                     }
                 }
-                String filename = "xml_parser\\src\\XML\\EX1-small.xml";
-                //TODO uncomment before submitting.
-                //filename = scanner.nextLine();
-
-                try {
-                    File file = new File(filename);
-                    String xml = ".xml";
-                    if (!filename.substring(filename.length() - xml.length()).equalsIgnoreCase(".xml")) {
-                        System.out.println("The file isn't an xml file, please enter a valid xml file.");
-                        return;
-                    } else if (!file.exists()) {
-                        System.out.println("The file specified doesnt exist.");
-                        return;
+                if(!wantsToLoadFile){
+                    System.out.println("A file is already loaded, do you wish to load a new one?");
+                    if(ui.yesOrNo()){
+                        wantsToLoadFile= true;
                     }
+                }
 
-                    JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
-                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
-                    Descriptor descriptor = new Descriptor(ettdescriptor);
-                    Set<String> errorSet = descriptor.checkValidity();
-                    if (errorSet.size() == 1 && errorSet.contains("")) {
-                        ui.setDescriptor(descriptor);
-                        ui.fileLoaded = true;
-                        System.out.println("Loading from XML completed.");
-                    } else {
-                        System.out.println("Errors found: ");
-                        for (String error : errorSet) {
-                            System.out.println(error);
+                if(wantsToLoadFile){
+                    System.out.println("Please enter the path to the XML file.");
+                    filename = scanner.nextLine();
+
+                    try {
+                        File file = new File(filename);
+                        String xml = ".xml";
+                        if (filename.length() < xml.length() || !filename.substring(filename.length() - xml.length()).equalsIgnoreCase(xml)) {
+                            System.out.println("The file isn't an xml file, please enter a valid xml file.");
+                            return;
+                        } else if (!file.exists()) {
+                            System.out.println("The file specified doesnt exist.");
+                            return;
                         }
-                    }
 
-                } catch (JAXBException e) {
-                    e.printStackTrace();
+                        JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
+                        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                        ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
+                        Descriptor descriptor = new Descriptor(ettdescriptor);
+                        Set<String> errorSet = descriptor.checkValidity();
+                        if (errorSet.size() == 1 && errorSet.contains("")) {
+                            ui.setDescriptor(descriptor);
+                            ui.fileLoaded = true;
+                            System.out.println("Loading from XML completed.");
+                        } else {
+                            System.out.println("Errors found: ");
+                            for (String error : errorSet) {
+                                System.out.println(error);
+                            }
+                        }
+
+                    } catch (JAXBException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         },
@@ -180,8 +191,7 @@ public class UI {
                         choice = ui.numberInput();
                         if (choice < 1 || choice > TimeTableSolution.PresentationOptions.values().length) {
                             System.out.println("Please choose a number between 1 and " + TimeTableSolution.PresentationOptions.values().length + ".");
-                        }
-                        else{
+                        } else {
                             // Print according to display choice:
                             System.out.println(ui.descriptor.getEngine().getBestSolutionDisplay(choice));
                         }
