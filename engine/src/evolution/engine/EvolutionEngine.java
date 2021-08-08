@@ -117,7 +117,7 @@ public class EvolutionEngine implements Runnable {
         // Sort bestSolutions by fitness:
         synchronized (bestSolution) {
             bestSolution.getV2().setPresentationOption(choice - 1);
-            return "Displaying best solution - * resembles multiple data." + lineSeparator +
+            return "Displaying best solution - * represents duplicates for the timeframe." + lineSeparator +
                     "Generation: " + bestSolution.getV1() +
                     ", fitness: " + String.format("%.1f", bestSolution.getV2().getFitness()) +
                     System.getProperty("line.separator") +
