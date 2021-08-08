@@ -58,7 +58,7 @@ public class Teachers {
                     }
                 }
                 if (!found) {
-                    errorList.add("Teacher " + teacher.getId() + "is teaching an invalid subject ID: " + id);
+                    errorList.add("Teacher " + teacher.getId() + " is teaching an invalid subject ID: " + id);
                 }
                 found = false;
             }
