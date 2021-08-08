@@ -4,7 +4,7 @@ del sources.txt
 rmdir /S /Q build
 
 REM *** set to your JAVA_HOME location
-set JAVA_HOME=c:\Progra~1\Java\jdk1.8.0_151
+REM set JAVA_HOME=c:\Progra~1\Java\jdk1.8.0_151
 
 mkdir build
 dir *.java /s /b > sources.txt

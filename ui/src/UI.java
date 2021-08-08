@@ -177,6 +177,7 @@ public class UI {
             @Override
             public void start(UI ui) {
                 int choice = 0;
+
                 // Show TimeTableSolution's display options:
                 if (ui.isFileNotLoaded()) {
                     System.out.println("No file loaded, please load an XML file first (1).");

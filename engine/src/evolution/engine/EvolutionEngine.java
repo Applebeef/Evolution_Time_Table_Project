@@ -112,10 +112,13 @@ public class EvolutionEngine implements Runnable {
     }
 
     public String getBestSolutionDisplay(int choice) {
+        String lineSeparator = System.getProperty("line.separator");
+
         // Sort bestSolutions by fitness:
         synchronized (bestSolution) {
             bestSolution.getV2().setPresentationOption(choice - 1);
-            return "Generation: " + bestSolution.getV1() +
+            return "Displaying best solution - * resembles multiple data." + lineSeparator +
+                    "Generation: " + bestSolution.getV1() +
                     ", fitness: " + String.format("%.1f", bestSolution.getV2().getFitness()) +
                     System.getProperty("line.separator") +
                     bestSolution.getV2().toString();
