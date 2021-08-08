@@ -21,7 +21,8 @@ public class EvolutionEngine implements Runnable {
 
     private List<Solution> solutionList;
     private List<Solution> offspringSolutionsList;
-    private List<Pair<Integer, Solution>> bestSolutions;
+    private List<Pair<Integer, Solution>> bestSolutionsPerFrequency;
+    private Pair<Integer, Solution> bestSolution;
 
     private boolean engineStarted = false;
     private Integer number_of_generations;
@@ -38,7 +39,7 @@ public class EvolutionEngine implements Runnable {
         crossover = new Crossover(gen.getETTCrossover());
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
-        bestSolutions = new ArrayList<>();
+        bestSolutionsPerFrequency = new ArrayList<>();
     }
 
     public InitialPopulation getInitialSolutionPopulation() {
@@ -79,6 +80,7 @@ public class EvolutionEngine implements Runnable {
         }
         // Sort list:
         solutionList.sort(Collections.reverseOrder());
+        bestSolution = new Pair<>(0, solutionList.get(0));
         engineStarted = true;
     }
 
@@ -93,11 +95,16 @@ public class EvolutionEngine implements Runnable {
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
-            synchronized (bestSolutions) {
+            synchronized (bestSolutionsPerFrequency) {
                 if (i % frequency == 0 || i == 1) {
                     Solution solution = solutionList.get(0);
                     //consumer.accept("Generation " + i + " " + String.format("%.1f", solution.getFitness()));
-                    bestSolutions.add(new Pair<>(i, solution));
+                    bestSolutionsPerFrequency.add(new Pair<>(i, solution));
+                }
+            }
+            if (solutionList.get(0).getFitness() > bestSolution.getV2().getFitness()) {
+                synchronized (bestSolution) {
+                    bestSolution = new Pair<>(i, solutionList.get(0));
                 }
             }
         }
@@ -106,16 +113,13 @@ public class EvolutionEngine implements Runnable {
 
     public String getBestSolutionDisplay(int choice) {
         // Sort bestSolutions by fitness:
-        Pair<Integer, Solution> var;
-        synchronized (bestSolutions) {
-            var = bestSolutions.stream().max(Comparator.comparing(o -> o.getV2().getFitness())).get();
+        synchronized (bestSolution) {
+            bestSolution.getV2().setPresentationOption(choice - 1);
+            return "Generation: " + bestSolution.getV1() +
+                    ", fitness: " + String.format("%.1f", bestSolution.getV2().getFitness()) +
+                    System.getProperty("line.separator") +
+                    bestSolution.getV2().toString();
         }
-        // Set presentation option to choice. Note: might throw outOfBound exception:
-        var.getV2().setPresentationOption(choice - 1);
-        return "Generation: " + var.getV1() +
-                ", fitness: " + String.format("%.1f", var.getV2().getFitness()) +
-                System.getProperty("line.separator") +
-                var.getV2().toString();
     }
 
     private void spawnGeneration() {
@@ -152,8 +156,8 @@ public class EvolutionEngine implements Runnable {
                 "Crossover - " + lineSeparator + crossover;
     }
 
-    public List<Pair<Integer, Solution>> getBestSolutions() {
-        return bestSolutions;
+    public List<Pair<Integer, Solution>> getBestSolutionsPerFrequency() {
+        return bestSolutionsPerFrequency;
     }
 
     @Override
@@ -173,7 +177,7 @@ public class EvolutionEngine implements Runnable {
 
     public void reset() {
         solutionList.clear();
-        bestSolutions.clear();
+        bestSolutionsPerFrequency.clear();
         offspringSolutionsList.clear();
         engineStarted = false;
     }

@@ -210,12 +210,12 @@ public class UI {
                 } else {
 
                     if (!ui.engine_thread.isAlive()) {
-                        List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutions();
+                        List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutionsPerFrequency();
                         printBestSolutions(bestSolutions);
                     } else {
-                        synchronized (ui.descriptor.getEngine().getBestSolutions()) {
-                            List<Pair<Integer, Solution>> pairList = ui.descriptor.getEngine().getBestSolutions();
-                            if (ui.descriptor.getEngine().getBestSolutions().size() > 10) {
+                        synchronized (ui.descriptor.getEngine().getBestSolutionsPerFrequency()) {
+                            List<Pair<Integer, Solution>> pairList = ui.descriptor.getEngine().getBestSolutionsPerFrequency();
+                            if (ui.descriptor.getEngine().getBestSolutionsPerFrequency().size() > 10) {
                                 pairList = pairList.subList(pairList.size() - 10, pairList.size());
                             }
                             printBestSolutions(pairList);
