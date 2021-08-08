@@ -50,14 +50,14 @@ public class UI {
                         return;
                     }
                 }
-                if(!wantsToLoadFile){
+                if (!wantsToLoadFile) {
                     System.out.println("A file is already loaded, do you wish to load a new one?");
-                    if(ui.yesOrNo()){
-                        wantsToLoadFile= true;
+                    if (ui.yesOrNo()) {
+                        wantsToLoadFile = true;
                     }
                 }
 
-                if(wantsToLoadFile){
+                if (wantsToLoadFile) {
                     System.out.println("Please enter the path to the XML file.");
                     filename = scanner.nextLine();
 
@@ -167,7 +167,13 @@ public class UI {
                 ui.descriptor.getEngine().initSolutionPopulation(ui.descriptor.getTimeTable(), number_of_generations);
                 System.out.println("Initial population initialized.");
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
-                frequency = ui.numberInput();
+                frequency = -1;
+                while (frequency < 0 || frequency > number_of_generations) {
+                    frequency = ui.numberInput();
+                    if (frequency < 0 || frequency > number_of_generations) {
+                        System.out.println("Please choose a number between 0 and " + number_of_generations + ".");
+                    }
+                }
                 ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness, System.out::println);
                 ui.createNewEngineThread();
                 ui.engine_thread.start();
