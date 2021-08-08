@@ -19,6 +19,7 @@ public class UI {
     public boolean exit;
     public boolean fileLoaded;
     public Descriptor descriptor;
+    private Thread engine_thread;
 
     // Inner enum MenuOptions:
     public enum MenuOptions {
