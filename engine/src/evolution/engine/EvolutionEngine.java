@@ -30,7 +30,6 @@ public class EvolutionEngine implements Runnable {
     private int frequency;
     private int max_fitness;
     private Consumer<String> consumer;
-    static int debug = 1;
 
     public EvolutionEngine(ETTEvolutionEngine gen) {
         initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
