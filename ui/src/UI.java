@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -30,12 +31,10 @@ public class UI {
         READ_XML(1, "Load data from XML file.") {
             @Override
             public void start(UI ui) {
-                String check;
                 Scanner scanner = new Scanner(System.in);
                 if (ui.engine_thread != null && ui.engine_thread.isAlive()) {
-                    System.out.println("Engine is already running, would you like to stop and load a new file? (Y/N)");
-                    check = scanner.nextLine();
-                    if (check.equalsIgnoreCase("Y")) {
+                    System.out.println("Engine is already running, would you like to stop and load a new file?");
+                    if (ui.yesOrNo()) {
                         ui.engine_thread.interrupt();
                         try {
                             ui.engine_thread.join();
@@ -47,7 +46,7 @@ public class UI {
                         return;
                     }
                 }
-                String filename = "xml_parser\\src\\XML\\EX1-error-3.6.xml";
+                String filename = "xml_parser\\src\\XML\\EX1-small.xml";
                 //TODO uncomment before submitting.
                 //filename = scanner.nextLine();
 
@@ -95,19 +94,15 @@ public class UI {
         RUN_ENGINE(3, "Run evolutionary algorithm.") {
             @Override
             public void start(UI ui) {
-                Scanner scanner = new Scanner(System.in);
-                String check;
                 if (ui.engine_thread == null) {
-                    if(!ui.fileLoaded){
+                    if (!ui.fileLoaded) {
                         System.out.println("No file loaded, please load an XML file first (1).");
-                    }
-                    else{
+                    } else {
                         runEngineHelper(ui);
                     }
                 } else if (ui.engine_thread.isAlive()) {
-                    System.out.println("Engine is already running, would you like to start over? (Y/N)");
-                    check = scanner.nextLine();
-                    if (check.equalsIgnoreCase("Y")) {
+                    System.out.println("Engine is already running, would you like to start over?");
+                    if (ui.yesOrNo()) {
                         ui.engine_thread.interrupt();
                         try {
                             ui.engine_thread.join();
@@ -119,8 +114,8 @@ public class UI {
                     }
                 } else if (ui.fileLoaded) {
                     if (ui.descriptor.getEngine().isEngineStarted()) {// Engine is started:
-                        System.out.println("Engine already initialized, do you wish to overwrite previous run? (Y/N)");
-                        if (scanner.nextLine().equalsIgnoreCase("Y")) {//TODO check valid input
+                        System.out.println("Engine already initialized, do you wish to overwrite previous run?");
+                        if (ui.yesOrNo()) {
                             ui.getDescriptor().getEngine().reset();
                             runEngineHelper(ui);
                         }
@@ -134,31 +129,33 @@ public class UI {
 
 
             private void runEngineHelper(UI ui) {
-                Scanner scanner = new Scanner(System.in);
                 int frequency;
-                int number_of_generations;
+                int number_of_generations = 0;
                 int max_fitness = 101;//if user doesnt choose a max fitness, we send 101, which shouldn't be a possible fitness score.
                 // Receive number of generations from user:
                 System.out.println("Enter requested amount of generations (at least 100): ");
-                do {
-                    number_of_generations = scanner.nextInt();
-                    //number_of_generations = 100;
+                while (number_of_generations < 100) {
+                    number_of_generations = ui.numberInput();
                     if (number_of_generations < 100) {
                         System.out.println("Number of generations needs to be at least 100.");
                     }
-                } while (number_of_generations < 100);
-                System.out.println("Would you like to choose a maximum fitness score? (Y/N)");
-                scanner.nextLine();
-                String check = scanner.nextLine();
-                if (check.equalsIgnoreCase("Y")) {//TODO check valid input
+                }
+                System.out.println("Would you like to choose a maximum fitness score?");
+                if (ui.yesOrNo()) {
                     System.out.println("Please enter a fitness score (0-100): ");
-                    max_fitness = scanner.nextInt();
+                    while (max_fitness > 100 || max_fitness < 0) {
+                        max_fitness = ui.numberInput();
+
+                        if (max_fitness > 100 || max_fitness < 0) {
+                            System.out.println("Please choose a number between 0-100.");
+                        }
+                    }
                 }
 
                 ui.descriptor.getEngine().initSolutionPopulation(ui.descriptor.getTimeTable(), number_of_generations);
                 System.out.println("Initial population initialized.");
                 System.out.println("In which frequency of generations do you wish to view the progress? (1 - " + number_of_generations + ")");
-                frequency = scanner.nextInt();
+                frequency = ui.numberInput();
                 ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness, System.out::println);
                 ui.createNewEngineThread();
                 ui.engine_thread.start();
@@ -167,9 +164,7 @@ public class UI {
         SHOW_BEST_SOLUTION(4, "Display best solution.") {
             @Override
             public void start(UI ui) {
-                int choice;
-                Scanner scanner = new Scanner(System.in);
-                Exception exception = new Exception();
+                int choice = 0;
                 // Show TimeTableSolution's display options:
                 if (ui.isFileNotLoaded()) {
                     System.out.println("No file loaded, please load an XML file first (1).");
@@ -180,16 +175,15 @@ public class UI {
                         System.out.println(option.toString());
                     }
                     // While is used to handle exceptions (e.g. outOfBound)
-                    while (exception != null) {
+                    while (choice < 1 || choice > TimeTableSolution.PresentationOptions.values().length) {
                         // Receive display choice from user:
-                        choice = scanner.nextInt();
-
-                        // Print according to display choice:
-                        try {
+                        choice = ui.numberInput();
+                        if (choice < 1 || choice > TimeTableSolution.PresentationOptions.values().length) {
+                            System.out.println("Please choose a number between 1 and " + TimeTableSolution.PresentationOptions.values().length + ".");
+                        }
+                        else{
+                            // Print according to display choice:
                             System.out.println(ui.descriptor.getEngine().getBestSolutionDisplay(choice));
-                            exception = null;
-                        } catch (Exception e) {
-                            exception = e;
                         }
                     }
                 }
@@ -261,6 +255,22 @@ public class UI {
 
     }
 
+    private int numberInput() {
+        Scanner scanner = new Scanner(System.in);
+        int input = -1;
+        boolean correctInput = false;
+        do {
+            try {
+                input = scanner.nextInt();
+                correctInput = true;
+            } catch (InputMismatchException ignored) {
+                System.out.println("Please enter a number.");
+                scanner.nextLine();
+            }
+        } while (!correctInput);
+        return input;
+    }
+
     // Private constructor for singleton:
     private UI() {
         this.exit = false;
@@ -275,13 +285,12 @@ public class UI {
 
     public void runMenu() {
         int choice;
-        Scanner scanner = new Scanner(System.in);
 
         while (!this.exit) {
             for (MenuOptions option : MenuOptions.values()) {
                 System.out.println(option.toString());
             }
-            choice = scanner.nextInt();
+            choice = numberInput();
             MenuOptions.values()[choice - 1].start(this);
         }
     }
@@ -306,6 +315,16 @@ public class UI {
     private void createNewEngineThread() {
         engine_thread = new Thread(descriptor.getEngine());
         engine_thread.setName("Engine");
+    }
+
+    private boolean yesOrNo() {
+        Scanner scanner = new Scanner(System.in);
+        String answer;
+        do {
+            System.out.println("Please choose Y/N: ");
+            answer = scanner.nextLine();
+        } while (!answer.equalsIgnoreCase("Y") && !answer.equalsIgnoreCase("N"));
+        return answer.equalsIgnoreCase("Y");
     }
 
 }
