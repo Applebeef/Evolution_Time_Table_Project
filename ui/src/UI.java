@@ -309,7 +309,12 @@ public class UI {
                 System.out.println(option.toString());
             }
             choice = numberInput();
-            MenuOptions.values()[choice - 1].start(this);
+            if (choice > 0 && choice <= MenuOptions.values().length) {
+                MenuOptions.values()[choice - 1].start(this);
+            }
+            else{
+                System.out.println("Please choose the number of one of the menu options.");
+            }
         }
     }
 
