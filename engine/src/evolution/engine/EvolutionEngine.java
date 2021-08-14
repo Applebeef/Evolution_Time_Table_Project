@@ -8,7 +8,7 @@ import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
-import evolution.util.Randomizer;
+
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -132,7 +132,7 @@ public class EvolutionEngine implements Runnable {
 
         // Using crossover (class EvolutionEngine), create an offspring Solution List:
         while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
-            // Recieve the solutions to be crossed over:
+            // Receive the solutions to be crossed over:
             selectedSolutions = this.selection.select(solutionList);
             // Crossover the two solutions:
             offspringSolutionsList.addAll(
