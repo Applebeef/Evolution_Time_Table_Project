@@ -126,15 +126,19 @@ public class EvolutionEngine implements Runnable {
 
     private void spawnGeneration() {
         this.offspringSolutionsList = new ArrayList<>();
-
+        List<Solution> selectedSolutions;
         // Elitism:
         offspringSolutionsList.addAll(solutionList.subList(0, this.selection.getElitism()));
 
         // Using crossover (class EvolutionEngine), create an offspring Solution List:
         while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
-            Solution s1 = this.selection.select(solutionList);
-            Solution s2 = this.selection.select(solutionList);
-            offspringSolutionsList.addAll(s1.crossover(s2, this.crossover));
+            // Recieve the solutions to be crossed over:
+            selectedSolutions = this.selection.select(solutionList);
+            // Crossover the two solutions:
+            offspringSolutionsList.addAll(
+                    selectedSolutions.get(0)
+                    .crossover(selectedSolutions.get(1), this.crossover)
+            );
         }
         // Shrink to initial population size:
         if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {

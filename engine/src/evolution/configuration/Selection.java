@@ -26,7 +26,11 @@ public class Selection {
         return elitism;
     }
 
-    public Solution select(List<Solution> solutionList) {
+    public List<Solution> select(List<Solution> solutionList) {
+        // Select according to selection type:
+        /* Note: this method returns a List of only TWO solutions to be crossed over.
+        *        The two solutions might be the same solution!
+        * */
         switch (this.type) {
             case "Truncation":
                 return truncationSelect(solutionList);
@@ -37,22 +41,45 @@ public class Selection {
         }
     }
 
-    private Solution truncationSelect(List<Solution> solutionList) {
+    private List<Solution> truncationSelect(List<Solution> solutionList) {
+        List<Solution> res = new ArrayList<>();
         int bestSolutionsAmount;
 
         // bestSolutionsAmount = the amount of the X% best solution (X is given)
         bestSolutionsAmount = (int) Math.floor(solutionList.size() * ((double) topPercent / 100));
         if (bestSolutionsAmount > 0) {
             // Return one of the best solutions (random solution from 0 to bestSolutionsAmount):
-            return solutionList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1));
+            res.add(solutionList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1)));
+            res.add(solutionList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1)));
+            return res;
         } else {
             return null;
         }
     }
 
-    private Solution rouletteWheelSelect(List<Solution> solutionList) {
-        double sum = solutionList.stream().mapToDouble(Solution::getFitness).sum();
-        return null;
+    private List<Solution> rouletteWheelSelect(List<Solution> solutionList) {
+        double totalFitnessSum = solutionList.stream().mapToDouble(Solution::getFitness).sum();
+        double sum = 0;
+        List<Double> randomList = new ArrayList<>();
+        List<Solution> res = new ArrayList<>();
+        // Add two random doubles in range 0, totalFitnessSum:
+        randomList.add(Randomizer.getRandomNumber(0.0, totalFitnessSum));
+        randomList.add(Randomizer.getRandomNumber(0.0, totalFitnessSum));
+        // Sort the two random doubles:
+        Collections.sort(randomList);
+        // Index for the random doubles:
+        int randomListIndex = 0;
+
+        for (int i = 0; i < solutionList.size() && randomListIndex < 2; i++) {
+            // Sum the fitness of the current solution:
+            sum += solutionList.get(i).getFitness();
+            // Add the solution if the random number(s) is in range:
+            while (randomList.get(randomListIndex) < sum && randomListIndex < 2) {
+                res.add(solutionList.get(i));
+                randomListIndex++;
+            }
+        }
+        return res;
     }
 
     public String getType() {
