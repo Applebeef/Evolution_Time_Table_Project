@@ -122,10 +122,12 @@ public enum Rule {
                     int subjectID = study.getSubjectId();
                     int hours = study.getHours();
                     Map<Integer, Integer> subjectHoursMap = mapSchoolClassToSubjectHoursMapMap.get(classID);
-                    Integer studiedHours = subjectHoursMap.get(subjectID);
-                    //!mapSchoolClassToSubjectHoursMapMap.get(schoolClass.getId()).get(study.subjectId).equals(study.hours)
-                    if (studiedHours == null || studiedHours != hours) {
-                        score -= reduction;
+                    if (subjectHoursMap != null) {
+                        Integer studiedHours = subjectHoursMap.get(subjectID);
+                        //!mapSchoolClassToSubjectHoursMapMap.get(schoolClass.getId()).get(study.subjectId).equals(study.hours)
+                        if (studiedHours == null || studiedHours != hours) {
+                            score -= reduction;
+                        }
                     }
                 }
             }
