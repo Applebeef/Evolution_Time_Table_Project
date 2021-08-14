@@ -4,13 +4,12 @@ import Generated.ETTSelection;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.*;
 
 public class Selection {
     protected String type;
-    protected int topPercent;
+    protected Integer topPercent;
     protected Integer elitism;
 
     public Selection(ETTSelection gen) {
@@ -29,8 +28,8 @@ public class Selection {
     public List<Solution> select(List<Solution> solutionList) {
         // Select according to selection type:
         /* Note: this method returns a List of only TWO solutions to be crossed over.
-        *        The two solutions might be the same solution!
-        * */
+         *        The two solutions might be the same solution!
+         * */
         switch (this.type) {
             case "Truncation":
                 return truncationSelect(solutionList);
@@ -74,9 +73,12 @@ public class Selection {
             // Sum the fitness of the current solution:
             sum += solutionList.get(i).getFitness();
             // Add the solution if the random number(s) is in range:
-            while (randomList.get(randomListIndex) < sum && randomListIndex < 2) {
+            while (randomList.get(randomListIndex) < sum) {
                 res.add(solutionList.get(i));
                 randomListIndex++;
+                if (randomListIndex >= 2) {
+                    break;
+                }
             }
         }
         return res;
