@@ -15,10 +15,14 @@ public class Selection {
     public Selection(ETTSelection gen) {
         this.elitism = gen.getETTElitism();
         this.type = gen.getType();
-        Pattern pattern = Pattern.compile("^TopPercent=(\\d+)$");
-        Matcher m = pattern.matcher(gen.getConfiguration());
-        if (m.find())
-            topPercent = Integer.parseInt(m.group(1));
+        if (type.equals("Truncation")) {
+            Pattern pattern = Pattern.compile("^TopPercent=(\\d+)$");
+            Matcher m = pattern.matcher(gen.getConfiguration());
+            if (m.find())
+                topPercent = Integer.parseInt(m.group(1));
+        } else {
+            topPercent = null;
+        }
     }
 
     public Integer getElitism() {

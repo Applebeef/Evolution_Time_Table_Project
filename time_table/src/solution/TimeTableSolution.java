@@ -11,6 +11,8 @@ import evolution.util.Pair;
 
 import java.util.*;
 
+import static java.util.Comparator.comparing;
+
 public class TimeTableSolution implements Solution {
     private List<Fifth> fifthsList;
     private Double fitness;
@@ -87,20 +89,33 @@ public class TimeTableSolution implements Solution {
         this.timeTable = timeTable;
         fifthsList = new ArrayList<>();
         int day, hour, schoolClass, teacher, subject;
-        for (day = 1; day <= timeTable.getDays(); day++) {
-            for (hour = 1; hour <= timeTable.getHours(); hour++) {
-                for (schoolClass = 1; schoolClass <= timeTable.getAmountofSchoolClasses(); schoolClass++) {
-                    teacher = Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers());
-                    if (teacher == 0) {
-                        subject = 0;
-                    } else {
-                        subject = Randomizer.getRandomNumber(1, timeTable.getAmountofSubjects());
-                    }
+        int amountOfClasses = timeTable.getSchoolClasses().getClassList().size();
+        for (int i = 0; i < amountOfClasses; i++) {
+            for (Study study : timeTable.getSchoolClasses().getClassList().get(i).getRequirements().getStudyList()) {
+                for (int j = 0; j < study.getHours(); j++) {
+                    schoolClass = timeTable.getSchoolClasses().getClassList().get(i).getId();
+                    subject = study.getSubjectId();
+                    day = Randomizer.getRandomNumber(1, timeTable.getDays());
+                    hour = Randomizer.getRandomNumber(1, timeTable.getHours());
+                    teacher = Randomizer.getRandomNumber(1, timeTable.getAmountofTeachers());
                     fifthsList.add(new Fifth(day, hour, schoolClass, teacher, subject));
                 }
             }
         }
-        // Default presentation option is FIFTS_LIST:
+//        for (day = 1; day <= timeTable.getDays(); day++) {
+//            for (hour = 1; hour <= timeTable.getHours(); hour++) {
+//                for (schoolClass = 1; schoolClass <= timeTable.getAmountofSchoolClasses(); schoolClass++) {
+//                    teacher = Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers());
+//                    if (teacher == 0) {
+//                        subject = 0;
+//                    } else {
+//                        subject = Randomizer.getRandomNumber(1, timeTable.getAmountofSubjects());
+//                    }
+//                    fifthsList.add(new Fifth(day, hour, schoolClass, teacher, subject));
+//                }
+//            }
+//        }
+        // Default presentation option is FIFTHS_LIST:
         this.presentationOption = PresentationOptions.FIFTHS_LIST;
     }
 
@@ -111,6 +126,25 @@ public class TimeTableSolution implements Solution {
         this.presentationOption = PresentationOptions.FIFTHS_LIST;
         fifths.forEach(list -> fifthsList.addAll(list));
         this.calculateFitness();
+        setComparators();
+    }
+
+    private void setComparators() {
+        dayTimeComparator = Comparator.comparing(Fifth::getDay)
+                .thenComparing(Fifth::getHour)
+                .thenComparing(Fifth::getSchoolClass)
+                .thenComparing(Fifth::getTeacher)
+                .thenComparing(Fifth::getSubject);
+        teacherAspectComparator = Comparator.comparing(Fifth::getTeacher)
+                .thenComparing(Fifth::getDay)
+                .thenComparing(Fifth::getHour)
+                .thenComparing(Fifth::getSchoolClass)
+                .thenComparing(Fifth::getSubject);
+        classAspectComparator = Comparator.comparing(Fifth::getSchoolClass)
+                .thenComparing(Fifth::getDay)
+                .thenComparing(Fifth::getHour)
+                .thenComparing(Fifth::getTeacher)
+                .thenComparing(Fifth::getSubject);
     }
 
     @Override
@@ -181,8 +215,9 @@ public class TimeTableSolution implements Solution {
     public List<Solution> crossover(Solution solution, Crossover crossover) {
         List<Solution> res = new ArrayList<>();
         if (solution instanceof TimeTableSolution) {
-            //TODO check crossover type for different sorts.
             TimeTableSolution other_timeTable_solution = (TimeTableSolution) solution;
+            // Choose correspondent comparator (according to crossover definition):
+            Comparator<Fifth> comparator = chooseFifthComparator(crossover);
             // Sort my fifths:
             Collections.sort(this.getFifthsList());
             // Sort other's fifths:

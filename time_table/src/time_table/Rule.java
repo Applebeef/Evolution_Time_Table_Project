@@ -114,7 +114,7 @@ public enum Rule {
                 hours++;
                 mapSchoolClassToSubjectHoursMapMap.get(fifth.getSchoolClass()).put(fifth.getSubject(), hours);
             }
-            //Check if the total amount of learned hours is equal to the required amount of hours per subject:.
+            //Check if the total amount of learned hours is equal to the required amount of hours per subject:
             for (SchoolClass schoolClass : timeTableSolution.getTimeTable().getSchoolClasses().getClassList()) {//FIXME random crashing on some runs.
                 for (Study study : schoolClass.requirements.studyList) {
                     int classID = schoolClass.getId();
