@@ -18,6 +18,9 @@ public class TimeTableSolution implements Solution {
     private Double fitness;
     private TimeTable timeTable;
     private PresentationOptions presentationOption;
+    private Comparator<Fifth> dayTimeComparator;
+    private Comparator<Fifth> teacherAspectComparator;
+    private Comparator<Fifth> classAspectComparator;
     private static String lineSeparator = System.getProperty("line.separator");
 
 
@@ -117,12 +120,14 @@ public class TimeTableSolution implements Solution {
 //        }
         // Default presentation option is FIFTHS_LIST:
         this.presentationOption = PresentationOptions.FIFTHS_LIST;
+        setComparators();
+        this.calculateFitness();
     }
 
     public TimeTableSolution(TimeTable timeTable, List<List<Fifth>> fifths) {
         this.timeTable = timeTable;
         this.fifthsList = new ArrayList<>();
-        // Default presentation option is FIFTS_LIST:
+        // Default presentation option is FIFTHS_LIST:
         this.presentationOption = PresentationOptions.FIFTHS_LIST;
         fifths.forEach(list -> fifthsList.addAll(list));
         this.calculateFitness();
@@ -219,9 +224,9 @@ public class TimeTableSolution implements Solution {
             // Choose correspondent comparator (according to crossover definition):
             Comparator<Fifth> comparator = chooseFifthComparator(crossover);
             // Sort my fifths:
-            Collections.sort(this.getFifthsList());
+            this.getFifthsList().sort(comparator);
             // Sort other's fifths:
-            Collections.sort(other_timeTable_solution.getFifthsList());
+            other_timeTable_solution.getFifthsList().sort(comparator);
 
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
@@ -260,6 +265,24 @@ public class TimeTableSolution implements Solution {
 
         }
         return res;
+    }
+
+    private Comparator<Fifth> chooseFifthComparator(Crossover crossover) {
+        switch (crossover.getName()) {
+            case "DayTimeOriented":
+                return dayTimeComparator;
+            case "AspectOriented":
+                switch (crossover.getConfiguration()) {
+                    case "CLASS":
+                        return classAspectComparator;
+                    case "TEACHER":
+                        return teacherAspectComparator;
+                    default:
+                        return null;
+                }
+            default:
+                return null;
+        }
     }
 
     // Return a list of sublists according to cutting points:
@@ -313,7 +336,7 @@ public class TimeTableSolution implements Solution {
                 fifthsArray.get(i).add(new Pair<>(null_fifth, false));
             }
         }
-        int i =0;
+        int i = 0;
         boolean multiple_arguments_flag;
         // Iterate through all fifths and add relevant fifths to 2D array:
         for (Fifth fifth : this.fifthsList) {
@@ -391,7 +414,7 @@ public class TimeTableSolution implements Solution {
 
     @Override
     public int compareTo(Solution o) {
-            return this.getFitness().compareTo(o.getFitness());
+        return this.getFitness().compareTo(o.getFitness());
     }
 
     @Override
