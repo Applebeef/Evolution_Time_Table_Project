@@ -125,19 +125,15 @@ public class EvolutionEngine implements Runnable {
     }
 
     private void spawnGeneration() {
-        int bestSolutionsAmount;
-        List<Solution> bestSolutionsList = new ArrayList<>();
         this.offspringSolutionsList = new ArrayList<>();
-        // bestSolutionsAmount = the amount of the X% best solution (X is given)
-        bestSolutionsAmount = (int) Math.floor(solutionList.size() * ((double) selection.getTopPercent() / 100));
-        if (bestSolutionsAmount > 0) {
-            // Get best solutions into "bestSolutionsList":
-            bestSolutionsList = solutionList.subList(0, bestSolutionsAmount);
-        }
+
+        // Elitism:
+        offspringSolutionsList.addAll(solutionList.subList(0, this.selection.getElitism()));
+
         // Using crossover (class EvolutionEngine), create an offspring Solution List:
         while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
-            Solution s1 = bestSolutionsList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1));
-            Solution s2 = bestSolutionsList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1));
+            Solution s1 = this.selection.select(solutionList);
+            Solution s2 = this.selection.select(solutionList);
             offspringSolutionsList.addAll(s1.crossover(s2, this.crossover));
         }
         // Shrink to initial population size:
@@ -148,6 +144,9 @@ public class EvolutionEngine implements Runnable {
         }
     }
 
+    private void truncation(){
+
+    }
 
     @Override
     public String toString() {

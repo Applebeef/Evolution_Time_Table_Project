@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V1.xsd">
+<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V2.xsd">
 	<ETT-TimeTable days="4" hours="5">
 		<ETT-Teachers>
 			<ETT-Teacher id="1">
@@ -12,7 +12,7 @@
 			<ETT-Teacher id="3">
 				<ETT-Name>Tim Sorly</ETT-Name>
 				<ETT-Teaching>
-					<ETT-Teaches subject-id="3"/>
+					<ETT-Teaches subject-id="13"/>
 				</ETT-Teaching>
 			</ETT-Teacher>			
 			<ETT-Teacher id="2">
@@ -23,7 +23,7 @@
 				</ETT-Teaching>
 			</ETT-Teacher>						
 			<ETT-Teacher id="4">
-				<ETT-Name>Sami Pokvar</ETT-Name>
+				<ETT-Name>Sami Po</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="2"/>
 					<ETT-Teaches subject-id="4"/>
@@ -76,9 +76,6 @@
 			<ETT-Rule type="Hard">
 				<ETT-RuleId>Singularity</ETT-RuleId>
 			</ETT-Rule>
-			<ETT-Rule type="Hard">
-				<ETT-RuleId>Satisfactory</ETT-RuleId>
-			</ETT-Rule>
 			<ETT-Rule type="Soft">
 				<ETT-RuleId>Knowledgeable</ETT-RuleId>
 			</ETT-Rule>
@@ -90,8 +87,6 @@
 		<ETT-Crossover name="DayTimeOriented" cutting-points="2"/>
 		<ETT-Mutations>
 			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=T"/>
-			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=C"/>			
-			<ETT-Mutation name="Flipping" probability="0.3" configuration="MaxTupples=3,Component=S"/>			
 		</ETT-Mutations>
 	</ETT-EvolutionEngine>
 </ETT-Descriptor>
