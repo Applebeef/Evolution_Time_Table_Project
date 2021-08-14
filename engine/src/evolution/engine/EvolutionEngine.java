@@ -148,9 +148,6 @@ public class EvolutionEngine implements Runnable {
         }
     }
 
-    private void truncation(){
-
-    }
 
     @Override
     public String toString() {
