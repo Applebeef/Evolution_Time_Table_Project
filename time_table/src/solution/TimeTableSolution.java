@@ -21,8 +21,7 @@ public class TimeTableSolution implements Solution {
     private Comparator<Fifth> dayTimeComparator;
     private Comparator<Fifth> teacherAspectComparator;
     private Comparator<Fifth> classAspectComparator;
-    private static String lineSeparator = System.getProperty("line.separator");
-
+    private static final String lineSeparator = System.getProperty("line.separator");
 
     // Inner enum PresentationOptions:
     public enum PresentationOptions {
@@ -86,6 +85,19 @@ public class TimeTableSolution implements Solution {
         public String toString() {
             return number + " - " + action;
         }
+    }
+
+    public TimeTableSolution(TimeTableSolution other) {
+        this.fifthsList = new ArrayList<>(other.fifthsList.size());
+        for(Fifth fifth : other.fifthsList){
+            this.fifthsList.add(fifth.copy());
+        }
+        this.fitness=other.fitness;
+        this.timeTable=other.timeTable;
+        this.presentationOption=other.presentationOption;
+        this.dayTimeComparator=other.dayTimeComparator;
+        this.teacherAspectComparator=other.teacherAspectComparator;
+        this.classAspectComparator=other.classAspectComparator;
     }
 
     public TimeTableSolution(TimeTable timeTable) {
@@ -241,9 +253,8 @@ public class TimeTableSolution implements Solution {
 
             Collections.sort(cuttingPointsList);
 
-            List<Fifth>[] list1Parts;
-            List<Fifth>[] list2Parts;
-
+            List<List<Fifth>> list1Parts;
+            List<List<Fifth>> list2Parts;
             list1Parts = splitToParts(this.getFifthsList(), cuttingPointsList);
             list2Parts = splitToParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
 
@@ -254,13 +265,13 @@ public class TimeTableSolution implements Solution {
             List<List<Fifth>> crossoverList1 = new ArrayList<>();
             List<List<Fifth>> crossoverList2 = new ArrayList<>();
 
-            for (int i = 0; i < list1Parts.length && i < list2Parts.length; i++) {
+            for (int i = 0; i < list1Parts.size() && i < list2Parts.size(); i++) {
                 if (i % 2 == 0) {
-                    crossoverList1.add(list1Parts[i]);
-                    crossoverList2.add(list2Parts[i]);
+                    crossoverList1.add(list1Parts.get(i));
+                    crossoverList2.add(list2Parts.get(i));
                 } else {
-                    crossoverList1.add(list2Parts[i]);
-                    crossoverList2.add(list1Parts[i]);
+                    crossoverList1.add(list2Parts.get(i));
+                    crossoverList2.add(list1Parts.get(i));
                 }
             }
 
@@ -277,25 +288,25 @@ public class TimeTableSolution implements Solution {
         return timeTable.getDays() * timeTable.getHours() * timeTable.getAmountofTeachers() * timeTable.getAmountofSubjects() * timeTable.getAmountofSchoolClasses();
     }
 
-    private List<Fifth>[] splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList) {
-        List[] res = new List[cuttingPointsList.size() + 1];
-        for (int i = 0; i < cuttingPointsList.size() + 1; i++){
-            res[i] = new ArrayList<>();
+    private List<List<Fifth>> splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList) {
+        List<List<Fifth>> res = new ArrayList<>(cuttingPointsList.size() + 1);
+        for (int i = 0; i < cuttingPointsList.size() + 1; i++) {
+            res.add(new ArrayList<>());
         }
-            for (Fifth fifth : fifthsList) {
-                int position = getPosition(fifth);
-                if (position < cuttingPointsList.get(0)) {
-                    res[0].add(fifth);
-                } else if (position > cuttingPointsList.get(cuttingPointsList.size() - 1)) {
-                    res[res.length - 1].add(fifth);
-                }
-                for (int i = 0; i < cuttingPointsList.size() - 1; i++) {
-                    if (position > cuttingPointsList.get(i) && position < cuttingPointsList.get(i + 1)) {
-                        res[i + 1].add(fifth);
-                        break;
-                    }
+        for (Fifth fifth : fifthsList) {
+            int position = getPosition(fifth);
+            if (position < cuttingPointsList.get(0)) {
+                res.get(0).add(fifth);
+            } else if (position >= cuttingPointsList.get(cuttingPointsList.size() - 1)) {
+                res.get(res.size() - 1).add(fifth);
+            }
+            for (int i = 0; i < cuttingPointsList.size() - 1; i++) {
+                if (position >= cuttingPointsList.get(i) && position < cuttingPointsList.get(i + 1)) {
+                    res.get(i + 1).add(fifth);
+                    break;
                 }
             }
+        }
         return res;
     }
 
@@ -356,6 +367,12 @@ public class TimeTableSolution implements Solution {
     public Double getFitness() {
         return fitness;
     }
+
+    @Override
+    public Solution copy() {
+        return new TimeTableSolution(this);
+    }
+
 
     public TimeTable getTimeTable() {
         return timeTable;

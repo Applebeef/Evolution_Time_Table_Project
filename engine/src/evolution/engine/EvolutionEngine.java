@@ -101,7 +101,8 @@ public class EvolutionEngine implements Runnable {
             }
             if (solutionList.get(0).getFitness() > bestSolution.getV2().getFitness()) {
                 synchronized (bestSolution) {
-                    bestSolution = new Pair<>(i, solutionList.get(0));
+                    bestSolution.setV1(i);
+                    bestSolution.setV2(solutionList.get(0));
                 }
             }
         }
@@ -126,7 +127,10 @@ public class EvolutionEngine implements Runnable {
         this.offspringSolutionsList = new ArrayList<>();
         List<Solution> selectedSolutions;
         // Elitism:
-        offspringSolutionsList.addAll(solutionList.subList(0, this.selection.getElitism()));
+        List<Solution> eliteList = solutionList.subList(0, this.selection.getElitism());
+        List<Solution> copiedEliteList = new ArrayList<>(eliteList.size());
+        eliteList.forEach(solution -> copiedEliteList.add(solution.copy()));
+        offspringSolutionsList.addAll(copiedEliteList);
 
         // Using crossover (class EvolutionEngine), create an offspring Solution List:
         while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
@@ -138,7 +142,7 @@ public class EvolutionEngine implements Runnable {
 
             offspringSolutionsList.addAll(
                     selectedSolutions.get(0)
-                    .crossover(selectedSolutions.get(1), this.crossover)
+                            .crossover(selectedSolutions.get(1), this.crossover)
             );
         }
         // Shrink to initial population size:

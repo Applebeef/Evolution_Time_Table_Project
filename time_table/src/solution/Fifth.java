@@ -92,4 +92,8 @@ public class Fifth implements Comparable<Fifth> {
     public int hashCode() {
         return Objects.hash(day, hour, schoolClass, teacher, subject);
     }
+
+    public Fifth copy() {
+        return new Fifth(day, hour, schoolClass, teacher, subject);
+    }
 }
