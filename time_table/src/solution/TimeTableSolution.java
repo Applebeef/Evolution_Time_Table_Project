@@ -230,31 +230,37 @@ public class TimeTableSolution implements Solution {
 
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
+            int maxListSize = getMaxListSize();
             for (int i = 0; i < crossover.getCuttingPoints(); i++) {
                 // Randomize cutting points. Amount according to CuttingPoints:
                 do {
-                    cuttingPoint = Randomizer.getRandomNumber(1, this.getFifthsList().size() - 1);
+                    cuttingPoint = Randomizer.getRandomNumber(1, maxListSize - 1);
                 } while (cuttingPointsList.contains(cuttingPoint));
                 cuttingPointsList.add(cuttingPoint);
             }
 
             Collections.sort(cuttingPointsList);
 
+            List<Fifth>[] list1Parts;
+            List<Fifth>[] list2Parts;
 
-            List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), cuttingPointsList);
-            List<List<Fifth>> subLists2 = chopIntoParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
+            list1Parts = splitToParts(this.getFifthsList(), cuttingPointsList);
+            list2Parts = splitToParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
+
+//            List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), cuttingPointsList);
+//            List<List<Fifth>> subLists2 = chopIntoParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
 
 
             List<List<Fifth>> crossoverList1 = new ArrayList<>();
             List<List<Fifth>> crossoverList2 = new ArrayList<>();
 
-            for (int i = 0; i < subLists1.size(); i++) {
+            for (int i = 0; i < list1Parts.length && i < list2Parts.length; i++) {
                 if (i % 2 == 0) {
-                    crossoverList1.add(subLists1.get(i));
-                    crossoverList2.add(subLists2.get(i));
+                    crossoverList1.add(list1Parts[i]);
+                    crossoverList2.add(list2Parts[i]);
                 } else {
-                    crossoverList1.add(subLists2.get(i));
-                    crossoverList2.add(subLists1.get(i));
+                    crossoverList1.add(list2Parts[i]);
+                    crossoverList2.add(list1Parts[i]);
                 }
             }
 
@@ -265,6 +271,41 @@ public class TimeTableSolution implements Solution {
 
         }
         return res;
+    }
+
+    private int getMaxListSize() {
+        return timeTable.getDays() * timeTable.getHours() * timeTable.getAmountofTeachers() * timeTable.getAmountofSubjects() * timeTable.getAmountofSchoolClasses();
+    }
+
+    private List<Fifth>[] splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList) {
+        List[] res = new List[cuttingPointsList.size() + 1];
+        for (int i = 0; i < cuttingPointsList.size() + 1; i++){
+            res[i] = new ArrayList<>();
+        }
+            for (Fifth fifth : fifthsList) {
+                int position = getPosition(fifth);
+                if (position < cuttingPointsList.get(0)) {
+                    res[0].add(fifth);
+                } else if (position > cuttingPointsList.get(cuttingPointsList.size() - 1)) {
+                    res[res.length - 1].add(fifth);
+                }
+                for (int i = 0; i < cuttingPointsList.size() - 1; i++) {
+                    if (position > cuttingPointsList.get(i) && position < cuttingPointsList.get(i + 1)) {
+                        res[i + 1].add(fifth);
+                        break;
+                    }
+                }
+            }
+        return res;
+    }
+
+    private int getPosition(Fifth fifth) {
+        //returns the index of this fifth assuming we had a "full" array (accounting for every class,teacher,subject,hour and day).
+        return (fifth.getSubject() - 1) +
+                (fifth.getTeacher() - 1) * timeTable.getAmountofSubjects() +
+                (fifth.getSchoolClass() - 1) * timeTable.getAmountofSubjects() * timeTable.getAmountofTeachers() +
+                (fifth.getHour() - 1) * timeTable.getAmountofSubjects() * timeTable.getAmountofTeachers() * timeTable.getAmountofSchoolClasses() +
+                (fifth.getDay() - 1) * timeTable.getAmountofSubjects() * timeTable.getAmountofTeachers() * timeTable.getAmountofSchoolClasses() * timeTable.getHours();
     }
 
     private Comparator<Fifth> chooseFifthComparator(Crossover crossover) {

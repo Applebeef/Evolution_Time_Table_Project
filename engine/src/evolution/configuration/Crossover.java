@@ -54,27 +54,6 @@ public class Crossover {
         this.cuttingPoints = cuttingPoints;
     }
 
-    public List<Solution> crossover(Solution s1, Solution s2) {
-        //TODO: choose comparator
-        switch (this.name) {
-            case "DayTimeOriented":
-                return dayTimeOrientedCrossover(s1, s2);
-            case "AspectOriented":
-                return aspectOrientedCrossover(s1,s2);
-            default:
-                return null;
-        }
-    }
-
-    private List<Solution> dayTimeOrientedCrossover(Solution s1, Solution s2) {
-        List<Solution> res = new ArrayList<>(2);
-        return res;
-    }
-
-    private List<Solution> aspectOrientedCrossover(Solution s1, Solution s2) {
-        List<Solution> res = new ArrayList<>(2);
-        return res;
-    }
 
     @Override
     public String toString() {
