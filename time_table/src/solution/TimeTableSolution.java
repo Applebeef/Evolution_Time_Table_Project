@@ -294,7 +294,10 @@ public class TimeTableSolution implements Solution {
             res.add(new ArrayList<>());
         }
         for (Fifth fifth : fifthsList) {
+            /* Returns the index of this fifth assuming we had a "full" array
+             (accounting for every class,teacher,subject,hour and day): */
             int position = getPosition(fifth);
+            // Add the current fifth to the correct List according to position:
             if (position < cuttingPointsList.get(0)) {
                 res.get(0).add(fifth);
             } else if (position >= cuttingPointsList.get(cuttingPointsList.size() - 1)) {

@@ -137,7 +137,6 @@ public class EvolutionEngine implements Runnable {
             // Receive the solutions to be crossed over:
             selectedSolutions = this.selection.select(solutionList);
             // Crossover the two solutions:
-            // TODO: fix fifths cutting points - add arithmetics to recognize position between cutting points.
             // TODO: Think of crossover method implementation (inside Crossover or inside Solution instantiation).
 
             offspringSolutionsList.addAll(
