@@ -1,48 +1,61 @@
 package evolution.configuration;
 
+import java.util.List;
 import java.util.regex.*;
+
 public enum Mutation {
-    Flipping("Flipping"){
-
-    };
-
-    double probability;
-    String name;
-    Configuration config;
-
-    public class Configuration{
-        int maxTupples;
-        String component;
-
-        Configuration(String configString){
+    Flipping("Flipping") {
+        @Override
+        protected void parseString(String config) {
             Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");
-            Matcher m = pattern.matcher(configString);
-            if(m.find()) {
-                maxTupples = Integer.parseInt(m.group(1));
-                component = m.group(2);
+            Matcher m = pattern.matcher(config);
+            if (m.find()) {
+                this.tupples = Integer.parseInt(m.group(1));
+                this.component = m.group(2);
             }
-        }
-
-        public int getMaxTupples() {
-            return maxTupples;
-        }
-
-        public String getComponent() {
-            return component;
         }
 
         @Override
         public String toString() {
-            String lineSeparator = System.getProperty("line.separator");
-            return "Max Tupples: " + maxTupples + ", Component: " + component;
+            return super.toString() + "MaxTupples - " + tupples + " Component - " + component;
         }
+    },
+    Sizer("Sizer") {
+        @Override
+        protected void parseString(String config) {
+            Pattern pattern = Pattern.compile("^TotalTupples=(\\d+)$");
+            Matcher m = pattern.matcher(config);
+            if (m.find()) {
+                this.tupples = Integer.parseInt(m.group(1));
+                this.component = null;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return super.toString() + "TotalTupples - " + tupples;
+        }
+    };
+
+    double probability;
+    String name;
+    int tupples;
+    String component;
+
+    public int getTupples() {
+        return tupples;
+    }
+
+    public String getComponent() {
+        return component;
     }
 
 
-
-    Mutation(String name){
+    Mutation(String name) {
         this.name = name;
     }
+
+    protected abstract void parseString(String config);
 
     public double getProbability() {
         return probability;
@@ -56,19 +69,11 @@ public enum Mutation {
         return name;
     }
 
-    public Configuration getConfig() {
-        return config;
-    }
-
-    public void setConfig(String config) {
-        this.config = new Configuration(config);
-    }
-
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return  "   " + "Name - " + name + lineSeparator +
+        return "   " + "Name - " + name + lineSeparator +
                 "   " + "Probability - " + probability + lineSeparator +
-                "   " + "Configuration - " + config;
+                "   " + "Configuration - ";
     }
 }

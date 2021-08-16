@@ -9,14 +9,21 @@ import java.util.List;
 public class Mutations {
     private List<Mutation> mutationList;
 
-    public Mutations(ETTMutations gen){
+    public Mutations(ETTMutations gen) {
         mutationList = new ArrayList<>();
-        Mutation mutation;
-        for(ETTMutation m : gen.getETTMutation()){
-            if(m.getName().equals("Flipping")){
-                mutation = Mutation.Flipping;
+        for (ETTMutation m : gen.getETTMutation()) {
+            Mutation mutation = null;
+            switch (m.getName()) {
+                case "Flipping":
+                    mutation = Mutation.Flipping;
+                    break;
+                case "Sizer":
+                    mutation = Mutation.Sizer;
+                    break;
+            }
+            if (mutation != null) {
                 mutation.setProbability(m.getProbability());
-                mutation.setConfig(m.getConfiguration());
+                mutation.parseString(m.getConfiguration());
                 mutationList.add(mutation);
             }
         }
@@ -30,7 +37,7 @@ public class Mutations {
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
         StringBuilder result = new StringBuilder();
-        for(Mutation m : mutationList){
+        for (Mutation m : mutationList) {
             result.append(m.toString()).append(lineSeparator);
         }
         return result.toString();

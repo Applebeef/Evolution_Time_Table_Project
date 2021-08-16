@@ -117,19 +117,6 @@ public class TimeTableSolution implements Solution {
                 }
             }
         }
-//        for (day = 1; day <= timeTable.getDays(); day++) {
-//            for (hour = 1; hour <= timeTable.getHours(); hour++) {
-//                for (schoolClass = 1; schoolClass <= timeTable.getAmountofSchoolClasses(); schoolClass++) {
-//                    teacher = Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers());
-//                    if (teacher == 0) {
-//                        subject = 0;
-//                    } else {
-//                        subject = Randomizer.getRandomNumber(1, timeTable.getAmountofSubjects());
-//                    }
-//                    fifthsList.add(new Fifth(day, hour, schoolClass, teacher, subject));
-//                }
-//            }
-//        }
         // Default presentation option is FIFTHS_LIST:
         this.presentationOption = PresentationOptions.FIFTHS_LIST;
         setComparators();
@@ -198,33 +185,80 @@ public class TimeTableSolution implements Solution {
             // If the random number "hits" the mutation probability then the mutation will happend:
             if (probability <= mutation.getProbability()) {
                 // mutatedNumber = maximum amount of tupples with the mutation:
-                mutatedNumber = Randomizer.getRandomNumber(1, mutation.getConfig().getMaxTupples());
-                List<Fifth> toBeMutated = new ArrayList<>();
-                for (int i = 0; i < mutatedNumber; i++) {
-                    toBeMutated.add(this.getFifthsList().get(Randomizer.getRandomNumber(0, this.getFifthsList().size() - 1)));
-                }
-                String component = mutation.getConfig().getComponent();
-                // Mutate the toBeMutated's according to the component in the mutation:
-                switch (component) {
-                    case "D":
-                        toBeMutated.forEach(fifth -> fifth.setDay(Randomizer.getRandomNumber(1, timeTable.getDays())));
+                mutatedNumber = Randomizer.getRandomNumber(1, Math.abs(mutation.getTupples()));
+
+                switch (mutation.getName()) {
+                    case ("Flipping"):
+                        flippingMutation(mutatedNumber, mutation);
                         break;
-                    case "H":
-                        toBeMutated.forEach(fifth -> fifth.setHour(Randomizer.getRandomNumber(1, timeTable.getHours())));
-                        break;
-                    case "C":
-                        toBeMutated.forEach(fifth -> fifth.setSchoolClass(Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses())));
-                        break;
-                    case "T":
-                        toBeMutated.forEach(fifth -> fifth.setTeacher(Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers())));
-                        break;
-                    case "S":
-                        toBeMutated.forEach(fifth -> fifth.setSubject(Randomizer.getRandomNumber(0, timeTable.getAmountofSubjects())));
+                    case ("Sizer"):
+                        sizerMutation(mutatedNumber, mutation);
                         break;
                 }
+
             }
         }
         calculateFitness();
+    }
+
+    private void sizerMutation(int mutatedNumber, Mutation mutation) {
+        if (mutation.getTupples() < 0) {
+            sizerReduce(mutatedNumber);
+        } else {
+            sizerIncrease(mutatedNumber);
+        }
+
+    }
+
+    private void sizerIncrease(int mutatedNumber) {
+        for (int i = 0; i < mutatedNumber && (fifthsList.size() <= timeTable.getDays() * timeTable.getHours()); i++) {
+            fifthsList.add(generateRandomFifth());
+        }
+    }
+
+    private void sizerReduce(int mutatedNumber) {
+        for (int i = 0; i < mutatedNumber && fifthsList.size() > timeTable.getDays(); i++) {
+            int randomIndex = Randomizer.getRandomNumber(0, fifthsList.size());
+            fifthsList.remove(randomIndex);
+        }
+    }
+
+    private Fifth generateRandomFifth() {
+        int day, hour, schoolClass, teacher, subject;
+        schoolClass = Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses());
+        subject = Randomizer.getRandomNumber(1, timeTable.getAmountofSubjects());
+        day = Randomizer.getRandomNumber(1, timeTable.getDays());
+        hour = Randomizer.getRandomNumber(1, timeTable.getHours());
+        teacher = Randomizer.getRandomNumber(1, timeTable.getAmountofTeachers());
+        return new Fifth(day, hour, schoolClass, teacher, subject);
+    }
+
+    private void flippingMutation(int mutatedNumber, Mutation mutation) {
+        List<Fifth> toBeMutated = new ArrayList<>();
+        for (int i = 0; i < mutatedNumber; i++) {
+            toBeMutated.add(this.getFifthsList().get(Randomizer.getRandomNumber(0, this.getFifthsList().size() - 1)));
+        }
+        String component = mutation.getComponent();
+        // Mutate the toBeMutated's according to the component in the mutation:
+        switch (component) {
+            case "D":
+                toBeMutated.forEach(fifth -> fifth.setDay(Randomizer.getRandomNumber(1, timeTable.getDays())));
+                break;
+            case "H":
+                toBeMutated.forEach(fifth -> fifth.setHour(Randomizer.getRandomNumber(1, timeTable.getHours())));
+                break;
+            case "C":
+                toBeMutated.forEach(fifth -> fifth.setSchoolClass(Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses())));
+                break;
+            case "T":
+                toBeMutated.forEach(fifth -> fifth.setTeacher(Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers())));
+                break;
+            case "S":
+                toBeMutated.forEach(fifth -> fifth.setSubject(Randomizer.getRandomNumber(0, timeTable.getAmountofSubjects())));
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -257,9 +291,6 @@ public class TimeTableSolution implements Solution {
             List<List<Fifth>> list2Parts;
             list1Parts = splitToParts(this.getFifthsList(), cuttingPointsList);
             list2Parts = splitToParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
-
-//            List<List<Fifth>> subLists1 = chopIntoParts(this.getFifthsList(), cuttingPointsList);
-//            List<List<Fifth>> subLists2 = chopIntoParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
 
 
             List<List<Fifth>> crossoverList1 = new ArrayList<>();
@@ -302,11 +333,12 @@ public class TimeTableSolution implements Solution {
                 res.get(0).add(fifth);
             } else if (position >= cuttingPointsList.get(cuttingPointsList.size() - 1)) {
                 res.get(res.size() - 1).add(fifth);
-            }
-            for (int i = 0; i < cuttingPointsList.size() - 1; i++) {
-                if (position >= cuttingPointsList.get(i) && position < cuttingPointsList.get(i + 1)) {
-                    res.get(i + 1).add(fifth);
-                    break;
+            } else {
+                for (int i = 0; i < cuttingPointsList.size() - 1; i++) {
+                    if (position >= cuttingPointsList.get(i) && position < cuttingPointsList.get(i + 1)) {
+                        res.get(i + 1).add(fifth);
+                        break;
+                    }
                 }
             }
         }
@@ -338,23 +370,6 @@ public class TimeTableSolution implements Solution {
             default:
                 return null;
         }
-    }
-
-    // Return a list of sublists according to cutting points:
-    private List<List<Fifth>> chopIntoParts(List<Fifth> fifthList, List<Integer> cuttingPointsList) {
-        List<List<Fifth>> partsList = new ArrayList<>();
-        int min;
-        int max = 0;
-        for (Integer cuttingPoint : cuttingPointsList) {
-            min = max;
-            max = cuttingPoint;
-            partsList.add(fifthList.subList(min, max));
-        }
-        if (max < fifthList.size()) {
-            min = max;
-            partsList.add(fifthList.subList(min, fifthList.size()));
-        }
-        return partsList;
     }
 
     @Override
@@ -397,7 +412,6 @@ public class TimeTableSolution implements Solution {
                 fifthsArray.get(i).add(new Pair<>(null_fifth, false));
             }
         }
-        int i = 0;
         boolean multiple_arguments_flag;
         // Iterate through all fifths and add relevant fifths to 2D array:
         for (Fifth fifth : this.fifthsList) {

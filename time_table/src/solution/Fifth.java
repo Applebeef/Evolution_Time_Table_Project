@@ -13,6 +13,7 @@ public class Fifth implements Comparable<Fifth> {
         this.subject = subject;
     }
 
+
     public Integer getDay() {
         return day;
     }
