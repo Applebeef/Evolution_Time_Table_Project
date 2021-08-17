@@ -7,19 +7,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="491.0" prefWidth="823.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <center>
       <Accordion prefHeight="400.0" prefWidth="259.0" BorderPane.alignment="CENTER">
         <panes>
@@ -45,7 +44,7 @@
                               <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
                            </rowConstraints>
                            <children>
-                              <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <MenuButton fx:id="engineDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <items>
                                     <MenuItem mnemonicParsing="false" onAction="#displayMutations" text="Mutations" />
                                     <MenuItem mnemonicParsing="false" onAction="#displaySelection" text="Selection" />
@@ -54,16 +53,7 @@
                               </MenuButton>
                               <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.rowSpan="3">
                                  <content>
-                                    <FlowPane>
-                                       <children>
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                       </children>
-                                    </FlowPane>
+                                    <HBox fx:id="engineDisplayPane" prefHeight="100.0" prefWidth="200.0" />
                                  </content>
                               </ScrollPane>
                               <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -86,7 +76,7 @@
                <content>
                   <ScrollPane fitToHeight="true" fitToWidth="true">
                      <content>
-                        <GridPane>
+                        <GridPane minHeight="200.0" minWidth="200.0">
                           <columnConstraints>
                               <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
                               <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
@@ -96,32 +86,27 @@
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                            <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+                            <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="32.0" vgrow="NEVER" />
                             <RowConstraints maxHeight="143.0" minHeight="8.0" prefHeight="33.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="163.0" minHeight="1.0" prefHeight="43.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="171.0" minHeight="10.0" prefHeight="129.0" vgrow="ALWAYS" />
+                              <RowConstraints maxHeight="163.0" minHeight="1.0" prefHeight="29.0" vgrow="NEVER" />
+                              <RowConstraints maxHeight="171.0" minHeight="10.0" prefHeight="114.0" vgrow="ALWAYS" />
                               <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
                           </rowConstraints>
                            <children>
-                              <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <MenuButton fx:id="timeTableDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                 <items>
                                   <MenuItem mnemonicParsing="false" onAction="#displayTeachers" text="Teachers" />
                                   <MenuItem mnemonicParsing="false" onAction="#displayClasses" text="Classes" />
                                     <MenuItem mnemonicParsing="false" onAction="#displaySubjects" text="Subjects" />
                                 </items>
                               </MenuButton>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.rowSpan="3">
+                              <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="3" GridPane.vgrow="ALWAYS">
                                  <content>
-                                    <FlowPane>
-                                       <children>
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                       </children>
-                                    </FlowPane>
+                                    <HBox fx:id="timeTableDisplayPane" minHeight="200.0" minWidth="100.0">
+                                       <padding>
+                                          <Insets right="5.0" />
+                                       </padding>
+                                    </HBox>
                                  </content>
                               </ScrollPane>
                               <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -170,26 +155,17 @@
                             <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
                           </rowConstraints>
                            <children>
-                              <Button fx:id="DisplayBestSolutionsButton" mnemonicParsing="false" onAction="#displayBestSolutions" text="Display Best Solution" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Button fx:id="DisplayAllSolutionsButton" mnemonicParsing="false" onAction="#displayAllSolutions" text="Display All Solutions" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button fx:id="DisplayBestSolutionsButton" disable="true" mnemonicParsing="false" onAction="#displayBestSolutions" text="Display Best Solution" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button fx:id="DisplayAllSolutionsButton" disable="true" mnemonicParsing="false" onAction="#displayAllSolutions" text="Display All Solutions" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label text="Generations: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Label layoutX="25.0" layoutY="87.0" text="Best Fitness Total:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Label text="Current Generation Best Fitness:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label fx:id="GenerationsLabel" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                               <Label fx:id="BestFitnessCurrent" layoutX="155.0" layoutY="87.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label fx:id="BestFitnessTotal" layoutX="155.0" layoutY="117.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                              <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.rowSpan="5">
+                              <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="5" GridPane.vgrow="ALWAYS">
                                  <content>
-                                    <FlowPane>
-                                       <children>
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                                       </children>
-                                    </FlowPane>
+                                    <HBox fx:id="resultsDisplayPane" prefHeight="100.0" prefWidth="200.0" />
                                  </content>
                               </ScrollPane>
                            </children>
@@ -205,18 +181,46 @@
       <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="600.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFile" text="Load File" />
-            <CheckBox disable="true" mnemonicParsing="false" text="File Loaded">
+            <CheckBox fx:id="fileLoadedIndicator" disable="true" mnemonicParsing="false" text="File Loaded">
                <HBox.margin>
                   <Insets left="5.0" />
                </HBox.margin>
             </CheckBox>
-            <Button fx:id="startButton" mnemonicParsing="false" onAction="#start" text="Start" />
-            <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pause" text="Pause" />
-            <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stop" text="Stop" />
+            <Button fx:id="startButton" disable="true" mnemonicParsing="false" onAction="#start" text="Start" />
+            <Button fx:id="pauseButton" disable="true" mnemonicParsing="false" onAction="#pause" text="Pause" />
+            <Button fx:id="stopButton" disable="true" mnemonicParsing="false" onAction="#stop" text="Stop" />
          </children>
          <padding>
             <Insets left="5.0" />
          </padding>
       </HBox>
    </top>
+   <bottom>
+      <GridPane prefHeight="69.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
+          <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+          <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="Generation Progress: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Fitness Progress: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Time Progress: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ProgressBar fx:id="generationProgressBar" progress="0.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <ProgressBar fx:id="fitnessProgressBar" progress="0.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <ProgressBar fx:id="timeProgressBar" progress="0.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </GridPane>
+   </bottom>
 </BorderPane>

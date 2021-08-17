@@ -2,18 +2,21 @@ package time_table;
 
 import Generated.ETTTimeTable;
 import evolution.engine.problem_solution.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import solution.*;
 
 public class TimeTable implements Problem {
-    int days, hours;
+    IntegerProperty days, hours;
+    //int days, hours;
     SchoolClasses schoolClasses;
     Subjects subjects;
     Teachers teachers;
     Rules rules;
 
     public TimeTable(ETTTimeTable gen) {
-        days = gen.getDays();
-        hours = gen.getHours();
+        days = new SimpleIntegerProperty(gen.getDays());
+        hours = new SimpleIntegerProperty(gen.getHours());
 
         schoolClasses = new SchoolClasses(gen.getETTClasses());
         subjects = new Subjects(gen.getETTSubjects());
@@ -22,10 +25,16 @@ public class TimeTable implements Problem {
     }
 
     public int getDays() {
+        return days.get();
+    }
+    public IntegerProperty daysProperty() {
         return days;
     }
 
     public int getHours() {
+        return hours.get();
+    }
+    public IntegerProperty hoursProperty() {
         return hours;
     }
 

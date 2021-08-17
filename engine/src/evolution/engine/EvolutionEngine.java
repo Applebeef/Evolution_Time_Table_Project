@@ -8,6 +8,8 @@ import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 
 import java.util.*;
@@ -24,7 +26,8 @@ public class EvolutionEngine implements Runnable {
     private List<Pair<Integer, Solution>> bestSolutionsPerFrequency;
     private Pair<Integer, Solution> bestSolution;
 
-    private boolean engineStarted = false;
+    private BooleanProperty engineStarted;
+    private BooleanProperty solutionsReady;
     private Integer number_of_generations;
 
     private int frequency;
@@ -39,6 +42,24 @@ public class EvolutionEngine implements Runnable {
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new ArrayList<>();
+        engineStarted = new SimpleBooleanProperty(false);
+        solutionsReady = new SimpleBooleanProperty(false);
+    }
+
+    public boolean isSolutionsReady() {
+        return solutionsReady.get();
+    }
+
+    public BooleanProperty solutionsReadyProperty() {
+        return solutionsReady;
+    }
+
+    public void setSolutionsReady(boolean solutionsReady) {
+        this.solutionsReady.set(solutionsReady);
+    }
+
+    public BooleanProperty engineStartedProperty() {
+        return engineStarted;
     }
 
     public InitialPopulation getInitialSolutionPopulation() {
@@ -62,7 +83,7 @@ public class EvolutionEngine implements Runnable {
     }
 
     public boolean isEngineStarted() {
-        return engineStarted;
+        return engineStarted.get();
     }
 
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
@@ -78,7 +99,8 @@ public class EvolutionEngine implements Runnable {
         // Sort list:
         solutionList.sort(Collections.reverseOrder());
         bestSolution = new Pair<>(0, solutionList.get(0));
-        engineStarted = true;
+        engineStarted.set(true);
+        solutionsReady.set(true);
     }
 
     public void runEvolution() {
@@ -107,6 +129,7 @@ public class EvolutionEngine implements Runnable {
             }
         }
         consumer.accept("Engine is finished.");
+        engineStarted.set(false);
     }
 
     public String getBestSolutionDisplay(int choice) {
@@ -178,13 +201,14 @@ public class EvolutionEngine implements Runnable {
     }
 
     public void setEngineStarted(boolean engineStarted) {
-        this.engineStarted = engineStarted;
+        this.engineStarted.set(engineStarted);
     }
 
     public void reset() {
         solutionList.clear();
         bestSolutionsPerFrequency.clear();
         offspringSolutionsList.clear();
-        engineStarted = false;
+        engineStarted.set(false);
+        solutionsReady.set(false);
     }
 }
