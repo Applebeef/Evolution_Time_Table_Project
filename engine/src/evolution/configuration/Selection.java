@@ -100,4 +100,13 @@ public class Selection {
     public String toString() {
         return "Selection of type: " + type + ", while choosing top " + topPercent + "%.";
     }
+
+    public String checkElitismValidity(int populationSize) {
+        if (elitism >= populationSize){
+            return "Elitism operator bigger than population size.";
+        }
+        else{
+            return "";
+        }
+    }
 }

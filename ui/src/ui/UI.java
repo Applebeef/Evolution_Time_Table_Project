@@ -1,3 +1,5 @@
+package ui;
+
 import Generated.ETTDescriptor;
 import solution.TimeTableSolution;
 import descriptor.Descriptor;

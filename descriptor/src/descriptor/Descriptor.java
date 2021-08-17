@@ -4,9 +4,7 @@ import time_table.TimeTable;
 import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Descriptor {
@@ -50,6 +48,7 @@ public class Descriptor {
         errorSet.add(timeTable.getTeachers().checkSubjectValidity(timeTable.getSubjects()));
         errorSet.add(timeTable.getSubjects().checkValidity());
         errorSet.add(timeTable.getRules().checkValidity());
+        errorSet.add(evolutionEngine.getSelection().checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
         return errorSet;
     }
 }

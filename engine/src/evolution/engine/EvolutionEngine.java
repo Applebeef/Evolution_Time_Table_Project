@@ -88,7 +88,7 @@ public class EvolutionEngine implements Runnable {
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
-            solutionList.forEach(solution -> solution.mutate(mutations));//TODO add sizer mutation.
+            solutionList.forEach(solution -> solution.mutate(mutations));
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
