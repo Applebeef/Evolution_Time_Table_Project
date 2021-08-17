@@ -49,6 +49,7 @@ public class MainController {
 
     @FXML
     private Button pauseButton;
+    private boolean paused = false;
 
     @FXML
     private Button stopButton;
@@ -100,7 +101,14 @@ public class MainController {
 
     @FXML
     void pause(ActionEvent event) {
-
+        paused=!paused;
+        if(paused){
+            pauseButton.setText("Resume");
+        }
+        else{
+            pauseButton.setText("Pause");
+        }
+        //TODO make pause.
     }
 
     @FXML

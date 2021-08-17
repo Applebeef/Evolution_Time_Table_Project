@@ -86,7 +86,7 @@
                <content>
                   <ScrollPane fitToHeight="true" fitToWidth="true">
                      <content>
-                        <GridPane prefHeight="255.0" prefWidth="591.0">
+                        <GridPane>
                           <columnConstraints>
                               <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
                               <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
