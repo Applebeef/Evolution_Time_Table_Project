@@ -150,6 +150,7 @@ public enum Rule {
                     weeklyMapPerTeacher.get(fifth.getTeacher()).add(fifth.getDay());
                 }
             }
+            //for n=day, n(n+1)/2
             int daysSigma = timeTableSolution.getTimeTable().days * (timeTableSolution.getTimeTable().getDays() + 1) / 2;
             for (int i = 1; i <= timeTableSolution.getTimeTable().getAmountofTeachers(); i++) {
                 int sum = weeklyMapPerTeacher.get(i).stream().mapToInt(Integer::intValue).sum();
