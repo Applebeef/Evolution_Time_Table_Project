@@ -7,6 +7,8 @@ import solution.*;
 import evolution.util.Pair;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -155,16 +157,62 @@ public enum Rule {
             for (int i = 1; i <= timeTableSolution.getTimeTable().getAmountofTeachers(); i++) {
                 int sum = weeklyMapPerTeacher.get(i).stream().mapToInt(Integer::intValue).sum();
                 if (sum == daysSigma) {
-                    score-=reduction;
+                    score -= reduction;
                 }
             }
             return score;
         }
     },
-    WORKING_HOURS_PREFERENCE("WorkingHoursPreference") {
+    SEQUENTIALITY("Sequentiality") {
         @Override
         public double test(TimeTableSolution timeTableSolution) {
-            return 0;
+            double score = 100;
+            int totalHours = parseString();
+            Fifth f1, f2;
+            // Reduction for each violation of the rule:
+            double reduction = score /
+                    (double) (timeTableSolution.getTimeTable().getDays()
+                            * timeTableSolution.getTimeTable().getHours()
+                            * timeTableSolution.getTimeTable().getAmountofSchoolClasses());
+            // Sort the fifths list according to schoolClass/Day/
+            timeTableSolution.getFifthsList().sort(Comparator.comparing(Fifth::getSchoolClass)
+                    .thenComparing(Fifth::getDay)
+                    .thenComparing(Fifth::getHour));
+            int consequentHours = 0;
+            for (int i = 0; i < timeTableSolution.getFifthsList().size() - 1; i++) {
+                // Compare each fifth to the consequent fifth:
+                f1 = timeTableSolution.getFifthsList().get(i);
+                f2 = timeTableSolution.getFifthsList().get(i + 1);
+                // Check same schoolClass:
+                if (f1.getDay().equals(f2.getDay()) && f1.getSchoolClass().equals(f2.getSchoolClass())) {
+                    // Check same subject:
+                    if (f1.getSubject().equals(f2.getSubject()))
+                        // Check consequent hours:
+                        if (f1.getHour().equals(f2.getHour() - 1)) {
+                            consequentHours++;
+                        } else {
+                            // If the sequence is larger than the parameter - reduce from score:
+                            if (consequentHours > totalHours) {
+                                consequentHours = 0;
+                                score -= reduction;
+                            }
+                        }
+                }
+            }
+            // If the sequence is larger than the parameter - reduce from score:
+            if (consequentHours > totalHours) {
+                score -= reduction * consequentHours;
+            }
+            return score;
+        }
+
+        private int parseString() {
+            Pattern pattern = Pattern.compile("^TotalHours=(\\d+)$");
+            Matcher m = pattern.matcher(this.Configuration);
+            if (m.find()) {
+                return Integer.parseInt(m.group(1));
+            } else
+                return 0;
         }
     };
 
