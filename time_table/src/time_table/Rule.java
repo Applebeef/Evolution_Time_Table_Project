@@ -134,16 +134,28 @@ public enum Rule {
             return score;
         }
     },
-    DAY_OFF_TEACHER("DayOffTeacher ") {
+    DAY_OFF_TEACHER("DayOffTeacher") {
         @Override
         public double test(TimeTableSolution timeTableSolution) {
             double score = 100;
             double reduction = (double) 100 / timeTableSolution.getTimeTable().getAmountofTeachers();
-            //Map with the key representing each teacher, containing maps with the key representing a certain day,
-            //the map's value represents whether the teacher is teaching on that day or not.
-            Map<Integer, Map<Integer, Boolean>> weeklyMapPerTeacher = new HashMap<>();
+            //Map with the key representing each teacher,
+            //the value is a set, if a teacher is teaching in a certain day this day is added to the set.
+            Map<Integer, Set<Integer>> weeklyMapPerTeacher = new HashMap<>();
             for (Fifth fifth : timeTableSolution.getFifthsList()) {
-                weeklyMapPerTeacher.put(fifth.getTeacher(), new HashMap<Integer, Boolean>());
+                if (fifth.getSchoolClass() != 0 && fifth.getSubject() != 0) {
+                    if (!weeklyMapPerTeacher.containsKey(fifth.getTeacher())) {
+                        weeklyMapPerTeacher.put(fifth.getTeacher(), new HashSet<>());
+                    }
+                    weeklyMapPerTeacher.get(fifth.getTeacher()).add(fifth.getDay());
+                }
+            }
+            int daysSigma = timeTableSolution.getTimeTable().days * (timeTableSolution.getTimeTable().getDays() + 1) / 2;
+            for (int i = 1; i <= timeTableSolution.getTimeTable().getAmountofTeachers(); i++) {
+                int sum = weeklyMapPerTeacher.get(i).stream().mapToInt(Integer::intValue).sum();
+                if (sum == daysSigma) {
+                    score-=reduction;
+                }
             }
             return score;
         }
