@@ -133,6 +133,26 @@ public enum Rule {
             }
             return score;
         }
+    },
+    DAY_OFF_TEACHER("DayOffTeacher ") {
+        @Override
+        public double test(TimeTableSolution timeTableSolution) {
+            double score = 100;
+            double reduction = (double) 100 / timeTableSolution.getTimeTable().getAmountofTeachers();
+            //Map with the key representing each teacher, containing maps with the key representing a certain day,
+            //the map's value represents whether the teacher is teaching on that day or not.
+            Map<Integer, Map<Integer, Boolean>> weeklyMapPerTeacher = new HashMap<>();
+            for (Fifth fifth : timeTableSolution.getFifthsList()) {
+                weeklyMapPerTeacher.put(fifth.getTeacher(), new HashMap<Integer, Boolean>());
+            }
+            return score;
+        }
+    },
+    WORKING_HOURS_PREFERENCE("WorkingHoursPreference") {
+        @Override
+        public double test(TimeTableSolution timeTableSolution) {
+            return 0;
+        }
     };
 
     String ruleId;
