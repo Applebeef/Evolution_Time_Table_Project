@@ -183,32 +183,26 @@ public enum Rule {
                 // Compare each fifth to the consequent fifth:
                 f1 = timeTableSolution.getFifthsList().get(i);
                 f2 = timeTableSolution.getFifthsList().get(i + 1);
-                // Check same schoolClass:
-                if (f1.getDay().equals(f2.getDay()) && f1.getSchoolClass().equals(f2.getSchoolClass())) {
-                    // Check same subject:
-                    if (f1.getSubject().equals(f2.getSubject()))
-                        // Check consequent hours:
-                        if (f1.getHour().equals(f2.getHour() - 1)) {
-                            consequentHours++;
-                        } else {
-                            // If the sequence is larger than the parameter - reduce from score:
-                            if (consequentHours > totalHours) {
-                                consequentHours = 0;
-                                score -= reduction;
-                            }
-                        }
+                /*Check same Day/schoolClass/subject/consequent hours:*/
+                if (f1.getDay().equals(f2.getDay()) &&
+                        f1.getSchoolClass().equals(f2.getSchoolClass()) &&
+                        f1.getSubject().equals(f2.getSubject()) &&
+                        f1.getHour().equals(f2.getHour() - 1)) {
+                    consequentHours++;
+                    // If the sequence is larger than the parameter - reduce from score:
+                    if (consequentHours > totalHours) {
+                        score -= reduction;
+                    }
+                } else {
+                    consequentHours = 0;
                 }
-            }
-            // If the sequence is larger than the parameter - reduce from score:
-            if (consequentHours > totalHours) {
-                score -= reduction * consequentHours;
             }
             return score;
         }
 
         private int parseString() {
             Pattern pattern = Pattern.compile("^TotalHours=(\\d+)$");
-            Matcher m = pattern.matcher(this.Configuration);
+            Matcher m = pattern.matcher(this.getConfiguration());
             if (m.find()) {
                 return Integer.parseInt(m.group(1));
             } else
