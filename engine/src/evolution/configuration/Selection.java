@@ -3,30 +3,32 @@ package evolution.configuration;
 import Generated.ETTSelection;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.*;
 import java.util.regex.*;
 
 public class Selection {
     protected String type;
-    protected Integer topPercent;
-    protected Integer elitism;
+    protected IntegerProperty topPercent;
+    protected IntegerProperty elitism;
 
     public Selection(ETTSelection gen) {
-        this.elitism = gen.getETTElitism();
+        if (gen.getETTElitism() != null) {
+            this.elitism = new SimpleIntegerProperty(gen.getETTElitism());
+        } else {
+            this.elitism = new SimpleIntegerProperty(0);
+        }
         this.type = gen.getType();
         if (type.equals("Truncation")) {
             Pattern pattern = Pattern.compile("^TopPercent=(\\d+)$");
             Matcher m = pattern.matcher(gen.getConfiguration());
             if (m.find())
-                topPercent = Integer.parseInt(m.group(1));
+                topPercent = new SimpleIntegerProperty(Integer.parseInt(m.group(1)));
         } else {
             topPercent = null;
         }
-    }
-
-    public Integer getElitism() {
-        return elitism;
     }
 
     public List<Solution> select(List<Solution> solutionList) {
@@ -49,7 +51,7 @@ public class Selection {
         int bestSolutionsAmount;
 
         // bestSolutionsAmount = the amount of the X% best solution (X is given)
-        bestSolutionsAmount = (int) Math.floor(solutionList.size() * ((double) topPercent / 100));
+        bestSolutionsAmount = (int) Math.floor(solutionList.size() * ((double) topPercent.get() / 100));
         if (bestSolutionsAmount > 0) {
             // Return one of the best solutions (random solution from 0 to bestSolutionsAmount):
             res.add(solutionList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1)));
@@ -93,7 +95,27 @@ public class Selection {
     }
 
     public int getTopPercent() {
+        return topPercent.get();
+    }
+
+    public IntegerProperty topPercentProperty() {
         return topPercent;
+    }
+
+    public void setTopPercent(int topPercent) {
+        this.topPercent.set(topPercent);
+    }
+
+    public int getElitism() {
+        return elitism.get();
+    }
+
+    public IntegerProperty elitismProperty() {
+        return elitism;
+    }
+
+    public void setElitism(int elitism) {
+        this.elitism.set(elitism);
     }
 
     @Override
@@ -102,10 +124,9 @@ public class Selection {
     }
 
     public String checkElitismValidity(int populationSize) {
-        if (elitism >= populationSize){
+        if (elitism.get() >= populationSize) {
             return "Elitism operator bigger than population size.";
-        }
-        else{
+        } else {
             return "";
         }
     }

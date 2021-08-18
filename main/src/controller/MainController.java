@@ -1,10 +1,9 @@
 package controller;
 
 import Generated.ETTDescriptor;
-import controller.dynamic.mutationPaneController;
-import controller.dynamic.subjectPaneController;
-import controller.dynamic.teacherSchoolClassPaneController;
+import controller.dynamic.*;
 import descriptor.Descriptor;
+import evolution.configuration.Selection;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -155,6 +154,8 @@ public class MainController {
                     if (!newValue.matches("\\d*")) {
                         controller.getTupples().setText(oldValue);
                         controller.getErrorLabel().setText("Must input a number.");
+                    } else if (newValue.equals("")) {
+                        controller.getTupples().setText("0");
                     } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
                         controller.getTupples().setText(oldValue);
                         controller.getErrorLabel().setText("Tupples cant be higher than population size.");
@@ -192,7 +193,59 @@ public class MainController {
 
     @FXML
     void displaySelection(ActionEvent event) {
+        engineDisplayPane.getChildren().clear();
 
+        Selection selection = descriptor.getEngine().getSelection();
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+                    .getResource("../resources/dynamic_fxmls/selection.fxml")));
+            Parent load = loader.load();
+            selectionPaneController controller = loader.getController();
+
+            controller.getType().setText(selection.getType());
+            controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    controller.getElitismTextField().setText(oldValue);
+                    controller.getErrorLabel().setText("Must input a number.");
+                } else if (newValue.equals("")) {
+                    controller.getElitismTextField().setText("0");
+                } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
+                    controller.getElitismTextField().setText(oldValue);
+                    controller.getErrorLabel().setText("Elitism must be lower than population size.");
+                } else {
+                    controller.getErrorLabel().setText("");
+                }
+            }));
+            Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
+            controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
+            Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
+            if (selection.topPercentProperty() != null) {
+                controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                    if (!newValue.matches("\\d*")) {
+                        controller.getTopPercentTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Must input a number.");
+                    } else if (newValue.equals("")) {
+                        controller.getTopPercentTextField().setText("0");
+                    } else if (Integer.parseInt(newValue) > 100) {
+                        controller.getTopPercentTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Cant choose over 100%.");
+                    } else {
+                        controller.getErrorLabel().setText("");
+                    }
+                }));
+                Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
+                Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
+            } else {
+                controller.getTopPercentSlider().setVisible(false);
+                controller.getTopPercentTextField().setVisible(false);
+                controller.getTopPercentNameLabel().setVisible(false);
+            }
+            load.disableProperty().bind(paused.not());
+            engineDisplayPane.getChildren().add(load);
+
+        } catch (IOException ignored) {
+
+        }
     }
 
     @FXML
@@ -244,6 +297,7 @@ public class MainController {
             timeTableDisplayPane.getChildren().clear();
             engineDisplayPane.getChildren().clear();
             resultsDisplayPane.getChildren().clear();
+            paused.set(true);
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
