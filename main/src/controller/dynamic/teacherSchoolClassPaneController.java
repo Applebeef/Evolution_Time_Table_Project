@@ -2,10 +2,9 @@ package controller.dynamic;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class schoolClassPaneController {
+public class teacherSchoolClassPaneController {
 
     @FXML
     private Label name;
@@ -14,7 +13,13 @@ public class schoolClassPaneController {
     private Label id;
 
     @FXML
-    private VBox requirementsDisplayPane;
+    private VBox displayPane;
+
+    @FXML
+    private Label displayPaneNameLabel;
+
+    @FXML
+    private Label nameLabel;
 
     public Label getName() {
         return name;
@@ -32,7 +37,15 @@ public class schoolClassPaneController {
         this.id = id;
     }
 
-    public VBox getRequirementsDisplayPane() {
-        return requirementsDisplayPane;
+    public VBox getDisplayPane() {
+        return displayPane;
+    }
+
+    public Label getDisplayPaneNameLabel() {
+        return displayPaneNameLabel;
+    }
+
+    public Label getNameLabel() {
+        return nameLabel;
     }
 }

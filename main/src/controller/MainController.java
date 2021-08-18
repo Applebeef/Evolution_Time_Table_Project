@@ -2,13 +2,12 @@ package controller;
 
 import Generated.ETTDescriptor;
 import controller.dynamic.mutationPaneController;
-import controller.dynamic.schoolClassPaneController;
+import controller.dynamic.subjectPaneController;
+import controller.dynamic.teacherSchoolClassPaneController;
 import descriptor.Descriptor;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -123,13 +122,13 @@ public class MainController {
         descriptor.getTimeTable().getSchoolClasses().getClassList().forEach(schoolClass -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/schoolClass.fxml")));
+                        .getResource("../resources/dynamic_fxmls/teacherSchoolClass.fxml")));
                 Parent load = loader.load();
-                schoolClassPaneController controller = loader.getController();
+                teacherSchoolClassPaneController controller = loader.getController();
                 controller.getId().setText(String.valueOf(schoolClass.getId()));
                 controller.getName().setText(schoolClass.getName());
                 schoolClass.getRequirements().getStudyList().forEach(study ->
-                        controller.getRequirementsDisplayPane().getChildren().add(new Label(study.toString())));
+                        controller.getDisplayPane().getChildren().add(new Label(study.toString())));
                 timeTableDisplayPane.getChildren().add(load);
             } catch (IOException ignored) {
             }
@@ -198,12 +197,42 @@ public class MainController {
 
     @FXML
     void displaySubjects(ActionEvent event) {
+        timeTableDisplayPane.getChildren().clear();
 
+        descriptor.getTimeTable().getSubjects().getSubjectList().forEach(subject -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+                        .getResource("../resources/dynamic_fxmls/subjects.fxml")));
+                Parent load = loader.load();
+                subjectPaneController controller = loader.getController();
+                controller.getIdLabel().setText(String.valueOf(subject.getId()));
+                controller.getNameLabel().setText(subject.getName());
+                timeTableDisplayPane.getChildren().add(load);
+            } catch (IOException ignored) {
+            }
+        });
     }
 
     @FXML
     void displayTeachers(ActionEvent event) {
+        timeTableDisplayPane.getChildren().clear();
 
+        descriptor.getTimeTable().getTeachers().getTeacherList().forEach(teacher -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+                        .getResource("../resources/dynamic_fxmls/teacherSchoolClass.fxml")));
+                Parent load = loader.load();
+                teacherSchoolClassPaneController controller = loader.getController();
+                controller.getId().setText(String.valueOf(teacher.getId()));
+                controller.getNameLabel().setText("Name: ");
+                controller.getName().setText(teacher.getName());
+                controller.getDisplayPaneNameLabel().setText("Teaching: ");
+                teacher.getTeaching().getTeachesList().forEach(teaches ->
+                        controller.getDisplayPane().getChildren().add(new Label(teaches.toString())));
+                timeTableDisplayPane.getChildren().add(load);
+            } catch (IOException ignored) {
+            }
+        });
     }
 
     @FXML
@@ -212,6 +241,9 @@ public class MainController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
         File file = fileChooser.showOpenDialog(getPrimaryStage());
         if (file != null) {
+            timeTableDisplayPane.getChildren().clear();
+            engineDisplayPane.getChildren().clear();
+            resultsDisplayPane.getChildren().clear();
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
