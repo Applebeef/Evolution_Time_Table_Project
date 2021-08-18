@@ -27,6 +27,7 @@ public class EvolutionEngine implements Runnable {
     private Pair<Integer, Solution> bestSolution;
 
     private BooleanProperty engineStarted;
+    private BooleanProperty enginePaused;
     private BooleanProperty solutionsReady;
     private Integer number_of_generations;
 
@@ -43,6 +44,7 @@ public class EvolutionEngine implements Runnable {
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new ArrayList<>();
         engineStarted = new SimpleBooleanProperty(false);
+        enginePaused = new SimpleBooleanProperty(true);
         solutionsReady = new SimpleBooleanProperty(false);
     }
 
@@ -60,6 +62,18 @@ public class EvolutionEngine implements Runnable {
 
     public BooleanProperty engineStartedProperty() {
         return engineStarted;
+    }
+
+    public boolean isEnginePaused() {
+        return enginePaused.get();
+    }
+
+    public BooleanProperty enginePausedProperty() {
+        return enginePaused;
+    }
+
+    public void setEnginePaused(boolean enginePaused) {
+        this.enginePaused.set(enginePaused);
     }
 
     public InitialPopulation getInitialSolutionPopulation() {
@@ -100,6 +114,7 @@ public class EvolutionEngine implements Runnable {
         solutionList.sort(Collections.reverseOrder());
         bestSolution = new Pair<>(0, solutionList.get(0));
         engineStarted.set(true);
+        enginePaused.set(false);
         solutionsReady.set(true);
     }
 
@@ -125,6 +140,13 @@ public class EvolutionEngine implements Runnable {
                 synchronized (bestSolution) {
                     bestSolution.setV1(i);
                     bestSolution.setV2(solutionList.get(0));
+                }
+            }
+            while (enginePaused.get()){//TODO make sure this works.
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    break;
                 }
             }
         }

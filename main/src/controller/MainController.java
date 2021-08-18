@@ -1,9 +1,12 @@
 package controller;
 
 import Generated.ETTDescriptor;
+import controller.dynamic.mutationPaneController;
 import controller.dynamic.schoolClassPaneController;
 import descriptor.Descriptor;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +15,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -75,7 +80,7 @@ public class MainController {
 
     @FXML
     private Button pauseButton;
-    private boolean paused = false;
+    private BooleanProperty paused = new SimpleBooleanProperty(true);
 
     @FXML
     private Button stopButton;
@@ -112,7 +117,6 @@ public class MainController {
     void displayClasses(ActionEvent event) {
         timeTableDisplayPane.getChildren().clear();
 
-        //FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("../resources/dynamic_fxmls/schoolClass.fxml")));
         descriptor.getTimeTable().getSchoolClasses().getClassList().forEach(schoolClass -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
@@ -136,6 +140,29 @@ public class MainController {
 
     @FXML
     void displayMutations(ActionEvent event) {
+        engineDisplayPane.getChildren().clear();
+
+        descriptor.getEngine().getMutations().getMutationList().forEach(mutation -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+                        .getResource("../resources/dynamic_fxmls/mutation.fxml")));
+                Parent load = loader.load();
+                mutationPaneController controller = loader.getController();
+                controller.getName().setText(mutation.getName());
+                Bindings.bindBidirectional(controller.getTupples().textProperty(), mutation.tupplesProperty(), new NumberStringConverter());
+                if (mutation.componentProperty() != null) {
+                    Bindings.bindBidirectional(controller.getComponentTextField().textProperty(), mutation.componentProperty());
+                } else {
+                    controller.getComponentTextLabel().setVisible(false);
+                    controller.getComponentTextField().setVisible(false);
+                }
+                Bindings.bindBidirectional(controller.getProbabilitySlider().valueProperty(), mutation.probabilityProperty());
+                controller.getProbabilityLabel().textProperty().bind(mutation.probabilityProperty().asString("%.1f"));
+                load.disableProperty().bind(paused.not());
+                engineDisplayPane.getChildren().add(load);
+            } catch (IOException ignored) {
+            }
+        });
 
     }
 
@@ -178,6 +205,7 @@ public class MainController {
         populationSizeDisplay.textProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().asString());
         startButton.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
         pauseButton.disableProperty().bind(Bindings.not(descriptor.getEngine().engineStartedProperty()));
+        descriptor.getEngine().enginePausedProperty().bind(paused);
         stopButton.disableProperty().bind(Bindings.not(descriptor.getEngine().engineStartedProperty()));
         DisplayAllSolutionsButton.disableProperty().bind(Bindings.not(descriptor.getEngine().solutionsReadyProperty()));
         DisplayBestSolutionsButton.disableProperty().bind(Bindings.not(descriptor.getEngine().solutionsReadyProperty()));
@@ -187,8 +215,8 @@ public class MainController {
 
     @FXML
     void pause(ActionEvent event) {
-        paused = !paused;
-        if (paused) {
+        paused.set(!paused.get());
+        if (paused.get()) {
             pauseButton.setText("Resume");
         } else {
             pauseButton.setText("Pause");
@@ -199,12 +227,15 @@ public class MainController {
     @FXML
     void start(ActionEvent event) {
         descriptor.getEngine().setEngineStarted(true);//TODO delete this and add real event
+        paused.set(false);
+        pauseButton.setText("Pause");
         descriptor.getEngine().setSolutionsReady(true);
     }
 
     @FXML
     void stop(ActionEvent event) {
         descriptor.getEngine().setEngineStarted(false);//TODO delete this and add real event
+        paused.set(true);
     }
 
     public Stage getPrimaryStage() {

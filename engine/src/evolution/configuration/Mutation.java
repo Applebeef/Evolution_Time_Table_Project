@@ -1,5 +1,7 @@
 package evolution.configuration;
 
+import javafx.beans.property.*;
+
 import java.util.List;
 import java.util.regex.*;
 
@@ -10,8 +12,8 @@ public enum Mutation {
             Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");
             Matcher m = pattern.matcher(config);
             if (m.find()) {
-                this.tupples = Integer.parseInt(m.group(1));
-                this.component = m.group(2);
+                this.tupples = new SimpleIntegerProperty(Integer.parseInt(m.group(1)));
+                this.component = new SimpleStringProperty(m.group(2));
             }
         }
 
@@ -26,7 +28,7 @@ public enum Mutation {
             Pattern pattern = Pattern.compile("^TotalTupples=(\\d+)$");
             Matcher m = pattern.matcher(config);
             if (m.find()) {
-                this.tupples = Integer.parseInt(m.group(1));
+                this.tupples = new SimpleIntegerProperty(Integer.parseInt(m.group(1)));
                 this.component = null;
             }
         }
@@ -37,36 +39,49 @@ public enum Mutation {
         }
     };
 
-    double probability;
+    DoubleProperty probability;
     String name;
-    int tupples;
-    String component;
+    IntegerProperty tupples;
+    StringProperty component;
 
     public int getTupples() {
+        return tupples.get();
+    }
+
+    public IntegerProperty tupplesProperty() {
         return tupples;
     }
 
     public String getComponent() {
-        return component;
+        return component.get();
     }
 
 
     Mutation(String name) {
         this.name = name;
+        probability = new SimpleDoubleProperty();
     }
 
     protected abstract void parseString(String config);
 
     public double getProbability() {
-        return probability;
+        return probability.get();
     }
 
     public void setProbability(double probability) {
-        this.probability = probability;
+        this.probability.set(probability);
+    }
+
+    public DoubleProperty probabilityProperty() {
+        return probability;
     }
 
     public String getName() {
         return name;
+    }
+
+    public StringProperty componentProperty() {
+        return component;
     }
 
     @Override
