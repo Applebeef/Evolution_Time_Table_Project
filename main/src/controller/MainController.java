@@ -7,6 +7,8 @@ import descriptor.Descriptor;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +24,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MainController {
@@ -149,8 +152,30 @@ public class MainController {
                 Parent load = loader.load();
                 mutationPaneController controller = loader.getController();
                 controller.getName().setText(mutation.getName());
+                controller.getTupples().textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.matches("\\d*")) {
+                        controller.getTupples().setText(oldValue);
+                        controller.getErrorLabel().setText("Must input a number.");
+                    } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
+                        controller.getTupples().setText(oldValue);
+                        controller.getErrorLabel().setText("Tupples cant be higher than population size.");
+                    } else {
+                        controller.getErrorLabel().setText("");
+                    }
+                });
                 Bindings.bindBidirectional(controller.getTupples().textProperty(), mutation.tupplesProperty(), new NumberStringConverter());
                 if (mutation.componentProperty() != null) {
+                    controller.getComponentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                        if (!newValue.equalsIgnoreCase("T") && !newValue.equalsIgnoreCase("C")
+                                && !newValue.equalsIgnoreCase("D") && !newValue.equalsIgnoreCase("H")
+                                && !newValue.equalsIgnoreCase("S")) {
+                            controller.getComponentTextField().setText(oldValue);
+                            controller.getErrorLabel().setText("Please choose a valid component (D,H,C,T,S).");
+                        } else {
+                            controller.getComponentTextField().setText(newValue.toUpperCase(Locale.ROOT));
+                            controller.getErrorLabel().setText("");
+                        }
+                    }));
                     Bindings.bindBidirectional(controller.getComponentTextField().textProperty(), mutation.componentProperty());
                 } else {
                     controller.getComponentTextLabel().setVisible(false);

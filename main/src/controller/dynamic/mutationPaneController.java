@@ -27,6 +27,9 @@ public class mutationPaneController {
     private TextField componentTextField;
 
     @FXML
+    private Label errorLabel;
+
+    @FXML
     void componentTextFieldChanged(ActionEvent event) {
 
     }
@@ -38,6 +41,18 @@ public class mutationPaneController {
 
     public Label getName() {
         return name;
+    }
+
+    public void setComponentTextField(TextField componentTextField) {
+        this.componentTextField = componentTextField;
+    }
+
+    public Label getErrorLabel() {
+        return errorLabel;
+    }
+
+    public void setErrorLabel(Label errorLabel) {
+        this.errorLabel = errorLabel;
     }
 
     public Label getProbabilityLabel() {
