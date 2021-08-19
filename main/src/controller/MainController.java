@@ -3,7 +3,7 @@ package controller;
 import Generated.ETTDescriptor;
 import controller.dynamic.*;
 import descriptor.Descriptor;
-import evolution.configuration.Selection;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
+import solution.Selection;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -143,7 +144,7 @@ public class MainController {
     void displayMutations(ActionEvent event) {
         engineDisplayPane.getChildren().clear();
 
-        descriptor.getEngine().getMutations().getMutationList().forEach(mutation -> {
+        descriptor.getMutations().getMutationList().forEach(mutation -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
                         .getResource("../resources/dynamic_fxmls/mutation.fxml")));
@@ -195,7 +196,7 @@ public class MainController {
     void displaySelection(ActionEvent event) {
         engineDisplayPane.getChildren().clear();
 
-        Selection selection = descriptor.getEngine().getSelection();
+        Selection selection = descriptor.getSelection();
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
                     .getResource("../resources/dynamic_fxmls/selection.fxml")));

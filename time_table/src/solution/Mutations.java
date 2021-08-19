@@ -1,12 +1,14 @@
-package evolution.configuration;
+package solution;
 
 import Generated.ETTMutation;
 import Generated.ETTMutations;
+import evolution.configuration.MutationIFC;
+import evolution.configuration.MutationsIFC;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mutations {
+public class Mutations implements MutationsIFC {
     private List<Mutation> mutationList;
 
     public Mutations(ETTMutations gen) {
@@ -29,10 +31,6 @@ public class Mutations {
         }
     }
 
-    public List<Mutation> getMutationList() {
-        return mutationList;
-    }
-
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
@@ -41,5 +39,9 @@ public class Mutations {
             result.append(m.toString()).append(lineSeparator);
         }
         return result.toString();
+    }
+
+    public List<Mutation> getMutationList() {
+        return mutationList;
     }
 }

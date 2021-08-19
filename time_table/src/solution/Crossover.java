@@ -1,18 +1,13 @@
-package evolution.configuration;
+package solution;
 
 import Generated.ETTCrossover;
-import evolution.engine.problem_solution.Solution;
-import evolution.util.Randomizer;
+import evolution.configuration.CrossoverIFC;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class Crossover {
+public class Crossover implements CrossoverIFC {
     protected String configuration;
     protected String name;
     protected int cuttingPoints;
@@ -46,6 +41,7 @@ public class Crossover {
         this.name = name;
     }
 
+    @Override
     public int getCuttingPoints() {
         return cuttingPoints;
     }

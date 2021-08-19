@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 
 public enum Rule {
-    //TODO add new EX2 rule
     TEACHER_IS_HUMAN("TeacherIsHuman") {
         @Override
         public double test(TimeTableSolution timeTableSolution) {

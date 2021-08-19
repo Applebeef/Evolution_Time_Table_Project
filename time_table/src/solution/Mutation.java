@@ -1,11 +1,12 @@
-package evolution.configuration;
+package solution;
 
+import evolution.configuration.MutationIFC;
 import javafx.beans.property.*;
 
-import java.util.List;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public enum Mutation {
+public enum Mutation implements MutationIFC {
     Flipping("Flipping") {
         @Override
         protected void parseString(String config) {

@@ -1,9 +1,8 @@
 package solution;
 
+import evolution.configuration.CrossoverIFC;
+import evolution.configuration.MutationsIFC;
 import evolution.util.Randomizer;
-import evolution.configuration.Crossover;
-import evolution.configuration.Mutation;
-import evolution.configuration.Mutations;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
 import time_table.*;
@@ -89,15 +88,15 @@ public class TimeTableSolution implements Solution {
 
     public TimeTableSolution(TimeTableSolution other) {
         this.fifthsList = new ArrayList<>(other.fifthsList.size());
-        for(Fifth fifth : other.fifthsList){
+        for (Fifth fifth : other.fifthsList) {
             this.fifthsList.add(fifth.copy());
         }
-        this.fitness=other.fitness;
-        this.timeTable=other.timeTable;
-        this.presentationOption=other.presentationOption;
-        this.dayTimeComparator=other.dayTimeComparator;
-        this.teacherAspectComparator=other.teacherAspectComparator;
-        this.classAspectComparator=other.classAspectComparator;
+        this.fitness = other.fitness;
+        this.timeTable = other.timeTable;
+        this.presentationOption = other.presentationOption;
+        this.dayTimeComparator = other.dayTimeComparator;
+        this.teacherAspectComparator = other.teacherAspectComparator;
+        this.classAspectComparator = other.classAspectComparator;
     }
 
     public TimeTableSolution(TimeTable timeTable) {
@@ -175,30 +174,32 @@ public class TimeTableSolution implements Solution {
     }
 
     @Override
-    public void mutate(Mutations mutations) {
-        double probability;
-        int mutatedNumber;
-        // Iterate through mutations:
-        for (Mutation mutation : mutations.getMutationList()) {
-            // Randomize a real number from 0 to 1:
-            probability = Math.random();
-            // If the random number "hits" the mutation probability then the mutation will happend:
-            if (probability <= mutation.getProbability()) {
-                // mutatedNumber = maximum amount of tupples with the mutation:
-                mutatedNumber = Randomizer.getRandomNumber(1, Math.abs(mutation.getTupples()));
+    public void mutate(MutationsIFC mutations) {
+        if (mutations instanceof Mutations) {
+            double probability;
+            int mutatedNumber;
+            // Iterate through mutations:
+            for (Mutation mutation : ((Mutations)mutations).getMutationList()) {
+                // Randomize a real number from 0 to 1:
+                probability = Math.random();
+                // If the random number "hits" the mutation probability then the mutation will happend:
+                if (probability <= mutation.getProbability()) {
+                    // mutatedNumber = maximum amount of tupples with the mutation:
+                    mutatedNumber = Randomizer.getRandomNumber(1, Math.abs(mutation.getTupples()));
 
-                switch (mutation.getName()) {
-                    case ("Flipping"):
-                        flippingMutation(mutatedNumber, mutation);
-                        break;
-                    case ("Sizer"):
-                        sizerMutation(mutatedNumber, mutation);
-                        break;
+                    switch (mutation.getName()) {
+                        case ("Flipping"):
+                            flippingMutation(mutatedNumber, mutation);
+                            break;
+                        case ("Sizer"):
+                            sizerMutation(mutatedNumber, mutation);
+                            break;
+                    }
+
                 }
-
             }
+            calculateFitness();
         }
-        calculateFitness();
     }
 
     private void sizerMutation(int mutatedNumber, Mutation mutation) {
@@ -263,12 +264,12 @@ public class TimeTableSolution implements Solution {
 
 
     @Override
-    public List<Solution> crossover(Solution solution, Crossover crossover) {
+    public List<Solution> crossover(Solution solution, CrossoverIFC crossover) {
         List<Solution> res = new ArrayList<>();
         if (solution instanceof TimeTableSolution) {
             TimeTableSolution other_timeTable_solution = (TimeTableSolution) solution;
             // Choose correspondent comparator (according to crossover definition):
-            Comparator<Fifth> comparator = chooseFifthComparator(crossover);
+            Comparator<Fifth> comparator = chooseFifthComparator((Crossover) crossover);
             // Sort my fifths:
             this.getFifthsList().sort(comparator);
             // Sort other's fifths:
@@ -277,7 +278,7 @@ public class TimeTableSolution implements Solution {
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
             int maxListSize = getMaxListSize();
-            for (int i = 0; i < crossover.getCuttingPoints(); i++) {
+            for (int i = 0; i < ((Crossover) crossover).getCuttingPoints(); i++) {
                 // Randomize cutting points. Amount according to CuttingPoints:
                 do {
                     cuttingPoint = Randomizer.getRandomNumber(1, maxListSize - 1);

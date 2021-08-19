@@ -1,9 +1,6 @@
 package evolution.engine;
 
-import evolution.configuration.Crossover;
-import evolution.configuration.InitialPopulation;
-import evolution.configuration.Mutations;
-import evolution.configuration.Selection;
+import evolution.configuration.*;
 import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
@@ -17,9 +14,9 @@ import java.util.function.Consumer;
 
 public class EvolutionEngine implements Runnable {
     private InitialPopulation initialSolutionPopulation;
-    private Mutations mutations;
-    private Selection selection;
-    private Crossover crossover;
+    private MutationsIFC mutations;
+    private SelectionIFC selection;
+    private CrossoverIFC crossover;
 
     private List<Solution> solutionList;
     private List<Solution> offspringSolutionsList;
@@ -35,11 +32,14 @@ public class EvolutionEngine implements Runnable {
     private int max_fitness;
     private Consumer<String> consumer;
 
-    public EvolutionEngine(ETTEvolutionEngine gen) {
+    public EvolutionEngine(ETTEvolutionEngine gen, CrossoverIFC cs, MutationsIFC mt, SelectionIFC slc) {
         initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
-        mutations = new Mutations(gen.getETTMutations());
-        selection = new Selection(gen.getETTSelection());
-        crossover = new Crossover(gen.getETTCrossover());
+        //mutations = new Mutations(gen.getETTMutations());
+        //selection = new Selection(gen.getETTSelection());
+        //crossover = new Crossover(gen.getETTCrossover());
+        mutations = mt;
+        selection = slc;
+        crossover = cs;
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new ArrayList<>();
@@ -80,15 +80,15 @@ public class EvolutionEngine implements Runnable {
         return initialSolutionPopulation;
     }
 
-    public Mutations getMutations() {
+    public MutationsIFC getMutations() {
         return mutations;
     }
 
-    public Selection getSelection() {
+    public SelectionIFC getSelection() {
         return selection;
     }
 
-    public Crossover getCrossover() {
+    public CrossoverIFC getCrossover() {
         return crossover;
     }
 
@@ -151,7 +151,7 @@ public class EvolutionEngine implements Runnable {
             }
         }
         consumer.accept("Engine is finished.");
-        engineStarted.set(false);
+        //engineStarted.set(false);
     }
 
     public String getBestSolutionDisplay(int choice) {
