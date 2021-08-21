@@ -8,7 +8,9 @@ import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
-import evolution.util.Randomizer;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -24,7 +26,9 @@ public class EvolutionEngine implements Runnable {
     private List<Pair<Integer, Solution>> bestSolutionsPerFrequency;
     private Pair<Integer, Solution> bestSolution;
 
-    private boolean engineStarted = false;
+    private BooleanProperty engineStarted;
+    private BooleanProperty enginePaused;
+    private BooleanProperty solutionsReady;
     private Integer number_of_generations;
 
     private int frequency;
@@ -39,6 +43,37 @@ public class EvolutionEngine implements Runnable {
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new ArrayList<>();
+        engineStarted = new SimpleBooleanProperty(false);
+        enginePaused = new SimpleBooleanProperty(true);
+        solutionsReady = new SimpleBooleanProperty(false);
+    }
+
+    public boolean isSolutionsReady() {
+        return solutionsReady.get();
+    }
+
+    public BooleanProperty solutionsReadyProperty() {
+        return solutionsReady;
+    }
+
+    public void setSolutionsReady(boolean solutionsReady) {
+        this.solutionsReady.set(solutionsReady);
+    }
+
+    public BooleanProperty engineStartedProperty() {
+        return engineStarted;
+    }
+
+    public boolean isEnginePaused() {
+        return enginePaused.get();
+    }
+
+    public BooleanProperty enginePausedProperty() {
+        return enginePaused;
+    }
+
+    public void setEnginePaused(boolean enginePaused) {
+        this.enginePaused.set(enginePaused);
     }
 
     public InitialPopulation getInitialSolutionPopulation() {
@@ -62,7 +97,7 @@ public class EvolutionEngine implements Runnable {
     }
 
     public boolean isEngineStarted() {
-        return engineStarted;
+        return engineStarted.get();
     }
 
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
@@ -72,15 +107,15 @@ public class EvolutionEngine implements Runnable {
         for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
             // Create solution:
             solution = problem.solve();
-            // Calculate solution fitness:
-            solution.calculateFitness();
             // Add to solutionList:
             solutionList.add(solution);
         }
         // Sort list:
         solutionList.sort(Collections.reverseOrder());
         bestSolution = new Pair<>(0, solutionList.get(0));
-        engineStarted = true;
+        engineStarted.set(true);
+        enginePaused.set(false);
+        solutionsReady.set(true);
     }
 
     public void runEvolution() {
@@ -103,11 +138,20 @@ public class EvolutionEngine implements Runnable {
             }
             if (solutionList.get(0).getFitness() > bestSolution.getV2().getFitness()) {
                 synchronized (bestSolution) {
-                    bestSolution = new Pair<>(i, solutionList.get(0));
+                    bestSolution.setV1(i);
+                    bestSolution.setV2(solutionList.get(0));
+                }
+            }
+            while (enginePaused.get()){//TODO make sure this works.
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    break;
                 }
             }
         }
         consumer.accept("Engine is finished.");
+        engineStarted.set(false);
     }
 
     public String getBestSolutionDisplay(int choice) {
@@ -125,20 +169,25 @@ public class EvolutionEngine implements Runnable {
     }
 
     private void spawnGeneration() {
-        int bestSolutionsAmount;
-        List<Solution> bestSolutionsList = new ArrayList<>();
         this.offspringSolutionsList = new ArrayList<>();
-        // bestSolutionsAmount = the amount of the X% best solution (X is given)
-        bestSolutionsAmount = (int) Math.floor(solutionList.size() * ((double) selection.getTopPercent() / 100));
-        if (bestSolutionsAmount > 0) {
-            // Get best solutions into "bestSolutionsList":
-            bestSolutionsList = solutionList.subList(0, bestSolutionsAmount);
-        }
+        List<Solution> selectedSolutions;
+        // Elitism:
+        List<Solution> eliteList = solutionList.subList(0, this.selection.getElitism());
+        List<Solution> copiedEliteList = new ArrayList<>(eliteList.size());
+        eliteList.forEach(solution -> copiedEliteList.add(solution.copy()));
+        offspringSolutionsList.addAll(copiedEliteList);
+
         // Using crossover (class EvolutionEngine), create an offspring Solution List:
         while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
-            Solution s1 = bestSolutionsList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1));
-            Solution s2 = bestSolutionsList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1));
-            offspringSolutionsList.addAll(s1.crossover(s2, this.crossover));
+            // Receive the solutions to be crossed over:
+            selectedSolutions = this.selection.select(solutionList);
+            // Crossover the two solutions:
+            // TODO: Think of crossover method implementation (inside Crossover or inside Solution instantiation).
+
+            offspringSolutionsList.addAll(
+                    selectedSolutions.get(0)
+                            .crossover(selectedSolutions.get(1), this.crossover)
+            );
         }
         // Shrink to initial population size:
         if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {
@@ -174,13 +223,14 @@ public class EvolutionEngine implements Runnable {
     }
 
     public void setEngineStarted(boolean engineStarted) {
-        this.engineStarted = engineStarted;
+        this.engineStarted.set(engineStarted);
     }
 
     public void reset() {
         solutionList.clear();
         bestSolutionsPerFrequency.clear();
         offspringSolutionsList.clear();
-        engineStarted = false;
+        engineStarted.set(false);
+        solutionsReady.set(false);
     }
 }

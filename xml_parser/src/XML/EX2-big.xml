@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V1.xsd">
+<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V2.xsd">
 	<ETT-TimeTable days="6" hours="8">
 		<ETT-Teachers>
 			<ETT-Teacher id="1">
-				<ETT-Name>Alma Nedaber</ETT-Name>
+				<ETT-Name>Dina Mit</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="1"/>
 					<ETT-Teaches subject-id="2"/>
 				</ETT-Teaching>
 			</ETT-Teacher>
 			<ETT-Teacher id="3">
-				<ETT-Name>Miki Peli</ETT-Name>
+				<ETT-Name>Odri Kud</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="3"/>
 				</ETT-Teaching>
 			</ETT-Teacher>			
 			<ETT-Teacher id="2">
-				<ETT-Name>Mali Vela</ETT-Name>
+				<ETT-Name>Karlo Batusik</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="4"/>
 					<ETT-Teaches subject-id="5"/>
 				</ETT-Teaching>
 			</ETT-Teacher>						
 			<ETT-Teacher id="4">
-				<ETT-Name>Lola Tet</ETT-Name>
+				<ETT-Name>Assaf Aul</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="6"/>
 					<ETT-Teaches subject-id="3"/>
@@ -31,7 +31,7 @@
 				</ETT-Teaching>
 			</ETT-Teacher>	
 			<ETT-Teacher id="6">
-				<ETT-Name>Tiki Pur</ETT-Name>
+				<ETT-Name>Nik Nass</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="5"/>
 					<ETT-Teaches subject-id="1"/>
@@ -39,7 +39,7 @@
 				</ETT-Teaching>
 			</ETT-Teacher>
 			<ETT-Teacher id="5">
-				<ETT-Name>Hugo Zer</ETT-Name>
+				<ETT-Name>Mira Tzach</ETT-Name>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="1"/>
 					<ETT-Teaches subject-id="2"/>
@@ -124,19 +124,22 @@
 				<ETT-RuleId>Singularity</ETT-RuleId>
 			</ETT-Rule>
 			<ETT-Rule type="Soft">
-				<ETT-RuleId>Knowledgeable</ETT-RuleId>
-			</ETT-Rule>
-			<ETT-Rule type="Hard">
 				<ETT-RuleId>Satisfactory</ETT-RuleId>
+			</ETT-Rule>			
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>Knowledgeable</ETT-RuleId>
 			</ETT-Rule>
 		</ETT-Rules>
 	</ETT-TimeTable>
 	<ETT-EvolutionEngine>
-		<ETT-InitialPopulation size="150"/>
-		<ETT-Selection type="Truncation" configuration="TopPercent=20"/>
+		<ETT-InitialPopulation size="500"/>
+		<ETT-Selection type="RouletteWheel">
+			<ETT-Elitism>20</ETT-Elitism>
+		</ETT-Selection>
 		<ETT-Crossover name="DayTimeOriented" cutting-points="4"/>
 		<ETT-Mutations>
-			<ETT-Mutation name="Flipping" probability="0.4" configuration="MaxTupples=3,Component=D"/>
+			<ETT-Mutation name="Sizer" probability="0.2" configuration="TotalTupples=20"/>
+			<ETT-Mutation name="Flipping" probability="0.1" configuration="MaxTupples=50,Component=H"/>
 		</ETT-Mutations>
 	</ETT-EvolutionEngine>
 </ETT-Descriptor>

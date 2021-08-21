@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="xml_parser:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/jars</output-path>
+    <root id="root">
+      <element id="archive" name="xml_parser.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/xml_parser/src/resources/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="xml_parser" />
+      </element>
+    </root>
+  </artifact>
+</component>

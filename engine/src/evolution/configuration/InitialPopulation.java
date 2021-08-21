@@ -1,16 +1,22 @@
 package evolution.configuration;
 
 import Generated.ETTInitialPopulation;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class InitialPopulation {
-    private int size;
+    private IntegerProperty size;
 
     public InitialPopulation(ETTInitialPopulation gen){
-        size = gen.getSize();
+        size = new SimpleIntegerProperty(gen.getSize());
+    }
+
+    public IntegerProperty sizeProperty() {
+        return size;
     }
 
     public int getSize() {
-        return size;
+        return size.get();
     }
 
     @Override

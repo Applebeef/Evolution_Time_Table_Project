@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="engine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/jars</output-path>
+    <root id="root">
+      <element id="archive" name="engine.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/engine/src/resources/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="engine" />
+      </element>
+    </root>
+  </artifact>
+</component>

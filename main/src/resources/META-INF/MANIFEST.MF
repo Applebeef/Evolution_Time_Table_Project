@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: Main
+Main-Class: Mains.ConsoleMain
 Class-Path: ui.jar
 

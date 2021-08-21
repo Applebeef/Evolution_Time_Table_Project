@@ -19,4 +19,6 @@ public interface Solution extends Comparable<Solution> {
     void setPresentationOption(int requested_presentation_option);
 
     Double getFitness();
+
+    Solution copy();
 }

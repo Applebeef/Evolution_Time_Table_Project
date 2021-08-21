@@ -13,6 +13,7 @@ public class Fifth implements Comparable<Fifth> {
         this.subject = subject;
     }
 
+
     public Integer getDay() {
         return day;
     }
@@ -91,5 +92,9 @@ public class Fifth implements Comparable<Fifth> {
     @Override
     public int hashCode() {
         return Objects.hash(day, hour, schoolClass, teacher, subject);
+    }
+
+    public Fifth copy() {
+        return new Fifth(day, hour, schoolClass, teacher, subject);
     }
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="167.0" prefWidth="250.0" style="-fx-border-color: BLACK;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.dynamic.mutationPaneController">
+  <columnConstraints>
+      <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints fillHeight="false" maxHeight="230.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+    <RowConstraints fillHeight="false" maxHeight="296.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+    <RowConstraints maxHeight="344.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="344.0" minHeight="10.0" prefHeight="337.0" valignment="CENTER" vgrow="ALWAYS" />
+      <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="TOP" vgrow="NEVER" />
+      <RowConstraints maxHeight="344.0" minHeight="10.0" prefHeight="337.0" valignment="TOP" vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+      <Label text="Name" />
+      <Label fx:id="name" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+      <Label text="Max Tupples: " GridPane.columnSpan="2" GridPane.rowIndex="1" />
+      <Label text="Probability: " GridPane.rowIndex="3" GridPane.valignment="TOP" />
+      <Slider fx:id="probabilitySlider" blockIncrement="0.1" max="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+      <Label fx:id="componentTextLabel" text="Component: " GridPane.rowIndex="2" />
+      <TextField fx:id="componentTextField" onAction="#componentTextFieldChanged" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+      <TextField fx:id="tupples" onAction="#tupplesTextFieldChanged" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+      <Label fx:id="probabilityLabel" prefWidth="28.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+      <Label fx:id="errorLabel" GridPane.columnSpan="5" GridPane.rowIndex="5" />
+   </children>
+   <padding>
+      <Insets left="5.0" right="5.0" />
+   </padding>
+</GridPane>

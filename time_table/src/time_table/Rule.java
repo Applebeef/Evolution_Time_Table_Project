@@ -7,10 +7,13 @@ import solution.*;
 import evolution.util.Pair;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
 public enum Rule {
+    //TODO add new EX2 rule
     TEACHER_IS_HUMAN("TeacherIsHuman") {
         @Override
         public double test(TimeTableSolution timeTableSolution) {
@@ -114,21 +117,98 @@ public enum Rule {
                 hours++;
                 mapSchoolClassToSubjectHoursMapMap.get(fifth.getSchoolClass()).put(fifth.getSubject(), hours);
             }
-            //Check if the total amount of learned hours is equal to the required amount of hours per subject:.
+            //Check if the total amount of learned hours is equal to the required amount of hours per subject:
             for (SchoolClass schoolClass : timeTableSolution.getTimeTable().getSchoolClasses().getClassList()) {//FIXME random crashing on some runs.
                 for (Study study : schoolClass.requirements.studyList) {
                     int classID = schoolClass.getId();
                     int subjectID = study.getSubjectId();
                     int hours = study.getHours();
                     Map<Integer, Integer> subjectHoursMap = mapSchoolClassToSubjectHoursMapMap.get(classID);
-                    Integer studiedHours = subjectHoursMap.get(subjectID);
-                    //!mapSchoolClassToSubjectHoursMapMap.get(schoolClass.getId()).get(study.subjectId).equals(study.hours)
-                    if (studiedHours == null || studiedHours != hours) {
+                    if (subjectHoursMap != null) {
+                        Integer studiedHours = subjectHoursMap.get(subjectID);
+                        //!mapSchoolClassToSubjectHoursMapMap.get(schoolClass.getId()).get(study.subjectId).equals(study.hours)
+                        if (studiedHours == null || studiedHours != hours) {
+                            score -= reduction;
+                        }
+                    }
+                }
+            }
+            return score;
+        }
+    },
+    DAY_OFF_TEACHER("DayOffTeacher") {
+        @Override
+        public double test(TimeTableSolution timeTableSolution) {
+            double score = 100;
+            double reduction = (double) 100 / timeTableSolution.getTimeTable().getAmountofTeachers();
+            //Map with the key representing each teacher,
+            //the value is a set, if a teacher is teaching in a certain day this day is added to the set.
+            Map<Integer, Set<Integer>> weeklyMapPerTeacher = new HashMap<>();
+            for (Fifth fifth : timeTableSolution.getFifthsList()) {
+                if (fifth.getSchoolClass() != 0 && fifth.getSubject() != 0) {
+                    if (!weeklyMapPerTeacher.containsKey(fifth.getTeacher())) {
+                        weeklyMapPerTeacher.put(fifth.getTeacher(), new HashSet<>());
+                    }
+                    weeklyMapPerTeacher.get(fifth.getTeacher()).add(fifth.getDay());
+                }
+            }
+            //for n=day, n(n+1)/2
+            int daysSigma = timeTableSolution.getTimeTable().getDays() * (timeTableSolution.getTimeTable().getDays() + 1) / 2;
+            for (int i = 1; i <= timeTableSolution.getTimeTable().getAmountofTeachers(); i++) {
+                if (weeklyMapPerTeacher.containsKey(i)) {
+                    int sum = weeklyMapPerTeacher.get(i).stream().mapToInt(Integer::intValue).sum();
+                    if (sum == daysSigma) {
                         score -= reduction;
                     }
                 }
             }
             return score;
+        }
+    },
+    SEQUENTIALITY("Sequentiality") {
+        @Override
+        public double test(TimeTableSolution timeTableSolution) {
+            double score = 100;
+            int totalHours = parseString();
+            Fifth f1, f2;
+            // Reduction for each violation of the rule:
+            double reduction = score /
+                    (double) (timeTableSolution.getTimeTable().getDays()
+                            * timeTableSolution.getTimeTable().getHours()
+                            * timeTableSolution.getTimeTable().getAmountofSchoolClasses());
+            // Sort the fifths list according to schoolClass/Day/
+            timeTableSolution.getFifthsList().sort(Comparator.comparing(Fifth::getSchoolClass)
+                    .thenComparing(Fifth::getDay)
+                    .thenComparing(Fifth::getHour));
+            int consequentHours = 0;
+            for (int i = 0; i < timeTableSolution.getFifthsList().size() - 1; i++) {
+                // Compare each fifth to the consequent fifth:
+                f1 = timeTableSolution.getFifthsList().get(i);
+                f2 = timeTableSolution.getFifthsList().get(i + 1);
+                /*Check same Day/schoolClass/subject/consequent hours:*/
+                if (f1.getDay().equals(f2.getDay()) &&
+                        f1.getSchoolClass().equals(f2.getSchoolClass()) &&
+                        f1.getSubject().equals(f2.getSubject()) &&
+                        f1.getHour().equals(f2.getHour() - 1)) {
+                    consequentHours++;
+                    // If the sequence is larger than the parameter - reduce from score:
+                    if (consequentHours > totalHours) {
+                        score -= reduction;
+                    }
+                } else {
+                    consequentHours = 0;
+                }
+            }
+            return score;
+        }
+
+        private int parseString() {
+            Pattern pattern = Pattern.compile("^TotalHours=(\\d+)$");
+            Matcher m = pattern.matcher(this.getConfiguration());
+            if (m.find()) {
+                return Integer.parseInt(m.group(1));
+            } else
+                return 0;
         }
     };
 

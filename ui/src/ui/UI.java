@@ -1,3 +1,5 @@
+package ui;
+
 import Generated.ETTDescriptor;
 import solution.TimeTableSolution;
 import descriptor.Descriptor;
@@ -72,10 +74,7 @@ public class UI {
                             return;
                         }
 
-                        JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
-                        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                        ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
-                        Descriptor descriptor = new Descriptor(ettdescriptor);
+                        Descriptor descriptor = ui.getDescriptor(file);
                         Set<String> errorSet = descriptor.checkValidity();
                         if (errorSet.size() == 1 && errorSet.contains("")) {
                             ui.setDescriptor(descriptor);
@@ -271,6 +270,13 @@ public class UI {
             return number + " - " + action;
         }
 
+    }
+
+    public Descriptor getDescriptor(File file) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
+        return new Descriptor(ettdescriptor);
     }
 
     private int numberInput() {
