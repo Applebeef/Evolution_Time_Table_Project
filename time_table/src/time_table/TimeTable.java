@@ -43,6 +43,7 @@ public class TimeTable implements Problem {
     public int getDays() {
         return days.get();
     }
+
     public IntegerProperty daysProperty() {
         return days;
     }
@@ -50,6 +51,7 @@ public class TimeTable implements Problem {
     public int getHours() {
         return hours.get();
     }
+
     public IntegerProperty hoursProperty() {
         return hours;
     }
@@ -95,10 +97,13 @@ public class TimeTable implements Problem {
                 "The classes are: " + lineSeparator + schoolClasses + lineSeparator +
                 "The subjects are: " + lineSeparator + subjects + lineSeparator +
                 "The teachers are: " + lineSeparator + teachers + lineSeparator +
-                "The rules are: " + rules;
+                "The rules are: " + rules + lineSeparator +
+                "Mutations - " + lineSeparator + mutations + lineSeparator +
+                "Selection - " + selection + lineSeparator + lineSeparator +
+                "Crossover - " + lineSeparator + crossover;
     }
 
-    public Mutations getMutations(){
+    public Mutations getMutations() {
         return mutations;
     }
 

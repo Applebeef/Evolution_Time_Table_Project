@@ -122,14 +122,15 @@ public class EvolutionEngine implements Runnable {
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
-            solutionList.forEach(solution -> solution.mutate(mutations));
+            for (Solution solution : solutionList) {
+                mutations.getMutationList().forEach(mutationIFC -> mutationIFC.mutate(solution));
+            }
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
             if (i % frequency == 0 || i == 1) {
                 synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
-                    //consumer.accept("Generation " + i + " " + String.format("%.1f", solution.getFitness()));
                     bestSolutionsPerFrequency.add(new Pair<>(i, solution));
                 }
             }
@@ -198,10 +199,7 @@ public class EvolutionEngine implements Runnable {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return "Initial population - " + initialSolutionPopulation + lineSeparator + lineSeparator +
-                "Mutations - " + lineSeparator + mutations + lineSeparator +
-                "Selection - " + selection + lineSeparator + lineSeparator +
-                "Crossover - " + lineSeparator + crossover;
+        return "Initial population - " + initialSolutionPopulation + lineSeparator + lineSeparator;
     }
 
     public List<Pair<Integer, Solution>> getBestSolutionsPerFrequency() {

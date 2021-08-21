@@ -2,13 +2,55 @@ package settings;
 
 import Generated.ETTMutation;
 import evolution.configuration.MutationIFC;
+import evolution.engine.problem_solution.Solution;
+import evolution.util.Randomizer;
 import javafx.beans.property.*;
+import solution.Fifth;
+import solution.TimeTableSolution;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum Mutation implements MutationIFC {
     Flipping("Flipping") {
+        @Override
+        public <T extends Solution> void mutate(T solution) {
+            if (solution instanceof TimeTableSolution) {
+                TimeTableSolution timeTableSolution = (TimeTableSolution) solution;
+                if (checkProbability()) {
+                    List<Fifth> toBeMutated = new ArrayList<>();
+                    int mutatedNumber = Randomizer.getRandomNumber(1, getTupples());
+                    for (int i = 0; i < mutatedNumber; i++) {
+                        toBeMutated.add(timeTableSolution.getFifthsList().get(Randomizer.getRandomNumber(0, timeTableSolution.getFifthsList().size() - 1)));
+                    }
+                    // Mutate the toBeMutated's according to the component in the mutation:
+                    switch (getComponent()) {
+                        case "D":
+                            toBeMutated.forEach(fifth -> fifth.setDay(Randomizer.getRandomNumber(1, timeTableSolution.getTimeTable().getDays())));
+                            break;
+                        case "H":
+                            toBeMutated.forEach(fifth -> fifth.setHour(Randomizer.getRandomNumber(1, timeTableSolution.getTimeTable().getHours())));
+                            break;
+                        case "C":
+                            toBeMutated.forEach(fifth -> fifth.setSchoolClass(Randomizer.getRandomNumber(1, timeTableSolution.getTimeTable().getAmountofSchoolClasses())));
+                            break;
+                        case "T":
+                            toBeMutated.forEach(fifth -> fifth.setTeacher(Randomizer.getRandomNumber(1, timeTableSolution.getTimeTable().getAmountofTeachers())));
+                            break;
+                        case "S":
+                            toBeMutated.forEach(fifth -> fifth.setSubject(Randomizer.getRandomNumber(1, timeTableSolution.getTimeTable().getAmountofSubjects())));
+                            break;
+                        default:
+                            break;
+                    }
+                    timeTableSolution.calculateFitness();
+                }
+            }
+        }
+
         @Override
         protected void parseString(String config) {
             Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");
@@ -24,7 +66,38 @@ public enum Mutation implements MutationIFC {
             return super.toString() + "MaxTupples - " + tupples + " Component - " + component;
         }
     },
+
     Sizer("Sizer") {
+        @Override
+        public <T extends Solution> void mutate(T solution) {
+            if (solution instanceof TimeTableSolution) {
+                if (checkProbability()) {
+                    TimeTableSolution timeTableSolution = (TimeTableSolution) solution;
+                    int mutatedNumber = Randomizer.getRandomNumber(1, getTupples());
+                    if (getTupples() < 0) {
+                        sizerReduce(mutatedNumber, timeTableSolution);
+                    } else {
+                        sizerIncrease(mutatedNumber, timeTableSolution);
+                    }
+                    timeTableSolution.calculateFitness();
+                }
+
+            }
+        }
+
+        private void sizerIncrease(int mutatedNumber, TimeTableSolution solution) {
+            for (int i = 0; i < mutatedNumber && (solution.getFifthsList().size() <= solution.getTimeTable().getDays() * solution.getTimeTable().getHours()); i++) {
+                solution.getFifthsList().add(solution.generateRandomFifth());
+            }
+        }
+
+        private void sizerReduce(int mutatedNumber, TimeTableSolution solution) {
+            for (int i = 0; i < mutatedNumber && solution.getFifthsList().size() > solution.getTimeTable().getDays(); i++) {
+                int randomIndex = Randomizer.getRandomNumber(0, solution.getFifthsList().size());
+                solution.getFifthsList().remove(randomIndex);
+            }
+        }
+
         @Override
         protected void parseString(String config) {
             Pattern pattern = Pattern.compile("^TotalTupples=(\\d+)$");
@@ -58,6 +131,10 @@ public enum Mutation implements MutationIFC {
         return component.get();
     }
 
+    boolean checkProbability() {
+        double random = Randomizer.getRandomNumber(0, getProbability());
+        return random < getProbability();
+    }
 
     Mutation(String name) {
         this.name = name;

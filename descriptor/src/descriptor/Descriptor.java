@@ -53,7 +53,7 @@ public class Descriptor {
         errorSet.add(timeTable.getTeachers().checkSubjectValidity(timeTable.getSubjects()));
         errorSet.add(timeTable.getSubjects().checkValidity());
         errorSet.add(timeTable.getRules().checkValidity());
-        errorSet.add(evolutionEngine.getSelection().checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
+        errorSet.add(timeTable.getSelection().checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
         return errorSet;
     }
 }

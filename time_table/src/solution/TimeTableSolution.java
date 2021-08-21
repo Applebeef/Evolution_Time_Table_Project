@@ -199,7 +199,7 @@ public class TimeTableSolution implements Solution {
         }
     }
 
-    private Fifth generateRandomFifth() {
+    public Fifth generateRandomFifth() {
         int day, hour, schoolClass, teacher, subject;
         schoolClass = Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses());
         subject = Randomizer.getRandomNumber(1, timeTable.getAmountofSubjects());
