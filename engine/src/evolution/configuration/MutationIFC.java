@@ -13,7 +13,7 @@ public interface MutationIFC {
 
     int getTupples();
 
-    void initFromXML(ETTMutation gen);
+    public void initFromXML(ETTMutation gen);
 
     public <T extends Solution> void mutate(T solution);
 

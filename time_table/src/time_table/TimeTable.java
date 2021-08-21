@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import settings.Crossover;
 import settings.Mutations;
 import settings.Selection;
+import settings.Selections;
 import solution.*;
 
 public class TimeTable implements Problem {
@@ -23,7 +24,7 @@ public class TimeTable implements Problem {
     Rules rules;
     Mutations mutations;
     Crossover crossover;
-    Selection selection;
+    Selections selection;
 
 
     public TimeTable(ETTTimeTable gen, ETTMutations mutationsSettings, ETTCrossover crossoverSettings, ETTSelection selectionSettings) {
@@ -36,7 +37,12 @@ public class TimeTable implements Problem {
         rules = new Rules(gen.getETTRules());
 
         mutations = new Mutations(mutationsSettings);
-        selection = new Selection(selectionSettings);
+        for (Selections s : Selections.values()) {
+            if (s.getType().equals(selectionSettings.getType())) {
+                s.initFromXml(selectionSettings);
+                selection = s;
+            }
+        }
         crossover = new Crossover(crossoverSettings);
     }
 
@@ -111,7 +117,7 @@ public class TimeTable implements Problem {
         return crossover;
     }
 
-    public Selection getSelection() {
+    public Selections getSelection() {
         return selection;
     }
 }
