@@ -1,10 +1,14 @@
 package solution;
 
 import evolution.configuration.CrossoverIFC;
+import evolution.configuration.MutationIFC;
 import evolution.configuration.MutationsIFC;
 import evolution.util.Randomizer;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
+import settings.Crossover;
+import settings.Mutation;
+import settings.Mutations;
 import time_table.*;
 import evolution.util.Pair;
 
@@ -171,35 +175,6 @@ public class TimeTableSolution implements Solution {
         this.fitness = (hardTotalScore / (double) hardCount) * hardRulesWeight +
                 (softTotalScore / (double) softCount) * sofRulesWeight;
         return this.fitness;
-    }
-
-    @Override
-    public void mutate(MutationsIFC mutations) {
-        if (mutations instanceof Mutations) {
-            double probability;
-            int mutatedNumber;
-            // Iterate through mutations:
-            for (Mutation mutation : ((Mutations)mutations).getMutationList()) {
-                // Randomize a real number from 0 to 1:
-                probability = Math.random();
-                // If the random number "hits" the mutation probability then the mutation will happend:
-                if (probability <= mutation.getProbability()) {
-                    // mutatedNumber = maximum amount of tupples with the mutation:
-                    mutatedNumber = Randomizer.getRandomNumber(1, Math.abs(mutation.getTupples()));
-
-                    switch (mutation.getName()) {
-                        case ("Flipping"):
-                            flippingMutation(mutatedNumber, mutation);
-                            break;
-                        case ("Sizer"):
-                            sizerMutation(mutatedNumber, mutation);
-                            break;
-                    }
-
-                }
-            }
-            calculateFitness();
-        }
     }
 
     private void sizerMutation(int mutatedNumber, Mutation mutation) {

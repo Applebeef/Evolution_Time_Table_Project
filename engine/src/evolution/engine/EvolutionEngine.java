@@ -32,14 +32,8 @@ public class EvolutionEngine implements Runnable {
     private int max_fitness;
     private Consumer<String> consumer;
 
-    public EvolutionEngine(ETTEvolutionEngine gen, CrossoverIFC cs, MutationsIFC mt, SelectionIFC slc) {
+    public EvolutionEngine(ETTEvolutionEngine gen) {
         initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
-        //mutations = new Mutations(gen.getETTMutations());
-        //selection = new Selection(gen.getETTSelection());
-        //crossover = new Crossover(gen.getETTCrossover());
-        mutations = mt;
-        selection = slc;
-        crossover = cs;
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new ArrayList<>();
@@ -103,6 +97,9 @@ public class EvolutionEngine implements Runnable {
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
         Solution solution;
         this.number_of_generations = number_of_generations;
+        mutations = problem.getMutations();
+        selection = problem.getSelection();
+        crossover = problem.getCrossover();
 
         for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
             // Create solution:
@@ -129,8 +126,8 @@ public class EvolutionEngine implements Runnable {
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
-            synchronized (bestSolutionsPerFrequency) {
-                if (i % frequency == 0 || i == 1) {
+            if (i % frequency == 0 || i == 1) {
+                synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
                     //consumer.accept("Generation " + i + " " + String.format("%.1f", solution.getFitness()));
                     bestSolutionsPerFrequency.add(new Pair<>(i, solution));
@@ -142,7 +139,7 @@ public class EvolutionEngine implements Runnable {
                     bestSolution.setV2(solutionList.get(0));
                 }
             }
-            while (enginePaused.get()){//TODO make sure this works.
+            while (enginePaused.get()) {//TODO make sure this works.
                 try {
                     this.wait();
                 } catch (InterruptedException e) {

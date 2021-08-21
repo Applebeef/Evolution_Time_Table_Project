@@ -1,5 +1,6 @@
-package solution;
+package settings;
 
+import Generated.ETTMutation;
 import evolution.configuration.MutationIFC;
 import javafx.beans.property.*;
 
@@ -13,7 +14,7 @@ public enum Mutation implements MutationIFC {
             Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");
             Matcher m = pattern.matcher(config);
             if (m.find()) {
-                this.tupples = new SimpleIntegerProperty(Integer.parseInt(m.group(1)));
+                this.tupples.set(Integer.parseInt(m.group(1)));
                 this.component = new SimpleStringProperty(m.group(2));
             }
         }
@@ -29,7 +30,7 @@ public enum Mutation implements MutationIFC {
             Pattern pattern = Pattern.compile("^TotalTupples=(\\d+)$");
             Matcher m = pattern.matcher(config);
             if (m.find()) {
-                this.tupples = new SimpleIntegerProperty(Integer.parseInt(m.group(1)));
+                this.tupples.set(Integer.parseInt(m.group(1)));
                 this.component = null;
             }
         }
@@ -60,7 +61,9 @@ public enum Mutation implements MutationIFC {
 
     Mutation(String name) {
         this.name = name;
-        probability = new SimpleDoubleProperty();
+        probability = new SimpleDoubleProperty(0);
+        tupples = new SimpleIntegerProperty(0);
+        component = new SimpleStringProperty("");
     }
 
     protected abstract void parseString(String config);
@@ -83,6 +86,12 @@ public enum Mutation implements MutationIFC {
 
     public StringProperty componentProperty() {
         return component;
+    }
+
+    @Override
+    public void initFromXML(ETTMutation gen) {
+        setProbability(gen.getProbability());
+        parseString(gen.getConfiguration());
     }
 
     @Override

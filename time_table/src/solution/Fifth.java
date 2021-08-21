@@ -1,10 +1,8 @@
 package solution;
 
-import evolution.engine.problem_solution.SolutionPartical;
-
 import java.util.Objects;
 
-public class Fifth extends SolutionPartical implements Comparable<Fifth> {
+public class Fifth implements Comparable<Fifth> {
     private Integer day, hour, schoolClass, teacher, subject;
 
     public Fifth(int day, int hour, int schoolClass, int teacher, int subject) {

@@ -1,4 +1,4 @@
-package solution;
+package settings;
 
 import Generated.ETTSelection;
 import evolution.configuration.SelectionIFC;

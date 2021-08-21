@@ -1,20 +1,32 @@
 package time_table;
 
+import Generated.ETTCrossover;
+import Generated.ETTMutations;
+import Generated.ETTSelection;
 import Generated.ETTTimeTable;
+import evolution.configuration.CrossoverIFC;
+import evolution.configuration.MutationsIFC;
+import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import settings.Crossover;
+import settings.Mutations;
+import settings.Selection;
 import solution.*;
 
 public class TimeTable implements Problem {
     IntegerProperty days, hours;
-    //int days, hours;
     SchoolClasses schoolClasses;
     Subjects subjects;
     Teachers teachers;
     Rules rules;
+    Mutations mutations;
+    Crossover crossover;
+    Selection selection;
 
-    public TimeTable(ETTTimeTable gen) {
+
+    public TimeTable(ETTTimeTable gen, ETTMutations mutationsSettings, ETTCrossover crossoverSettings, ETTSelection selectionSettings) {
         days = new SimpleIntegerProperty(gen.getDays());
         hours = new SimpleIntegerProperty(gen.getHours());
 
@@ -22,6 +34,10 @@ public class TimeTable implements Problem {
         subjects = new Subjects(gen.getETTSubjects());
         teachers = new Teachers(gen.getETTTeachers());
         rules = new Rules(gen.getETTRules());
+
+        mutations = new Mutations(mutationsSettings);
+        selection = new Selection(selectionSettings);
+        crossover = new Crossover(crossoverSettings);
     }
 
     public int getDays() {
@@ -80,5 +96,17 @@ public class TimeTable implements Problem {
                 "The subjects are: " + lineSeparator + subjects + lineSeparator +
                 "The teachers are: " + lineSeparator + teachers + lineSeparator +
                 "The rules are: " + rules;
+    }
+
+    public Mutations getMutations(){
+        return mutations;
+    }
+
+    public Crossover getCrossover() {
+        return crossover;
+    }
+
+    public Selection getSelection() {
+        return selection;
     }
 }

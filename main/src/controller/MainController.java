@@ -4,6 +4,7 @@ import Generated.ETTDescriptor;
 import controller.dynamic.*;
 import descriptor.Descriptor;
 
+import evolution.configuration.SelectionIFC;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,14 +17,14 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
-import solution.Selection;
+import settings.Mutations;
+import settings.Selection;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Objects;
 
 public class MainController {
@@ -144,7 +145,8 @@ public class MainController {
     void displayMutations(ActionEvent event) {
         engineDisplayPane.getChildren().clear();
 
-        descriptor.getMutations().getMutationList().forEach(mutation -> {
+        Mutations mutations = descriptor.getTimeTable().getMutations();
+        mutations.getMutationList().forEach(mutation -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
                         .getResource("../resources/dynamic_fxmls/mutation.fxml")));
@@ -169,11 +171,11 @@ public class MainController {
                     controller.getComponentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                         if (!newValue.equalsIgnoreCase("T") && !newValue.equalsIgnoreCase("C")
                                 && !newValue.equalsIgnoreCase("D") && !newValue.equalsIgnoreCase("H")
-                                && !newValue.equalsIgnoreCase("S")) {
+                                && !newValue.equalsIgnoreCase("S") && !newValue.equalsIgnoreCase("")) {
                             controller.getComponentTextField().setText(oldValue);
                             controller.getErrorLabel().setText("Please choose a valid component (D,H,C,T,S).");
                         } else {
-                            controller.getComponentTextField().setText(newValue.toUpperCase(Locale.ROOT));
+                            controller.getComponentTextField().setText(newValue.toUpperCase());
                             controller.getErrorLabel().setText("");
                         }
                     }));
@@ -196,7 +198,7 @@ public class MainController {
     void displaySelection(ActionEvent event) {
         engineDisplayPane.getChildren().clear();
 
-        Selection selection = descriptor.getSelection();
+        Selection selection = descriptor.getTimeTable().getSelection();
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
                     .getResource("../resources/dynamic_fxmls/selection.fxml")));

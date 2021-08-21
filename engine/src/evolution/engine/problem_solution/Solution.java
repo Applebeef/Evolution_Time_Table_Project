@@ -10,9 +10,6 @@ public interface Solution extends Comparable<Solution> {
     // Calculate and return fitness for solution:
     double calculateFitness();
 
-    // Mutate solution:
-    void mutate(MutationsIFC mutations);
-
     // Crossover with other solution:
     List<Solution> crossover(Solution solution, CrossoverIFC crossover);
 

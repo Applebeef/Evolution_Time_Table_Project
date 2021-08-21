@@ -1,4 +1,4 @@
-package solution;
+package settings;
 
 import Generated.ETTCrossover;
 import evolution.configuration.CrossoverIFC;

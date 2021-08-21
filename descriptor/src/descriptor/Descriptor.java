@@ -1,8 +1,9 @@
 package descriptor;
 
-import solution.Crossover;
+import settings.Crossover;
+import settings.Mutations;
+import settings.Selection;
 import time_table.TimeTable;
-import solution.*;
 import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
@@ -12,29 +13,12 @@ import java.util.Set;
 public class Descriptor {
     protected TimeTable timeTable;
     protected EvolutionEngine evolutionEngine;
-    Mutations mutations;
-    Selection selection;
-    Crossover crossover;
-
 
     public Descriptor(ETTDescriptor gen) {
-        timeTable = new TimeTable(gen.getETTTimeTable());
-        mutations = new Mutations(gen.getETTEvolutionEngine().getETTMutations());
-        selection = new Selection(gen.getETTEvolutionEngine().getETTSelection());
-        crossover = new Crossover(gen.getETTEvolutionEngine().getETTCrossover());
-        evolutionEngine = new EvolutionEngine(gen.getETTEvolutionEngine(), crossover, mutations, selection);
-    }
-
-    public Mutations getMutations() {
-        return mutations;
-    }
-
-    public Selection getSelection() {
-        return selection;
-    }
-
-    public Crossover getCrossover() {
-        return crossover;
+        timeTable = new TimeTable(gen.getETTTimeTable(),gen.getETTEvolutionEngine().getETTMutations(),
+                gen.getETTEvolutionEngine().getETTCrossover(),
+                gen.getETTEvolutionEngine().getETTSelection());
+        evolutionEngine = new EvolutionEngine(gen.getETTEvolutionEngine());
     }
 
     public TimeTable getTimeTable() {
