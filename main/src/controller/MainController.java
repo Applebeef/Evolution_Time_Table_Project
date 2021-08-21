@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import settings.Mutations;
 import settings.Selection;
+import settings.Selections;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -198,7 +199,7 @@ public class MainController {
     void displaySelection(ActionEvent event) {
         engineDisplayPane.getChildren().clear();
 
-        Selection selection = descriptor.getTimeTable().getSelection();
+        Selections selection = descriptor.getTimeTable().getSelection();
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
                     .getResource("../resources/dynamic_fxmls/selection.fxml")));
