@@ -186,6 +186,8 @@ public class EvolutionEngine implements Runnable {
                     selectedSolutions.get(0)
                             .crossover(selectedSolutions.get(1), this.crossover)
             );
+
+            /**/
         }
         // Shrink to initial population size:
         if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {

@@ -291,11 +291,29 @@ public class TimeTableSolution implements Solution {
         return res;
     }
 
-    private int getMaxListSize() {
-        return timeTable.getDays() * timeTable.getHours() * timeTable.getAmountofTeachers() * timeTable.getAmountofSubjects() * timeTable.getAmountofSchoolClasses();
+    public int getMaxListSize() {
+        return timeTable.getDays()
+                * timeTable.getHours()
+                * timeTable.getAmountofTeachers()
+                * timeTable.getAmountofSubjects()
+                * timeTable.getAmountofSchoolClasses();
     }
 
-    private List<List<Fifth>> splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList) {
+    public int getMaxTeacherListSize(){
+        return timeTable.getDays()
+                * timeTable.getHours()
+                * timeTable.getAmountofSubjects()
+                * timeTable.getAmountofSchoolClasses();
+    }
+
+    public int getMaxSchoolClassListSize(){
+        return timeTable.getDays()
+                * timeTable.getHours()
+                * timeTable.getAmountofSubjects()
+                * timeTable.getAmountofTeachers();
+    }
+
+    public List<List<Fifth>> splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList) {
         List<List<Fifth>> res = new ArrayList<>(cuttingPointsList.size() + 1);
         for (int i = 0; i < cuttingPointsList.size() + 1; i++) {
             res.add(new ArrayList<>());

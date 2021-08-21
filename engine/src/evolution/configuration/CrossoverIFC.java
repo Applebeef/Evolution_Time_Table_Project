@@ -1,6 +1,10 @@
 package evolution.configuration;
 
-public interface CrossoverIFC {
-     int getCuttingPoints() ;
+import Generated.ETTCrossover;
 
-    }
+
+public interface CrossoverIFC {
+    int getCuttingPoints();
+
+    void initFromXML(ETTCrossover gen);
+}

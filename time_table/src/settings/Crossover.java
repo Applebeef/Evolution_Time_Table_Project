@@ -50,6 +50,10 @@ public class Crossover implements CrossoverIFC {
         this.cuttingPoints = cuttingPoints;
     }
 
+    @Override
+    public void initFromXML(ETTCrossover gen) {
+
+    }
 
     @Override
     public String toString() {
