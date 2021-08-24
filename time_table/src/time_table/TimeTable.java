@@ -10,10 +10,7 @@ import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import settings.Crossover;
-import settings.Mutations;
-import settings.Selection;
-import settings.Selections;
+import settings.*;
 import solution.*;
 
 public class TimeTable implements Problem {
@@ -23,7 +20,7 @@ public class TimeTable implements Problem {
     Teachers teachers;
     Rules rules;
     Mutations mutations;
-    Crossover crossover;
+    Crossovers crossover;
     Selections selection;
 
 
@@ -37,13 +34,21 @@ public class TimeTable implements Problem {
         rules = new Rules(gen.getETTRules());
 
         mutations = new Mutations(mutationsSettings);
+
         for (Selections s : Selections.values()) {
             if (s.getType().equals(selectionSettings.getType())) {
                 s.initFromXml(selectionSettings);
                 selection = s;
+                break;
             }
         }
-        crossover = new Crossover(crossoverSettings);
+        for (Crossovers c : Crossovers.values()){
+            if (c.getName().equals(crossoverSettings.getName())){
+                c.initFromXML(crossoverSettings);
+                crossover=c;
+                break;
+            }
+        }
     }
 
     public int getDays() {
@@ -113,7 +118,7 @@ public class TimeTable implements Problem {
         return mutations;
     }
 
-    public Crossover getCrossover() {
+    public Crossovers getCrossover() {
         return crossover;
     }
 

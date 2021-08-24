@@ -4,8 +4,13 @@ import Generated.ETTSelection;
 import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,16 +84,19 @@ public enum Selections implements SelectionIFC {
     };
     protected String type;
     protected IntegerProperty topPercent;
+    protected BooleanProperty active;
     protected IntegerProperty elitism;
 
     Selections(String type) {
         this.type = type;
         topPercent = new SimpleIntegerProperty(0);
         elitism = new SimpleIntegerProperty(0);
+        active = new SimpleBooleanProperty(false);
     }
 
     public void initFromXml(ETTSelection gen) {
         setElitism(gen.getETTElitism());
+        setActive(true);
         setTopPercent(parseString(gen.getConfiguration()));
     }
 
@@ -126,6 +134,18 @@ public enum Selections implements SelectionIFC {
 
     public void setElitism(int elitism) {
         this.elitism.set(elitism);
+    }
+
+    public boolean isActive() {
+        return active.get();
+    }
+
+    public BooleanProperty activeProperty() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active.set(active);
     }
 
     @Override

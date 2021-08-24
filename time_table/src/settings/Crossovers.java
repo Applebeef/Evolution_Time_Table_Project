@@ -1,13 +1,15 @@
 package settings;
 
 import Generated.ETTCrossover;
-import Generated.ETTMutation;
 import evolution.configuration.CrossoverIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
 import javafx.beans.property.*;
 import solution.Fifth;
 import solution.TimeTableSolution;
+import time_table.SchoolClass;
+import time_table.Teacher;
+import time_table.TimeTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +22,12 @@ import java.util.stream.Collectors;
 public enum Crossovers implements CrossoverIFC {
     DAY_TIME_ORIENTED("DayTimeOriented") {
         @Override
-        List<Solution> cross(Solution s_1, Solution s_2) {
+        void parseString(String configuration) {
+            setOrientation(null);
+        }
+
+        @Override
+        public List<? super Solution> cross(Solution s_1, Solution s_2) {
             List<Solution> res = new ArrayList<>();
             if (s_1 instanceof TimeTableSolution && s_2 instanceof TimeTableSolution) {
                 TimeTableSolution s1 = (TimeTableSolution) s_1;
@@ -80,7 +87,17 @@ public enum Crossovers implements CrossoverIFC {
     },
     ASPECT_ORIENTED("AspectOriented") {
         @Override
-        List<Solution> cross(Solution s_1, Solution s_2) {
+        void parseString(String configuration) {
+            if (getName().equals("AspectOriented")) {
+                Pattern pattern = Pattern.compile("^Orientation=(CLASS|TEACHER)$");
+                Matcher m = pattern.matcher(configuration);
+                if (m.find())
+                    setOrientation(m.group(1));
+            }
+        }
+
+        @Override
+        public List<? super Solution> cross(Solution s_1, Solution s_2) {
             if (s_1 instanceof TimeTableSolution && s_2 instanceof TimeTableSolution) {
                 TimeTableSolution s1 = (TimeTableSolution) s_1;
                 TimeTableSolution s2 = (TimeTableSolution) s_2;
@@ -98,7 +115,7 @@ public enum Crossovers implements CrossoverIFC {
             return null;
         }
 
-        List<Solution> teacherOriented(TimeTableSolution s1, TimeTableSolution s2) {
+        List<? super Solution> teacherOriented(TimeTableSolution s1, TimeTableSolution s2) {
             List<Solution> res = new ArrayList<>();
 
             // Create comparator:
@@ -122,7 +139,7 @@ public enum Crossovers implements CrossoverIFC {
             List<List<Fifth>> crossoverList1 = new ArrayList<>();
             List<List<Fifth>> crossoverList2 = new ArrayList<>();
 
-            for (int t = 0; t < s1.getTimeTable().getAmountofTeachers(); t++) {
+            for (Teacher teacher : s1.getTimeTable().getTeachers().getTeacherList()) {
                 for (int i = 0; i < this.getCuttingPoints(); i++) {
                     // Randomize cutting points. Amount according to CuttingPoints:
                     do {
@@ -133,20 +150,15 @@ public enum Crossovers implements CrossoverIFC {
 
                 Collections.sort(cuttingPointsList);
 
-
-                int finalT = t;
-                list1Parts = s1.splitToParts(
-                        s1.getFifthsList()
-                                .stream()
-                                .filter(fifth-> fifth.getTeacher().equals(finalT))
-                                .collect(Collectors.toList()), cuttingPointsList);
-                list2Parts = s2.splitToParts(
-                        s2.getFifthsList()
-                                .stream()
-                                .filter(fifth-> fifth.getTeacher().equals(finalT))
-                                .collect(Collectors.toList()), cuttingPointsList);
-
-
+                int finalT = teacher.getId();
+                list1Parts = splitToParts(s1.getFifthsList().stream()
+                                .filter(fifth -> fifth.getTeacher()
+                                        .equals(finalT)).collect(Collectors.toList()),
+                        cuttingPointsList, s1.getTimeTable());
+                list2Parts = splitToParts(s2.getFifthsList().stream()
+                                .filter(fifth -> fifth.getTeacher()
+                                        .equals(finalT)).collect(Collectors.toList()),
+                        cuttingPointsList, s2.getTimeTable());
 
 
                 for (int i = 0; i < list1Parts.size() && i < list2Parts.size(); i++) {
@@ -168,7 +180,7 @@ public enum Crossovers implements CrossoverIFC {
             return res;
         }
 
-        List<Solution> classOriented(TimeTableSolution s1, TimeTableSolution s2) {
+        List<? super Solution> classOriented(TimeTableSolution s1, TimeTableSolution s2) {
             List<Solution> res = new ArrayList<>();
 
             // Create comparator:
@@ -184,7 +196,7 @@ public enum Crossovers implements CrossoverIFC {
 
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
-            int maxListSize = s1.getMaxTeacherListSize();
+            int maxListSize = s1.getMaxSchoolClassListSize();
 
             List<List<Fifth>> list1Parts;
             List<List<Fifth>> list2Parts;
@@ -192,7 +204,7 @@ public enum Crossovers implements CrossoverIFC {
             List<List<Fifth>> crossoverList1 = new ArrayList<>();
             List<List<Fifth>> crossoverList2 = new ArrayList<>();
 
-            for (int t = 0; t < s1.getTimeTable().getAmountofTeachers(); t++) {
+            for (SchoolClass schoolClass : s1.getTimeTable().getSchoolClasses().getClassList()) {
                 for (int i = 0; i < this.getCuttingPoints(); i++) {
                     // Randomize cutting points. Amount according to CuttingPoints:
                     do {
@@ -203,20 +215,15 @@ public enum Crossovers implements CrossoverIFC {
 
                 Collections.sort(cuttingPointsList);
 
-
-                int finalT = t;
-                list1Parts = s1.splitToParts(
-                        s1.getFifthsList()
-                                .stream()
-                                .filter(fifth-> fifth.getTeacher().equals(finalT))
-                                .collect(Collectors.toList()), cuttingPointsList);
-                list2Parts = s2.splitToParts(
-                        s2.getFifthsList()
-                                .stream()
-                                .filter(fifth-> fifth.getTeacher().equals(finalT))
-                                .collect(Collectors.toList()), cuttingPointsList);
-
-
+                int finalC = schoolClass.getId();
+                list1Parts = splitToParts(s1.getFifthsList().stream()
+                                .filter(fifth -> fifth.getSchoolClass()
+                                        .equals(finalC)).collect(Collectors.toList()),
+                        cuttingPointsList, s1.getTimeTable());
+                list2Parts = splitToParts(s2.getFifthsList().stream()
+                                .filter(fifth -> fifth.getSchoolClass()
+                                        .equals(finalC)).collect(Collectors.toList()),
+                        cuttingPointsList, s2.getTimeTable());
 
 
                 for (int i = 0; i < list1Parts.size() && i < list2Parts.size(); i++) {
@@ -253,23 +260,91 @@ public enum Crossovers implements CrossoverIFC {
 
     @Override
     public int getCuttingPoints() {
-        return 0;
+        return cuttingPoints.get();
     }
 
     @Override
     public void initFromXML(ETTCrossover ettCrossover) {
-        this.name = ettCrossover.getName();
-        this.cuttingPoints.setValue(ettCrossover.getCuttingPoints());
-        if (name.equals("AspectOriented")) {
-            Pattern pattern = Pattern.compile("^Orientation=(CLASS|TEACHER)$");
-            Matcher m = pattern.matcher(ettCrossover.getConfiguration());
-
-            if (m.find())
-                this.orientation.setValue(m.group(1));
-        } else {
-            this.orientation.setValue(null);
-        }
+        setName(ettCrossover.getName());
+        setActive(true);
+        setCuttingPoints(ettCrossover.getCuttingPoints());
+        parseString(ettCrossover.getConfiguration());
     }
 
-    abstract List<Solution> cross(Solution s_1, Solution s_2);
+    abstract void parseString(String configuration);
+
+    public String getOrientation() {
+        return orientation.get();
+    }
+
+    public StringProperty orientationProperty() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation.set(orientation);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isActive() {
+        return active.get();
+    }
+
+    public BooleanProperty activeProperty() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active.set(active);
+    }
+
+    public IntegerProperty cuttingPointsProperty() {
+        return cuttingPoints;
+    }
+
+    public void setCuttingPoints(int cuttingPoints) {
+        this.cuttingPoints.set(cuttingPoints);
+    }
+
+    public List<List<Fifth>> splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList, TimeTable timeTable) {
+        List<List<Fifth>> res = new ArrayList<>(cuttingPointsList.size() + 1);
+        for (int i = 0; i < cuttingPointsList.size() + 1; i++) {
+            res.add(new ArrayList<>());
+        }
+        for (Fifth fifth : fifthsList) {
+            /* Returns the index of this fifth assuming we had a "full" array
+             (accounting for every class,teacher,subject,hour and day): */
+            int position = getPosition(fifth, timeTable);
+            // Add the current fifth to the correct List according to position:
+            if (position < cuttingPointsList.get(0)) {
+                res.get(0).add(fifth);
+            } else if (position >= cuttingPointsList.get(cuttingPointsList.size() - 1)) {
+                res.get(res.size() - 1).add(fifth);
+            } else {
+                for (int i = 0; i < cuttingPointsList.size() - 1; i++) {
+                    if (position >= cuttingPointsList.get(i) && position < cuttingPointsList.get(i + 1)) {
+                        res.get(i + 1).add(fifth);
+                        break;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    private int getPosition(Fifth fifth, TimeTable timeTable) {
+        //returns the index of this fifth assuming we had a "full" array (accounting for every class,teacher,subject,hour and day).
+        return (fifth.getSubject() - 1) +
+                (fifth.getTeacher() - 1) * timeTable.getAmountofSubjects() +
+                (fifth.getSchoolClass() - 1) * timeTable.getAmountofSubjects() * timeTable.getAmountofTeachers() +
+                (fifth.getHour() - 1) * timeTable.getAmountofSubjects() * timeTable.getAmountofTeachers() * timeTable.getAmountofSchoolClasses() +
+                (fifth.getDay() - 1) * timeTable.getAmountofSubjects() * timeTable.getAmountofTeachers() * timeTable.getAmountofSchoolClasses() * timeTable.getHours();
+    }
 }

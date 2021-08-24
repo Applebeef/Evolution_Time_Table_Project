@@ -2,7 +2,9 @@ package settings;
 
 import Generated.ETTCrossover;
 import evolution.configuration.CrossoverIFC;
+import evolution.engine.problem_solution.Solution;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +55,11 @@ public class Crossover implements CrossoverIFC {
     @Override
     public void initFromXML(ETTCrossover gen) {
 
+    }
+
+    @Override
+    public List<? super Solution> cross(Solution s_1, Solution s_2) {
+        return null;
     }
 
     @Override
