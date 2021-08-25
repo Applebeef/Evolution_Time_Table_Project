@@ -150,8 +150,6 @@ public class MainController {
 
                 controller.getType().setText(crossover.getName());
 
-                NumberStringConverter numberStringConverter = new NumberStringConverter();
-
                 controller.getCuttingPointsTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                     newValue = newValue.replace(",", "");
                     if (!newValue.matches("\\d*")) {
@@ -166,7 +164,6 @@ public class MainController {
                         controller.getErrorLabel().setText("");
                     }
                 }));
-                System.out.println(descriptor.getTimeTable().getMaxListSize());
                 Bindings.bindBidirectional(controller.getCuttingPointsTextField().textProperty(), crossover.cuttingPointsProperty(), new NumberStringConverter());
                 controller.getCuttingPointsSlider().maxProperty().set(descriptor.getTimeTable().getMaxListSize() - 1);
                 Bindings.bindBidirectional(controller.getCuttingPointsSlider().valueProperty(), crossover.cuttingPointsProperty());
@@ -186,8 +183,8 @@ public class MainController {
 
                 engineDisplayPane.getChildren().add(load);
 
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
+
             }
         }
     }

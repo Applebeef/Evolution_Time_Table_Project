@@ -17,12 +17,12 @@
       <ColumnConstraints />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints fillHeight="false" maxHeight="230.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-    <RowConstraints fillHeight="false" maxHeight="296.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-    <RowConstraints maxHeight="344.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
-      <RowConstraints maxHeight="344.0" minHeight="10.0" prefHeight="337.0" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
       <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="TOP" vgrow="NEVER" />
-      <RowConstraints maxHeight="344.0" minHeight="10.0" prefHeight="337.0" valignment="TOP" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="337.0" valignment="TOP" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
       <Label text="Name" />
