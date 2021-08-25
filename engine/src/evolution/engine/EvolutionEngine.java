@@ -14,9 +14,10 @@ import java.util.function.Consumer;
 
 public class EvolutionEngine implements Runnable {
     private InitialPopulation initialSolutionPopulation;
+
     private MutationsIFC mutations;
-    private SelectionIFC selection;
-    private CrossoverIFC crossover;
+    private List<SelectionIFC> selectionIFCList;
+    private List<CrossoverIFC> crossoverIFCList;
 
     private List<Solution> solutionList;
     private List<Solution> offspringSolutionsList;
@@ -78,12 +79,12 @@ public class EvolutionEngine implements Runnable {
         return mutations;
     }
 
-    public SelectionIFC getSelection() {
-        return selection;
+    public List<SelectionIFC> getSelectionIFCList() {
+        return selectionIFCList;
     }
 
-    public CrossoverIFC getCrossover() {
-        return crossover;
+    public List<CrossoverIFC> getCrossoverIFCList() {
+        return crossoverIFCList;
     }
 
     public List<Solution> getSolutionList() {
@@ -94,12 +95,14 @@ public class EvolutionEngine implements Runnable {
         return engineStarted.get();
     }
 
+
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
         Solution solution;
         this.number_of_generations = number_of_generations;
+
         mutations = problem.getMutations();
-        selection = problem.getSelection();
-        crossover = problem.getCrossover();
+        selectionIFCList = problem.getSelectionsList();
+        crossoverIFCList = problem.getCrossoverList();
 
         for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
             // Create solution:
@@ -168,33 +171,45 @@ public class EvolutionEngine implements Runnable {
 
     private void spawnGeneration() {
         this.offspringSolutionsList = new ArrayList<>();
-        List<Solution> selectedSolutions;
-        // Elitism:
-        List<Solution> eliteList = solutionList.subList(0, this.selection.getElitism());
-        List<Solution> copiedEliteList = new ArrayList<>(eliteList.size());
-        eliteList.forEach(solution -> copiedEliteList.add(solution.copy()));
-        offspringSolutionsList.addAll(copiedEliteList);
-
-        // Using crossover (class EvolutionEngine), create an offspring Solution List:
-        while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
-            // Receive the solutions to be crossed over:
-            selectedSolutions = this.selection.select(solutionList);
-            // Crossover the two solutions:
-            // TODO: Think of crossover method implementation (inside Crossover or inside Solution instantiation).
-
-            offspringSolutionsList.addAll(
-                    selectedSolutions.get(0)
-                            .crossover(selectedSolutions.get(1), this.crossover)
-            );
-
-            /**/
+        SelectionIFC activeSelection = null;
+        CrossoverIFC activeCrossover = null;
+        for (SelectionIFC selection : getSelectionIFCList()) {
+            if (selection.isActive()) {
+                activeSelection = selection;
+                break;
+            }
         }
-        // Shrink to initial population size:
-        if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {
-            this.solutionList = offspringSolutionsList.subList(0, initialSolutionPopulation.getSize());
-        } else {
-            this.solutionList = offspringSolutionsList;
+        for (CrossoverIFC crossover : getCrossoverIFCList()) {
+            if (crossover.isActive()) {
+                activeCrossover = crossover;
+                break;
+            }
         }
+        if (activeSelection != null && activeCrossover != null) {
+            List<Solution> selectedSolutions;
+            // Elitism:
+            List<Solution> eliteList = solutionList.subList(0, activeSelection.getElitism());
+            List<Solution> copiedEliteList = new ArrayList<>(eliteList.size());
+            eliteList.forEach(solution -> copiedEliteList.add(solution.copy()));
+            offspringSolutionsList.addAll(copiedEliteList);
+
+            // Using crossover (class EvolutionEngine), create an offspring Solution List:
+            while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
+                // Receive the solutions to be crossed over:
+                selectedSolutions = activeSelection.select(solutionList);
+                // Crossover the two solutions:
+
+                offspringSolutionsList.addAll(activeCrossover.cross(selectedSolutions.get(0), selectedSolutions.get(1)));
+                /**/
+            }
+            // Shrink to initial population size:
+            if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {
+                this.solutionList = offspringSolutionsList.subList(0, initialSolutionPopulation.getSize());
+            } else {
+                this.solutionList = offspringSolutionsList;
+            }
+        }
+
     }
 
 

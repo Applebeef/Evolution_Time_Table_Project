@@ -4,14 +4,15 @@ import Generated.ETTCrossover;
 import Generated.ETTMutations;
 import Generated.ETTSelection;
 import Generated.ETTTimeTable;
-import evolution.configuration.CrossoverIFC;
-import evolution.configuration.MutationsIFC;
-import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import settings.*;
 import solution.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TimeTable implements Problem {
     IntegerProperty days, hours;
@@ -20,8 +21,8 @@ public class TimeTable implements Problem {
     Teachers teachers;
     Rules rules;
     Mutations mutations;
-    Crossovers crossover;
-    Selections selection;
+    List<Crossovers> crossoversList;
+    List<Selections> selectionsList;
 
 
     public TimeTable(ETTTimeTable gen, ETTMutations mutationsSettings, ETTCrossover crossoverSettings, ETTSelection selectionSettings) {
@@ -35,17 +36,17 @@ public class TimeTable implements Problem {
 
         mutations = new Mutations(mutationsSettings);
 
-        for (Selections s : Selections.values()) {
+        selectionsList = Arrays.stream(Selections.values()).collect(Collectors.toList());
+        for (Selections s : selectionsList) {
             if (s.getType().equals(selectionSettings.getType())) {
                 s.initFromXml(selectionSettings);
-                selection = s;
                 break;
             }
         }
-        for (Crossovers c : Crossovers.values()){
-            if (c.getName().equals(crossoverSettings.getName())){
+        crossoversList = Arrays.stream(Crossovers.values()).collect(Collectors.toList());
+        for (Crossovers c : crossoversList) {
+            if (c.getName().equals(crossoverSettings.getName())) {
                 c.initFromXML(crossoverSettings);
-                crossover=c;
                 break;
             }
         }
@@ -110,19 +111,27 @@ public class TimeTable implements Problem {
                 "The teachers are: " + lineSeparator + teachers + lineSeparator +
                 "The rules are: " + rules + lineSeparator +
                 "Mutations - " + lineSeparator + mutations + lineSeparator +
-                "Selection - " + selection + lineSeparator + lineSeparator +
-                "Crossover - " + lineSeparator + crossover;
+                "Selection - " + selectionsList + lineSeparator + lineSeparator +
+                "Crossover - " + lineSeparator + crossoversList;
     }
 
     public Mutations getMutations() {
         return mutations;
     }
 
-    public Crossovers getCrossover() {
-        return crossover;
+    public List<Crossovers> getCrossoverList() {
+        return crossoversList;
     }
 
-    public Selections getSelection() {
-        return selection;
+    public List<Selections> getSelectionsList() {
+        return selectionsList;
+    }
+
+    public int getMaxListSize() {
+        return getDays()
+                * getHours()
+                * getAmountofTeachers()
+                * getAmountofSubjects()
+                * getAmountofSchoolClasses();
     }
 }

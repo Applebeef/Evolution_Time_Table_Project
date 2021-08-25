@@ -252,7 +252,7 @@ public class TimeTableSolution implements Solution {
 
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
-            int maxListSize = getMaxListSize();
+            int maxListSize = timeTable.getMaxListSize();
             for (int i = 0; i < ((Crossover) crossover).getCuttingPoints(); i++) {
                 // Randomize cutting points. Amount according to CuttingPoints:
                 do {
@@ -291,22 +291,14 @@ public class TimeTableSolution implements Solution {
         return res;
     }
 
-    public int getMaxListSize() {
-        return timeTable.getDays()
-                * timeTable.getHours()
-                * timeTable.getAmountofTeachers()
-                * timeTable.getAmountofSubjects()
-                * timeTable.getAmountofSchoolClasses();
-    }
-
-    public int getMaxTeacherListSize(){
+    public int getMaxTeacherListSize() {
         return timeTable.getDays()
                 * timeTable.getHours()
                 * timeTable.getAmountofSubjects()
                 * timeTable.getAmountofSchoolClasses();
     }
 
-    public int getMaxSchoolClassListSize(){
+    public int getMaxSchoolClassListSize() {
         return timeTable.getDays()
                 * timeTable.getHours()
                 * timeTable.getAmountofSubjects()

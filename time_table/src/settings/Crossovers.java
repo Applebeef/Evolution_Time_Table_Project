@@ -20,14 +20,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public enum Crossovers implements CrossoverIFC {
-    DAY_TIME_ORIENTED("DayTimeOriented") {
+    DAY_TIME_ORIENTED("DayTimeOriented", "") {
         @Override
         void parseString(String configuration) {
-            setOrientation(null);
+            setOrientation("");
         }
 
         @Override
-        public List<? super Solution> cross(Solution s_1, Solution s_2) {
+        public List<? extends Solution> cross(Solution s_1, Solution s_2) {
             List<Solution> res = new ArrayList<>();
             if (s_1 instanceof TimeTableSolution && s_2 instanceof TimeTableSolution) {
                 TimeTableSolution s1 = (TimeTableSolution) s_1;
@@ -46,7 +46,7 @@ public enum Crossovers implements CrossoverIFC {
 
                 List<Integer> cuttingPointsList = new ArrayList<>();
                 Integer cuttingPoint;
-                int maxListSize = s1.getMaxListSize();
+                int maxListSize = s1.getTimeTable().getMaxListSize();
                 for (int i = 0; i < this.getCuttingPoints(); i++) {
                     // Randomize cutting points. Amount according to CuttingPoints:
                     do {
@@ -85,7 +85,7 @@ public enum Crossovers implements CrossoverIFC {
             return res;
         }
     },
-    ASPECT_ORIENTED("AspectOriented") {
+    ASPECT_ORIENTED("AspectOriented", "TEACHER") {
         @Override
         void parseString(String configuration) {
             if (getName().equals("AspectOriented")) {
@@ -97,7 +97,7 @@ public enum Crossovers implements CrossoverIFC {
         }
 
         @Override
-        public List<? super Solution> cross(Solution s_1, Solution s_2) {
+        public List<? extends Solution> cross(Solution s_1, Solution s_2) {
             if (s_1 instanceof TimeTableSolution && s_2 instanceof TimeTableSolution) {
                 TimeTableSolution s1 = (TimeTableSolution) s_1;
                 TimeTableSolution s2 = (TimeTableSolution) s_2;
@@ -110,12 +110,11 @@ public enum Crossovers implements CrossoverIFC {
                     default:
                         return null;
                 }
-
             }
             return null;
         }
 
-        List<? super Solution> teacherOriented(TimeTableSolution s1, TimeTableSolution s2) {
+        List<? extends Solution> teacherOriented(TimeTableSolution s1, TimeTableSolution s2) {
             List<Solution> res = new ArrayList<>();
 
             // Create comparator:
@@ -180,7 +179,7 @@ public enum Crossovers implements CrossoverIFC {
             return res;
         }
 
-        List<? super Solution> classOriented(TimeTableSolution s1, TimeTableSolution s2) {
+        List<? extends Solution> classOriented(TimeTableSolution s1, TimeTableSolution s2) {
             List<Solution> res = new ArrayList<>();
 
             // Create comparator:
@@ -251,11 +250,21 @@ public enum Crossovers implements CrossoverIFC {
     protected BooleanProperty active;
     protected IntegerProperty cuttingPoints;
 
-    Crossovers(String name) {
+    Crossovers(String name, String orientation) {
         this.name = name;
         cuttingPoints = new SimpleIntegerProperty(0);
         active = new SimpleBooleanProperty(false);
-        orientation = new SimpleStringProperty("");
+        this.orientation = new SimpleStringProperty(orientation);
+
+        active.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(true)) {
+                for (Crossovers crossovers : Crossovers.values()) {
+                    if (!crossovers.equals(this)) {
+                        crossovers.setActive(false);
+                    }
+                }
+            }
+        });
     }
 
     @Override

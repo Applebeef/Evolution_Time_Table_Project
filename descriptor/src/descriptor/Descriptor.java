@@ -1,8 +1,5 @@
 package descriptor;
 
-import settings.Crossover;
-import settings.Mutations;
-import settings.Selection;
 import time_table.TimeTable;
 import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
@@ -15,7 +12,7 @@ public class Descriptor {
     protected EvolutionEngine evolutionEngine;
 
     public Descriptor(ETTDescriptor gen) {
-        timeTable = new TimeTable(gen.getETTTimeTable(),gen.getETTEvolutionEngine().getETTMutations(),
+        timeTable = new TimeTable(gen.getETTTimeTable(), gen.getETTEvolutionEngine().getETTMutations(),
                 gen.getETTEvolutionEngine().getETTCrossover(),
                 gen.getETTEvolutionEngine().getETTSelection());
         evolutionEngine = new EvolutionEngine(gen.getETTEvolutionEngine());
@@ -24,6 +21,7 @@ public class Descriptor {
     public TimeTable getTimeTable() {
         return timeTable;
     }
+
 
     public void setTimeTable(TimeTable value) {
         this.timeTable = value;
@@ -53,7 +51,9 @@ public class Descriptor {
         errorSet.add(timeTable.getTeachers().checkSubjectValidity(timeTable.getSubjects()));
         errorSet.add(timeTable.getSubjects().checkValidity());
         errorSet.add(timeTable.getRules().checkValidity());
-        errorSet.add(timeTable.getSelection().checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
+        timeTable.getSelectionsList().forEach(selections -> {
+            errorSet.add(selections.checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
+        });
         return errorSet;
     }
 }

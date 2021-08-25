@@ -50,6 +50,11 @@ public class Selection implements SelectionIFC {
         }
     }
 
+    @Override
+    public boolean isActive() {
+        return false;
+    }
+
     private List<Solution> truncationSelect(List<Solution> solutionList) {
         List<Solution> res = new ArrayList<>();
         int bestSolutionsAmount;

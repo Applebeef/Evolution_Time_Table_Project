@@ -4,13 +4,10 @@ import Generated.ETTSelection;
 import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum Selections implements SelectionIFC {
-    TRUNCATION("Truncation") {
+    TRUNCATION("Truncation", 0) {
         @Override
         public List<Solution> select(List<Solution> solutionList) {
             List<Solution> res = new ArrayList<>();
@@ -38,19 +35,19 @@ public enum Selections implements SelectionIFC {
         }
 
         @Override
-        int parseString(String configuration) {
+        void parseString(String configuration) {
             int percent = 0;
             Pattern pattern = Pattern.compile("^TopPercent=(\\d+)$");
             Matcher m = pattern.matcher(configuration);
             if (m.find())
                 percent = Integer.parseInt(m.group(1));
-            return percent;
+            topPercent.set(percent);
         }
     },
-    ROULETTE_WHEEL("RouletteWheel") {
+    ROULETTE_WHEEL("RouletteWheel", -1) {
         @Override
-        int parseString(String configuration) {
-            return 0;
+        void parseString(String configuration) {
+
         }
 
         @Override
@@ -87,20 +84,30 @@ public enum Selections implements SelectionIFC {
     protected BooleanProperty active;
     protected IntegerProperty elitism;
 
-    Selections(String type) {
+    Selections(String type, int topPercent) {
         this.type = type;
-        topPercent = new SimpleIntegerProperty(0);
         elitism = new SimpleIntegerProperty(0);
         active = new SimpleBooleanProperty(false);
+        this.topPercent = new SimpleIntegerProperty(topPercent);
+
+        active.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(true)) {
+                for (Selections selections : Selections.values()) {
+                    if (!selections.equals(this)) {
+                        selections.setActive(false);
+                    }
+                }
+            }
+        });
     }
 
     public void initFromXml(ETTSelection gen) {
         setElitism(gen.getETTElitism());
         setActive(true);
-        setTopPercent(parseString(gen.getConfiguration()));
+        parseString(gen.getConfiguration());
     }
 
-    abstract int parseString(String configuration);
+    abstract void parseString(String configuration);
 
     @Override
     public int getElitism() {

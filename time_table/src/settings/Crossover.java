@@ -58,8 +58,13 @@ public class Crossover implements CrossoverIFC {
     }
 
     @Override
-    public List<? super Solution> cross(Solution s_1, Solution s_2) {
+    public List<? extends Solution> cross(Solution s_1, Solution s_2) {
         return null;
+    }
+
+    @Override
+    public boolean isActive() {
+        return false;
     }
 
     @Override

@@ -4,7 +4,6 @@ import Generated.ETTDescriptor;
 import controller.dynamic.*;
 import descriptor.Descriptor;
 
-import evolution.configuration.SelectionIFC;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -17,8 +16,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
+import settings.Crossovers;
 import settings.Mutations;
-import settings.Selection;
 import settings.Selections;
 
 import javax.xml.bind.JAXBContext;
@@ -26,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.Objects;
 
 public class MainController {
@@ -139,7 +139,57 @@ public class MainController {
 
     @FXML
     void displayCrossover(ActionEvent event) {
+        engineDisplayPane.getChildren().clear();
 
+        for (Crossovers crossover : descriptor.getTimeTable().getCrossoverList()) {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+                        .getResource("../resources/dynamic_fxmls/crossover.fxml")));
+                Parent load = loader.load();
+                crossoverPaneController controller = loader.getController();
+
+                controller.getType().setText(crossover.getName());
+
+                NumberStringConverter numberStringConverter = new NumberStringConverter();
+
+                controller.getCuttingPointsTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                    newValue = newValue.replace(",", "");
+                    if (!newValue.matches("\\d*")) {
+                        controller.getCuttingPointsTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Must input a number.");
+                    } else if (newValue.equals("")) {
+                        controller.getCuttingPointsTextField().setText("0");
+                    } else if (Integer.parseInt(newValue) >= descriptor.getTimeTable().getMaxListSize()) {
+                        controller.getErrorLabel().setText("Too many cutting points.");
+                        controller.getCuttingPointsTextField().setText(oldValue);
+                    } else {
+                        controller.getErrorLabel().setText("");
+                    }
+                }));
+                System.out.println(descriptor.getTimeTable().getMaxListSize());
+                Bindings.bindBidirectional(controller.getCuttingPointsTextField().textProperty(), crossover.cuttingPointsProperty(), new NumberStringConverter());
+                controller.getCuttingPointsSlider().maxProperty().set(descriptor.getTimeTable().getMaxListSize() - 1);
+                Bindings.bindBidirectional(controller.getCuttingPointsSlider().valueProperty(), crossover.cuttingPointsProperty());
+
+                if (!crossover.getOrientation().equals("")) {
+                    controller.getOrientationChoiceBox().getItems().add("CLASS");
+                    controller.getOrientationChoiceBox().getItems().add("TEACHER");
+                    Bindings.bindBidirectional(controller.getOrientationChoiceBox().valueProperty(), crossover.orientationProperty());
+                } else {
+                    controller.getOrientationChoiceBox().setVisible(false);
+                    controller.getOrientationNameLabel().setVisible(false);
+                }
+
+                Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), crossover.activeProperty());
+                controller.getActiveCheckbox().disableProperty().bind(crossover.activeProperty());
+                load.disableProperty().bind(paused.not());
+
+                engineDisplayPane.getChildren().add(load);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
@@ -199,56 +249,61 @@ public class MainController {
     void displaySelection(ActionEvent event) {
         engineDisplayPane.getChildren().clear();
 
-        Selections selection = descriptor.getTimeTable().getSelection();
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                    .getResource("../resources/dynamic_fxmls/selection.fxml")));
-            Parent load = loader.load();
-            selectionPaneController controller = loader.getController();
+        for (Selections selection : descriptor.getTimeTable().getSelectionsList()) {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+                        .getResource("../resources/dynamic_fxmls/selection.fxml")));
+                Parent load = loader.load();
+                selectionPaneController controller = loader.getController();
 
-            controller.getType().setText(selection.getType());
-            controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
-                if (!newValue.matches("\\d*")) {
-                    controller.getElitismTextField().setText(oldValue);
-                    controller.getErrorLabel().setText("Must input a number.");
-                } else if (newValue.equals("")) {
-                    controller.getElitismTextField().setText("0");
-                } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
-                    controller.getElitismTextField().setText(oldValue);
-                    controller.getErrorLabel().setText("Elitism must be lower than population size.");
-                } else {
-                    controller.getErrorLabel().setText("");
-                }
-            }));
-            Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
-            controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
-            Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
-            if (selection.topPercentProperty() != null) {
-                controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                controller.getType().setText(selection.getType());
+                controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                    newValue = newValue.replace(",", "");
                     if (!newValue.matches("\\d*")) {
-                        controller.getTopPercentTextField().setText(oldValue);
+                        controller.getElitismTextField().setText(oldValue);
                         controller.getErrorLabel().setText("Must input a number.");
                     } else if (newValue.equals("")) {
-                        controller.getTopPercentTextField().setText("0");
-                    } else if (Integer.parseInt(newValue) > 100) {
-                        controller.getTopPercentTextField().setText(oldValue);
-                        controller.getErrorLabel().setText("Cant choose over 100%.");
+                        controller.getElitismTextField().setText("0");
+                    } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
+                        controller.getElitismTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Elitism must be lower than population size.");
                     } else {
                         controller.getErrorLabel().setText("");
                     }
                 }));
-                Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
-                Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
-            } else {
-                controller.getTopPercentSlider().setVisible(false);
-                controller.getTopPercentTextField().setVisible(false);
-                controller.getTopPercentNameLabel().setVisible(false);
+                Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
+                controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
+                Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
+                if (selection.topPercentProperty().get() != -1) {
+                    controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                        newValue = newValue.replace(",", "");
+                        if (!newValue.matches("\\d*")) {
+                            controller.getTopPercentTextField().setText(oldValue);
+                            controller.getErrorLabel().setText("Must input a number.");
+                        } else if (newValue.equals("")) {
+                            controller.getTopPercentTextField().setText("0");
+                        } else if (Integer.parseInt(newValue) > 100) {
+                            controller.getTopPercentTextField().setText(oldValue);
+                            controller.getErrorLabel().setText("Cant choose over 100%.");
+                        } else {
+                            controller.getErrorLabel().setText("");
+                        }
+                    }));
+                    Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
+                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
+                } else {
+                    controller.getTopPercentSlider().setVisible(false);
+                    controller.getTopPercentTextField().setVisible(false);
+                    controller.getTopPercentNameLabel().setVisible(false);
+                }
+                Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), selection.activeProperty());
+                controller.getActiveCheckbox().disableProperty().bind(selection.activeProperty());
+                load.disableProperty().bind(paused.not());
+                engineDisplayPane.getChildren().add(load);
+
+            } catch (IOException ignored) {
+
             }
-            load.disableProperty().bind(paused.not());
-            engineDisplayPane.getChildren().add(load);
-
-        } catch (IOException ignored) {
-
         }
     }
 

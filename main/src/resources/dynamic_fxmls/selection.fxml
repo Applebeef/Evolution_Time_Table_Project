@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
@@ -22,6 +23,7 @@
     <RowConstraints maxHeight="344.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
       <RowConstraints maxHeight="344.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
       <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="TOP" vgrow="NEVER" />
+      <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="TOP" vgrow="NEVER" />
       <RowConstraints maxHeight="344.0" minHeight="10.0" prefHeight="337.0" valignment="TOP" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
@@ -30,10 +32,11 @@
       <Label text="Elitism: " GridPane.columnSpan="2" GridPane.rowIndex="1" />
       <Label fx:id="topPercentNameLabel" text="Top Percent: " GridPane.rowIndex="3" GridPane.valignment="TOP" />
       <Slider fx:id="topPercentSlider" blockIncrement="1.0" min="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="TOP" />
-      <Label fx:id="errorLabel" GridPane.columnSpan="5" GridPane.rowIndex="5" />
+      <Label fx:id="errorLabel" GridPane.columnSpan="5" GridPane.rowIndex="6" />
       <Slider fx:id="elitismSlider" blockIncrement="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
       <TextField fx:id="elitismTextField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
       <TextField fx:id="topPercentTextField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+      <CheckBox fx:id="activeCheckbox" mnemonicParsing="false" text="Active" GridPane.rowIndex="5" />
    </children>
    <padding>
       <Insets left="5.0" right="5.0" />
