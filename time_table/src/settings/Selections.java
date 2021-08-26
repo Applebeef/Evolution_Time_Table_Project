@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum Selections implements SelectionIFC {
-    TRUNCATION("Truncation", 0) {
+    TRUNCATION("Truncation", 1) {
         @Override
         public List<Solution> select(List<Solution> solutionList) {
             List<Solution> res = new ArrayList<>();

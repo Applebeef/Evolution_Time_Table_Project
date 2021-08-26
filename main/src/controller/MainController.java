@@ -445,6 +445,7 @@ public class MainController {
         } catch (InterruptedException ignored) {
         }
         descriptor.getEngine().setEngineStarted(false);//TODO delete this and add real event
+        paused.set(true);
     }
 
     public Stage getPrimaryStage() {

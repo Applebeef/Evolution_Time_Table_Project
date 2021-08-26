@@ -252,7 +252,7 @@ public enum Crossovers implements CrossoverIFC {
 
     Crossovers(String name, String orientation) {
         this.name = name;
-        cuttingPoints = new SimpleIntegerProperty(0);
+        cuttingPoints = new SimpleIntegerProperty(1);
         active = new SimpleBooleanProperty(false);
         this.orientation = new SimpleStringProperty(orientation);
 

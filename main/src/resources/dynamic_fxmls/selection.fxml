@@ -31,9 +31,9 @@
       <Label fx:id="type" GridPane.columnIndex="1" GridPane.columnSpan="3" />
       <Label text="Elitism: " GridPane.columnSpan="2" GridPane.rowIndex="1" />
       <Label fx:id="topPercentNameLabel" text="Top Percent: " GridPane.rowIndex="3" />
-      <Slider fx:id="topPercentSlider" blockIncrement="1.0" min="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+      <Slider fx:id="topPercentSlider" blockIncrement="1.0" min="1.0" value="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
       <Label fx:id="errorLabel" GridPane.columnSpan="5" GridPane.rowIndex="6" />
-      <Slider fx:id="elitismSlider" blockIncrement="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+      <Slider fx:id="elitismSlider" blockIncrement="1.0" value="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
       <TextField fx:id="elitismTextField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
       <TextField fx:id="topPercentTextField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
       <CheckBox fx:id="activeCheckbox" mnemonicParsing="false" text="Active" GridPane.rowIndex="5" />

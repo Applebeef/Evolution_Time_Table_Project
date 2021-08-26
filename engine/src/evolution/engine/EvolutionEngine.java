@@ -107,6 +107,7 @@ public class EvolutionEngine implements Runnable {
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
         Solution solution;
         this.number_of_generations = number_of_generations;
+        solutionList = new ArrayList<>();
 
         mutations = problem.getMutations();
         selectionIFCList = problem.getSelectionsList();
@@ -170,6 +171,7 @@ public class EvolutionEngine implements Runnable {
         }
         System.out.println("finished");//TODO debug - delete
         engineStarted.set(false);//TODO make sure display is available after engine stops
+        setEnginePaused(true);
     }
 
     private void updateCurrentTime() {
