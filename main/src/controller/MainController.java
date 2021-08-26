@@ -6,7 +6,9 @@ import descriptor.Descriptor;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,13 +27,17 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
-import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MainController {
 
     private Descriptor descriptor;
     private Stage PrimaryStage;
+    private Thread thread;
+
+    Instant pauseStart;
 
     @FXML
     private TitledPane EnginePane;
@@ -80,6 +86,9 @@ public class MainController {
     private CheckBox fileLoadedIndicator;
 
     @FXML
+    private TextField frequencyTextField;
+
+    @FXML
     private Button startButton;
 
     @FXML
@@ -106,6 +115,15 @@ public class MainController {
 
     @FXML
     private ProgressBar timeProgressBar;
+
+    @FXML
+    private TextField generationEndConditionTextField;
+
+    @FXML
+    private TextField fitnessEndConditionTextField;
+
+    @FXML
+    private TextField timeEndConditionTextField;
 
     @FXML
     void displayAllSolutions(ActionEvent event) {
@@ -372,7 +390,7 @@ public class MainController {
         populationSizeDisplay.textProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().asString());
         startButton.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
         pauseButton.disableProperty().bind(Bindings.not(descriptor.getEngine().engineStartedProperty()));
-        descriptor.getEngine().enginePausedProperty().bind(paused);
+        Bindings.bindBidirectional(paused, descriptor.getEngine().enginePausedProperty());
         stopButton.disableProperty().bind(Bindings.not(descriptor.getEngine().engineStartedProperty()));
         DisplayAllSolutionsButton.disableProperty().bind(Bindings.not(descriptor.getEngine().solutionsReadyProperty()));
         DisplayBestSolutionsButton.disableProperty().bind(Bindings.not(descriptor.getEngine().solutionsReadyProperty()));
@@ -385,7 +403,15 @@ public class MainController {
         paused.set(!paused.get());
         if (paused.get()) {
             pauseButton.setText("Resume");
+            pauseStart = Instant.now();
         } else {
+            long timeOffset = ChronoUnit.SECONDS.between(pauseStart, Instant.now());
+            synchronized (thread) {
+                thread.notify();
+            }
+            descriptor.getEngine().addToMaxTime(timeOffset);
+            timeProgressBar.progressProperty().unbind();
+            timeProgressBar.progressProperty().bind(descriptor.getEngine().currentTimeProperty().divide((double) descriptor.getEngine().getMaxTime()));
             pauseButton.setText("Pause");
         }
         //TODO make pause.
@@ -393,16 +419,32 @@ public class MainController {
 
     @FXML
     void start(ActionEvent event) {
-        descriptor.getEngine().setEngineStarted(true);//TODO delete this and add real event
+        descriptor.getEngine().reset();
         paused.set(false);
         pauseButton.setText("Pause");
-        descriptor.getEngine().setSolutionsReady(true);
+
+        descriptor.getEngine().initSolutionPopulation(descriptor.getTimeTable(), Integer.parseInt(generationEndConditionTextField.getText()));
+        descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),
+                Double.parseDouble(fitnessEndConditionTextField.getText()),
+                Long.parseLong(timeEndConditionTextField.getText()));
+        thread = new Thread(descriptor.getEngine());
+        thread.setName("Engine");
+
+        generationProgressBar.progressProperty().bind(descriptor.getEngine().currentGenerationProperty().divide((double) descriptor.getEngine().getNumber_of_generations()));
+        timeProgressBar.progressProperty().bind(descriptor.getEngine().currentTimeProperty().divide((double) descriptor.getEngine().getMaxTime()));
+
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @FXML
     void stop(ActionEvent event) {
+        thread.interrupt();
+        try {
+            thread.join();
+        } catch (InterruptedException ignored) {
+        }
         descriptor.getEngine().setEngineStarted(false);//TODO delete this and add real event
-        paused.set(true);
     }
 
     public Stage getPrimaryStage() {

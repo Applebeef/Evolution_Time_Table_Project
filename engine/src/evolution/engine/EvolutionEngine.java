@@ -5,12 +5,12 @@ import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class EvolutionEngine implements Runnable {
     private InitialPopulation initialSolutionPopulation;
@@ -24,23 +24,31 @@ public class EvolutionEngine implements Runnable {
     private List<Pair<Integer, Solution>> bestSolutionsPerFrequency;
     private Pair<Integer, Solution> bestSolution;
 
+    private DoubleProperty bestSolutionFitness;
+    private IntegerProperty currentGenerationProperty;
+
     private BooleanProperty engineStarted;
     private BooleanProperty enginePaused;
     private BooleanProperty solutionsReady;
     private Integer number_of_generations;
 
     private int frequency;
-    private int max_fitness;
-    private Consumer<String> consumer;
+    private EndingConditions endingConditions;
+    private Instant startTime;
+    private LongProperty currentTime;
 
     public EvolutionEngine(ETTEvolutionEngine gen) {
         initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
+        number_of_generations = 1;
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new ArrayList<>();
         engineStarted = new SimpleBooleanProperty(false);
         enginePaused = new SimpleBooleanProperty(true);
         solutionsReady = new SimpleBooleanProperty(false);
+        bestSolutionFitness = new SimpleDoubleProperty(0);
+        currentGenerationProperty = new SimpleIntegerProperty(0);
+        currentTime = new SimpleLongProperty(0);
     }
 
     public boolean isSolutionsReady() {
@@ -59,7 +67,7 @@ public class EvolutionEngine implements Runnable {
         return engineStarted;
     }
 
-    public boolean isEnginePaused() {
+    public synchronized boolean isEnginePaused() {
         return enginePaused.get();
     }
 
@@ -67,7 +75,7 @@ public class EvolutionEngine implements Runnable {
         return enginePaused;
     }
 
-    public void setEnginePaused(boolean enginePaused) {
+    public synchronized void setEnginePaused(boolean enginePaused) {
         this.enginePaused.set(enginePaused);
     }
 
@@ -114,14 +122,16 @@ public class EvolutionEngine implements Runnable {
         solutionList.sort(Collections.reverseOrder());
         bestSolution = new Pair<>(0, solutionList.get(0));
         engineStarted.set(true);
-        enginePaused.set(false);
         solutionsReady.set(true);
     }
 
     public void runEvolution() {
         // Main loop: #iterations = number of generations
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
-        for (int i = 1; i <= number_of_generations && solutionList.get(0).getFitness() < max_fitness && !Thread.currentThread().isInterrupted(); i++) {
+        System.out.println("stuff");//TODO debug - delete
+        startTime = Instant.now();
+        for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
+            updateCurrentTime();
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
@@ -135,24 +145,37 @@ public class EvolutionEngine implements Runnable {
                 synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
                     bestSolutionsPerFrequency.add(new Pair<>(i, solution));
+                    System.out.println(i); //TODO debug - delete
                 }
+                currentGenerationProperty.set(i);
             }
             if (solutionList.get(0).getFitness() > bestSolution.getV2().getFitness()) {
                 synchronized (bestSolution) {
                     bestSolution.setV1(i);
                     bestSolution.setV2(solutionList.get(0));
+                    bestSolutionFitness.set(solutionList.get(0).getFitness());
                 }
             }
-            while (enginePaused.get()) {//TODO make sure this works.
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    break;
+            synchronized (Thread.currentThread()) {
+                if (isEnginePaused()) {
+                    try {
+                        System.out.println("paused");//TODO debug - delete
+                        Thread.currentThread().wait();
+                    } catch (InterruptedException e) {
+                        break;
+                    }
                 }
             }
+            System.out.println("running");//TODO debug - delete
         }
-        consumer.accept("Engine is finished.");
-        //engineStarted.set(false);
+        System.out.println("finished");//TODO debug - delete
+        engineStarted.set(false);//TODO make sure display is available after engine stops
+    }
+
+    private void updateCurrentTime() {
+        //if (currentTime.get() + 5 <= getCurrentTimeLive()) {
+        currentTime.set(getCurrentTimeLive());
+        //}
     }
 
     public String getBestSolutionDisplay(int choice) {
@@ -228,10 +251,9 @@ public class EvolutionEngine implements Runnable {
         runEvolution();
     }
 
-    public void initThreadParameters(int frequency, int max_fitness, Consumer<String> consumer) {
+    public void initThreadParameters(int frequency, double max_fitness, long max_time) {
         this.frequency = frequency;
-        this.max_fitness = max_fitness;
-        this.consumer = consumer;
+        this.endingConditions = new EndingConditions(this.number_of_generations, max_fitness, max_time);
     }
 
     public void setEngineStarted(boolean engineStarted) {
@@ -239,10 +261,62 @@ public class EvolutionEngine implements Runnable {
     }
 
     public void reset() {
-        solutionList.clear();
-        bestSolutionsPerFrequency.clear();
-        offspringSolutionsList.clear();
+        if (isSolutionsReady()) {
+            solutionList.clear();
+            bestSolutionsPerFrequency.clear();
+            offspringSolutionsList.clear();
+        }
         engineStarted.set(false);
         solutionsReady.set(false);
+    }
+
+    public double getBestSolutionFitness() {
+        return bestSolutionFitness.get();
+    }
+
+    public DoubleProperty bestSolutionFitnessProperty() {
+        return bestSolutionFitness;
+    }
+
+    public int getCurrentGenerationProperty() {
+        return currentGenerationProperty.get();
+    }
+
+    public IntegerProperty currentGenerationProperty() {
+        return currentGenerationProperty;
+    }
+
+    public EndingConditions getEndingConditions() {
+        return endingConditions;
+    }
+
+    public void addToMaxTime(long timeOffset) {
+        if (EndingCondition.TIME.getMax().longValue() != 0) {
+            EndingCondition.TIME.setMax(EndingCondition.TIME.getMax().longValue() + timeOffset);
+        }
+    }
+
+    public long getCurrentTimeLive() {
+        return ChronoUnit.SECONDS.between(startTime, Instant.now());
+    }
+
+    public Integer getNumber_of_generations() {
+        return number_of_generations;
+    }
+
+    public LongProperty currentTimeProperty() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime.set(currentTime);
+    }
+
+    public long getCurrentTime() {
+        return currentTime.get();
+    }
+
+    public long getMaxTime() {
+        return EndingCondition.TIME.getMax().longValue();
     }
 }

@@ -173,7 +173,7 @@ public class UI {
                         System.out.println("Please choose a number between 1 and " + number_of_generations + ".");
                     }
                 }
-                ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness, System.out::println);
+                ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness,0);
                 ui.createNewEngineThread();
                 ui.engine_thread.start();
             }
