@@ -21,7 +21,7 @@ public class EvolutionEngine implements Runnable {
 
     private List<Solution> solutionList;
     private List<Solution> offspringSolutionsList;
-    private List<Pair<Integer, Solution>> bestSolutionsPerFrequency;
+    private Map<Integer, Solution> bestSolutionsPerFrequency;
     private Pair<Integer, Solution> bestSolution;
 
     private DoubleProperty bestSolutionFitness;
@@ -42,7 +42,7 @@ public class EvolutionEngine implements Runnable {
         number_of_generations = 1;
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
-        bestSolutionsPerFrequency = new ArrayList<>();
+        bestSolutionsPerFrequency = new HashMap<>();
         engineStarted = new SimpleBooleanProperty(false);
         enginePaused = new SimpleBooleanProperty(true);
         solutionsReady = new SimpleBooleanProperty(false);
@@ -121,6 +121,7 @@ public class EvolutionEngine implements Runnable {
         }
         // Sort list:
         solutionList.sort(Collections.reverseOrder());
+        bestSolutionsPerFrequency.put(0, solutionList.get(0));
         bestSolution = new Pair<>(0, solutionList.get(0));
         engineStarted.set(true);
         solutionsReady.set(true);
@@ -142,10 +143,10 @@ public class EvolutionEngine implements Runnable {
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
-            if (i % frequency == 0 || i == 1) {
+            if (i % frequency == 0) {
                 synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
-                    bestSolutionsPerFrequency.add(new Pair<>(i, solution));
+                    bestSolutionsPerFrequency.put(i, solution);
                     System.out.println(i); //TODO debug - delete
                 }
                 currentGenerationProperty.set(i);
@@ -244,7 +245,7 @@ public class EvolutionEngine implements Runnable {
         return "Initial population - " + initialSolutionPopulation + lineSeparator + lineSeparator;
     }
 
-    public List<Pair<Integer, Solution>> getBestSolutionsPerFrequency() {
+    public Map<Integer, Solution> getBestSolutionsPerFrequency() {
         return bestSolutionsPerFrequency;
     }
 
@@ -322,7 +323,11 @@ public class EvolutionEngine implements Runnable {
         return EndingCondition.TIME.getMax().longValue();
     }
 
-    public double getMaxFitness(){
+    public double getMaxFitness() {
         return EndingCondition.FITNESS.getMax().doubleValue();
+    }
+
+    public synchronized Pair<Integer, Solution> getBestSolution() {
+        return bestSolution;
     }
 }

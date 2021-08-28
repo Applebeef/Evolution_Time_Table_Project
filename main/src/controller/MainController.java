@@ -5,23 +5,21 @@ import controller.dynamic.*;
 import descriptor.Descriptor;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.converter.BigIntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import settings.Crossovers;
 import settings.Mutations;
 import settings.Selections;
+import solution.Fifth;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -31,7 +29,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
+import java.util.*;
 
 public class MainController {
 
@@ -67,10 +65,10 @@ public class MainController {
     private TitledPane ResultsPane;
 
     @FXML
-    private Button DisplayBestSolutionsButton;
+    private CheckBox DisplayAllSolutionsCheckBox;
 
     @FXML
-    private Button DisplayAllSolutionsButton;
+    private CheckBox DisplayBestSolutionCheckBox;
 
     @FXML
     private Label GenerationsLabel;
@@ -107,7 +105,13 @@ public class MainController {
     private HBox timeTableDisplayPane;
 
     @FXML
-    private HBox resultsDisplayPane;
+    private TableView<Map<Integer, Fifth>> resultsTimeTable;
+
+    @FXML
+    private TableColumn<Map<Integer, Fifth>, Integer> baseColumn;
+
+    @FXML
+    private Slider resultsGenerationSlider;
 
     @FXML
     private ProgressBar generationProgressBar;
@@ -128,12 +132,15 @@ public class MainController {
     private TextField timeEndConditionTextField;
 
     @FXML
+    private Label currentGenerationViewLabel;
+
+    @FXML
     void displayAllSolutions(ActionEvent event) {
 
     }
 
     @FXML
-    void displayBestSolutions(ActionEvent event) {
+    void displayBestSolution(ActionEvent event) {
 
     }
 
@@ -372,7 +379,7 @@ public class MainController {
         if (file != null) {
             timeTableDisplayPane.getChildren().clear();
             engineDisplayPane.getChildren().clear();
-            resultsDisplayPane.getChildren().clear();
+            //resultsDisplayPane.getChildren().clear(); TODO
             paused.set(true);
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
@@ -394,14 +401,67 @@ public class MainController {
         pauseButton.disableProperty().bind(Bindings.not(descriptor.getEngine().engineStartedProperty()));
         Bindings.bindBidirectional(paused, descriptor.getEngine().enginePausedProperty());
         stopButton.disableProperty().bind(Bindings.not(descriptor.getEngine().engineStartedProperty()));
-        DisplayAllSolutionsButton.disableProperty().bind(Bindings.not(descriptor.getEngine().solutionsReadyProperty()));
-        DisplayBestSolutionsButton.disableProperty().bind(Bindings.not(descriptor.getEngine().solutionsReadyProperty()));
         engineDisplayMenu.setDisable(false);
         timeTableDisplayMenu.setDisable(false);
         generationEndConditionTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
         fitnessEndConditionTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
         timeEndConditionTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
         frequencyTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
+        resultsGenerationSlider.maxProperty().bind(descriptor.getEngine().currentGenerationProperty());
+        resultsGenerationSlider.blockIncrementProperty().bind(Bindings.createDoubleBinding(
+                () -> Double.parseDouble(frequencyTextField.textProperty().get()), frequencyTextField.textProperty()));
+        resultsGenerationSlider.majorTickUnitProperty().bind(Bindings.createDoubleBinding(
+                () -> Double.parseDouble(frequencyTextField.textProperty().get()), frequencyTextField.textProperty()));
+        resultsGenerationSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals(oldValue) && !resultsGenerationSlider.isValueChanging()) {
+                currentGenerationViewLabel.textProperty().set(String.format("%.0f", newValue.doubleValue()));
+                updateTable(newValue.intValue());
+            }
+        });
+        resultsGenerationSlider.disableProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                DisplayAllSolutionsCheckBox.disableProperty().set(false);
+            }
+        });
+        resultsGenerationSlider.disableProperty().bind(Bindings.and(descriptor.getEngine().solutionsReadyProperty(),descriptor.getEngine().engineStartedProperty().not()));//FIXME
+        initTable();//TODO make new timetable display class for table display
+        DisplayAllSolutionsCheckBox.disableProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                DisplayAllSolutionsCheckBox.disableProperty().set(true);
+                DisplayBestSolutionCheckBox.disableProperty().set(false);
+            }
+        });//FIXME
+        DisplayBestSolutionCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                DisplayBestSolutionCheckBox.disableProperty().set(true);
+                DisplayAllSolutionsCheckBox.disableProperty().set(false);
+            }
+        });//FIXME
+    }
+
+    private void initTable() {//FIXME
+        resultsTimeTable.getColumns().clear();
+        resultsTimeTable.getColumns().add(baseColumn);
+
+        for (int i = 1; i <= descriptor.getTimeTable().getDays(); i++) {
+            TableColumn<Map<Integer, Fifth>, String> tableColumn = new TableColumn<>(String.valueOf(i));
+            tableColumn.setSortable(false);
+            tableColumn.setResizable(false);
+            tableColumn.setPrefWidth(baseColumn.getPrefWidth());
+            resultsTimeTable.getColumns().add(tableColumn);
+            int finalI = i;
+            tableColumn.setCellValueFactory(f -> {
+                StringBuilder stringBuilder = new StringBuilder("");
+                if (f.getValue().containsKey(finalI)) {
+                    stringBuilder.append("Class: ").append(f.getValue().get(finalI).getSchoolClass()).append(System.lineSeparator()).append("Subject: ").append(f.getValue().get(finalI).getSubject());
+                }
+                return new SimpleStringProperty(stringBuilder.toString());
+            });
+        }
+    }
+
+    private void updateTable(int solutionGeneration) {//TODO build method
+
     }
 
     @FXML
@@ -428,6 +488,7 @@ public class MainController {
         descriptor.getEngine().reset();
         paused.set(false);
         pauseButton.setText("Pause");
+        resultsGenerationSlider.setValue(0);
 
         descriptor.getEngine().initSolutionPopulation(descriptor.getTimeTable(), Integer.parseInt(generationEndConditionTextField.getText()));
         descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),

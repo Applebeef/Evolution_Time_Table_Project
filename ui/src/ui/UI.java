@@ -217,15 +217,15 @@ public class UI {
                 } else {
 
                     if (!ui.engine_thread.isAlive()) {
-                        List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutionsPerFrequency();
-                        printBestSolutions(bestSolutions);
+                        //List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutionsPerFrequency(); OLD
+                        //printBestSolutions(bestSolutions);
                     } else {
                         synchronized (ui.descriptor.getEngine().getBestSolutionsPerFrequency()) {
-                            List<Pair<Integer, Solution>> pairList = ui.descriptor.getEngine().getBestSolutionsPerFrequency();
+                            /*List<Pair<Integer, Solution>> pairList = ui.descriptor.getEngine().getBestSolutionsPerFrequency(); OLD
                             if (ui.descriptor.getEngine().getBestSolutionsPerFrequency().size() > 10) {
                                 pairList = pairList.subList(pairList.size() - 10, pairList.size());
                             }
-                            printBestSolutions(pairList);
+                            printBestSolutions(pairList);*/
                         }
                     }
                 }
