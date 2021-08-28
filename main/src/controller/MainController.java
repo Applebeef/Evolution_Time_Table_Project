@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.converter.BigIntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import settings.Crossovers;
 import settings.Mutations;
@@ -27,6 +28,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -396,6 +398,10 @@ public class MainController {
         DisplayBestSolutionsButton.disableProperty().bind(Bindings.not(descriptor.getEngine().solutionsReadyProperty()));
         engineDisplayMenu.setDisable(false);
         timeTableDisplayMenu.setDisable(false);
+        generationEndConditionTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
+        fitnessEndConditionTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
+        timeEndConditionTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
+        frequencyTextField.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
     }
 
     @FXML
@@ -431,6 +437,7 @@ public class MainController {
         thread.setName("Engine");
 
         generationProgressBar.progressProperty().bind(descriptor.getEngine().currentGenerationProperty().divide((double) descriptor.getEngine().getNumber_of_generations()));
+        fitnessProgressBar.progressProperty().bind(descriptor.getEngine().bestSolutionFitnessProperty().divide(descriptor.getEngine().getMaxFitness()));
         timeProgressBar.progressProperty().bind(descriptor.getEngine().currentTimeProperty().divide((double) descriptor.getEngine().getMaxTime()));
 
         thread.setDaemon(true);
@@ -454,5 +461,66 @@ public class MainController {
 
     public void setPrimaryStage(Stage primaryStage) {
         PrimaryStage = primaryStage;
+    }
+
+    public void setTextBoundaries() {
+        generationEndConditionTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*") || newValue.equals("")) {
+                generationEndConditionTextField.setText(oldValue);
+            } else {
+                BigInteger maxInt = BigInteger.valueOf(Integer.MAX_VALUE);
+                BigInteger value = new BigInteger(newValue);
+
+                if (value.compareTo(maxInt) > 0) {
+                    generationEndConditionTextField.setText(oldValue);
+                } else if (Integer.parseInt(newValue) < 0) {
+                    generationEndConditionTextField.setText(oldValue);
+                } else if (Integer.parseInt(newValue) == 0 &&
+                        (fitnessEndConditionTextField.getText().equals("0") && timeEndConditionTextField.getText().equals("0"))) {
+                    generationEndConditionTextField.setText(oldValue);
+                }
+            }
+        }));
+        fitnessEndConditionTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*") || newValue.equals("")) {
+                fitnessEndConditionTextField.setText(oldValue);
+            } else if (Integer.parseInt(newValue) > 100 || Integer.parseInt(newValue) < 0) {
+                fitnessEndConditionTextField.setText(oldValue);
+            } else if (Integer.parseInt(newValue) == 0 &&
+                    (generationEndConditionTextField.getText().equals("0") && timeEndConditionTextField.getText().equals("0"))) {
+                fitnessEndConditionTextField.setText(oldValue);
+            }
+        }));
+        timeEndConditionTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*") || newValue.equals("")) {
+                timeEndConditionTextField.setText(oldValue);
+            } else {
+                BigInteger maxInt = BigInteger.valueOf(Integer.MAX_VALUE);
+                BigInteger value = new BigInteger(newValue);
+
+                if (value.compareTo(maxInt) > 0) {
+                    timeEndConditionTextField.setText(oldValue);
+                } else if (Integer.parseInt(newValue) < 0) {
+                    timeEndConditionTextField.setText(oldValue);
+                } else if (Integer.parseInt(newValue) == 0 &&
+                        (fitnessEndConditionTextField.getText().equals("0") && generationEndConditionTextField.getText().equals("0"))) {
+                    timeEndConditionTextField.setText(oldValue);
+                }
+            }
+        }));
+        frequencyTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*") || newValue.equals("")) {
+                frequencyTextField.setText(oldValue);
+            } else {
+                BigInteger maxInt = BigInteger.valueOf(Integer.MAX_VALUE);
+                BigInteger value = new BigInteger(newValue);
+
+                if (value.compareTo(maxInt) > 0) {
+                    frequencyTextField.setText(oldValue);
+                } else if (Integer.parseInt(newValue) <= 0) {
+                    frequencyTextField.setText(oldValue);
+                }
+            }
+        }));
     }
 }

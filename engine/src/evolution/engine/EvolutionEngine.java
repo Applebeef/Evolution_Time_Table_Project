@@ -321,4 +321,8 @@ public class EvolutionEngine implements Runnable {
     public long getMaxTime() {
         return EndingCondition.TIME.getMax().longValue();
     }
+
+    public double getMaxFitness(){
+        return EndingCondition.FITNESS.getMax().doubleValue();
+    }
 }
