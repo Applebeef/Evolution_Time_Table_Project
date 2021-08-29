@@ -1,9 +1,12 @@
 package controller;
 
 import Generated.ETTDescriptor;
+import Mains.Util.ResultDisplay;
+import Mains.Util.TimeTableSolutionDisplayer;
 import controller.dynamic.*;
 import descriptor.Descriptor;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
@@ -15,11 +18,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import javafx.util.converter.NumberStringConverter;
 import settings.Crossovers;
 import settings.Mutations;
 import settings.Selections;
 import solution.Fifth;
+import solution.TimeTableSolution;
+import time_table.SchoolClass;
+import time_table.Teacher;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -105,10 +112,10 @@ public class MainController {
     private HBox timeTableDisplayPane;
 
     @FXML
-    private TableView<Map<Integer, Fifth>> resultsTimeTable;
+    private TableView<TimeTableSolutionDisplayer> resultsTimeTable;
 
     @FXML
-    private TableColumn<Map<Integer, Fifth>, Integer> baseColumn;
+    private TableColumn<TimeTableSolutionDisplayer, String> baseColumn;
 
     @FXML
     private Slider resultsGenerationSlider;
@@ -135,12 +142,25 @@ public class MainController {
     private Label currentGenerationViewLabel;
 
     @FXML
+    private MenuButton displayTeacher;
+
+    @FXML
+    private MenuButton displayClass;
+
+    @FXML
+    private Button displayRaw;
+
+    ResultDisplay resultDisplay;
+
+    @FXML
     void displayAllSolutions(ActionEvent event) {
 
     }
 
     @FXML
     void displayBestSolution(ActionEvent event) {
+        TimeTableSolution solution = (TimeTableSolution) descriptor.getEngine().getBestSolution().getV2();
+        currentGenerationViewLabel.textProperty().set(String.valueOf(descriptor.getEngine().getBestSolution().getV1()));
 
     }
 
@@ -379,7 +399,10 @@ public class MainController {
         if (file != null) {
             timeTableDisplayPane.getChildren().clear();
             engineDisplayPane.getChildren().clear();
-            //resultsDisplayPane.getChildren().clear(); TODO
+            resultsTimeTable.getItems().clear();
+            resultsTimeTable.getColumns().clear();
+            displayClass.getItems().clear();
+            displayTeacher.getItems().clear();
             paused.set(true);
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
@@ -394,6 +417,9 @@ public class MainController {
     }
 
     private void initUI() {
+        displayTeacher.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
+        displayRaw.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
+        displayClass.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
         daysDisplayLabel.textProperty().bind(descriptor.getTimeTable().daysProperty().asString());
         hoursDisplayLabel.textProperty().bind(descriptor.getTimeTable().hoursProperty().asString());
         populationSizeDisplay.textProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().asString());
@@ -418,50 +444,86 @@ public class MainController {
                 updateTable(newValue.intValue());
             }
         });
-        resultsGenerationSlider.disableProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                DisplayAllSolutionsCheckBox.disableProperty().set(false);
-            }
-        });
-        resultsGenerationSlider.disableProperty().bind(Bindings.and(descriptor.getEngine().solutionsReadyProperty(),descriptor.getEngine().engineStartedProperty().not()));//FIXME
-        initTable();//TODO make new timetable display class for table display
-        DisplayAllSolutionsCheckBox.disableProperty().addListener((observable, oldValue, newValue) -> {
+        resultsGenerationSlider.visibleProperty().bind(DisplayAllSolutionsCheckBox.selectedProperty());
+        DisplayAllSolutionsCheckBox.visibleProperty().bind(descriptor.getEngine().solutionsReadyProperty().and(descriptor.getEngine().engineStartedProperty().not()));
+        initResultsMenu();
+        initTable();
+        DisplayAllSolutionsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 DisplayAllSolutionsCheckBox.disableProperty().set(true);
                 DisplayBestSolutionCheckBox.disableProperty().set(false);
+                DisplayBestSolutionCheckBox.selectedProperty().set(false);
             }
-        });//FIXME
+        });
         DisplayBestSolutionCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 DisplayBestSolutionCheckBox.disableProperty().set(true);
+                DisplayAllSolutionsCheckBox.selectedProperty().set(false);
                 DisplayAllSolutionsCheckBox.disableProperty().set(false);
             }
-        });//FIXME
+        });
+        descriptor.getEngine().engineStartedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                Platform.runLater(() -> currentGenerationViewLabel.textProperty()
+                        .set(String.valueOf(descriptor.getEngine().getBestSolution().getV1())));
+            }
+        });
     }
 
-    private void initTable() {//FIXME
+    private void initResultsMenu() {
+        for (SchoolClass schoolClass : descriptor.getTimeTable().getSchoolClasses().getClassList()) {
+            MenuItem menuItem = new MenuItem(schoolClass.getName() + "-" + schoolClass.getId());
+            menuItem.setOnAction(event -> {
+                resultDisplay = ResultDisplay.CLASS;
+                resultDisplay.setId(schoolClass.getId());
+                updateTable(Integer.parseInt(currentGenerationViewLabel.getText()));
+            });
+            displayClass.getItems().add(menuItem);
+        }
+        for (Teacher teacher : descriptor.getTimeTable().getTeachers().getTeacherList()) {
+            MenuItem menuItem = new MenuItem(teacher.getName() + "-" + teacher.getId());
+            menuItem.setOnAction(event -> {
+                resultDisplay = ResultDisplay.TEACHER;
+                resultDisplay.setId(teacher.getId());
+                updateTable(Integer.parseInt(currentGenerationViewLabel.getText()));
+            });
+            displayTeacher.getItems().add(menuItem);
+        }
+        displayRaw.setOnAction(event -> {
+            resultDisplay = ResultDisplay.RAW;
+            updateTable(Integer.parseInt(currentGenerationViewLabel.getText()));
+        });
+
+        displayRaw.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
+        displayClass.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
+        displayTeacher.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
+    }
+
+    private void initTable() {
         resultsTimeTable.getColumns().clear();
+        baseColumn.setCellValueFactory(f -> new SimpleStringProperty(String.valueOf(resultsTimeTable.getItems().size() + 1)));//FIXME
         resultsTimeTable.getColumns().add(baseColumn);
 
         for (int i = 1; i <= descriptor.getTimeTable().getDays(); i++) {
-            TableColumn<Map<Integer, Fifth>, String> tableColumn = new TableColumn<>(String.valueOf(i));
+            TableColumn<TimeTableSolutionDisplayer, String> tableColumn = new TableColumn<>(String.valueOf(i));
             tableColumn.setSortable(false);
             tableColumn.setResizable(false);
             tableColumn.setPrefWidth(baseColumn.getPrefWidth());
             resultsTimeTable.getColumns().add(tableColumn);
             int finalI = i;
-            tableColumn.setCellValueFactory(f -> {
-                StringBuilder stringBuilder = new StringBuilder("");
-                if (f.getValue().containsKey(finalI)) {
-                    stringBuilder.append("Class: ").append(f.getValue().get(finalI).getSchoolClass()).append(System.lineSeparator()).append("Subject: ").append(f.getValue().get(finalI).getSubject());
-                }
-                return new SimpleStringProperty(stringBuilder.toString());
-            });
+            tableColumn.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getDisplay(resultsTimeTable.getItems().size() + 1, finalI)));//FIXME
         }
     }
 
-    private void updateTable(int solutionGeneration) {//TODO build method
-
+    private void updateTable(int solutionGeneration) {
+        resultsTimeTable.getItems().clear();
+        for (int i=1;i<=descriptor.getTimeTable().getHours();i++){
+            if (DisplayBestSolutionCheckBox.isSelected()) {
+                TimeTableSolutionDisplayer solutionDisplayer =
+                        new TimeTableSolutionDisplayer((TimeTableSolution) descriptor.getEngine().getBestSolution().getV2(), resultDisplay);
+                resultsTimeTable.getItems().add(solutionDisplayer);
+            }
+        }
     }
 
     @FXML
@@ -480,7 +542,6 @@ public class MainController {
             timeProgressBar.progressProperty().bind(descriptor.getEngine().currentTimeProperty().divide((double) descriptor.getEngine().getMaxTime()));
             pauseButton.setText("Pause");
         }
-        //TODO make pause.
     }
 
     @FXML
@@ -489,6 +550,7 @@ public class MainController {
         paused.set(false);
         pauseButton.setText("Pause");
         resultsGenerationSlider.setValue(0);
+        currentGenerationViewLabel.textProperty().set("0");
 
         descriptor.getEngine().initSolutionPopulation(descriptor.getTimeTable(), Integer.parseInt(generationEndConditionTextField.getText()));
         descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),
@@ -512,7 +574,7 @@ public class MainController {
             thread.join();
         } catch (InterruptedException ignored) {
         }
-        descriptor.getEngine().setEngineStarted(false);//TODO delete this and add real event
+        descriptor.getEngine().setEngineStarted(false);
         paused.set(true);
     }
 

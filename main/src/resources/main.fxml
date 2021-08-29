@@ -143,15 +143,15 @@
                             <ColumnConstraints hgrow="NEVER" minWidth="5.0" prefWidth="5.0" />
                               <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="183.0" minWidth="171.0" prefWidth="176.0" />
                               <ColumnConstraints hgrow="NEVER" maxWidth="45.0" minWidth="12.0" prefWidth="27.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="87.0" minWidth="10.0" prefWidth="33.0" />
-                              <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="335.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="82.0" minWidth="70.0" prefWidth="82.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="87.0" minWidth="10.0" prefWidth="34.0" />
+                              <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="492.0" />
                             <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
                           </columnConstraints>
                           <rowConstraints>
                               <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                              <RowConstraints vgrow="NEVER" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                              <RowConstraints maxHeight="17.0" minHeight="17.0" prefHeight="17.0" vgrow="NEVER" />
+                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
@@ -174,10 +174,13 @@
                                     </TableView>
                                  </content>
                               </ScrollPane>
-                              <Slider fx:id="resultsGenerationSlider" blockIncrement="100.0" disable="true" majorTickUnit="10.0" min="1.0" minorTickCount="0" orientation="VERTICAL" showTickMarks="true" snapToTicks="true" value="1.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="5" />
+                              <Slider fx:id="resultsGenerationSlider" blockIncrement="100.0" majorTickUnit="10.0" min="1.0" minorTickCount="0" orientation="VERTICAL" showTickMarks="true" snapToTicks="true" value="1.0" visible="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="5" />
                               <Label fx:id="currentGenerationViewLabel" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                              <CheckBox fx:id="DisplayAllSolutionsCheckBox" disable="true" mnemonicParsing="false" onAction="#displayAllSolutions" text="Display All Solutions" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <CheckBox fx:id="DisplayBestSolutionCheckBox" mnemonicParsing="false" onAction="#displayBestSolution" selected="true" text="Display Best Solution" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <CheckBox fx:id="DisplayAllSolutionsCheckBox" mnemonicParsing="false" onAction="#displayAllSolutions" text="Display All Solutions" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <CheckBox fx:id="DisplayBestSolutionCheckBox" disable="true" mnemonicParsing="false" onAction="#displayBestSolution" selected="true" text="Display Best Solution" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <MenuButton fx:id="displayTeacher" disable="true" mnemonicParsing="false" text="Teacher" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <MenuButton fx:id="displayClass" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" text="Classes" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                              <Button fx:id="displayRaw" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="73.0" text="Raw" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                            </children>
                         </GridPane>
                      </content>
