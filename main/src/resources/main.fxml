@@ -163,11 +163,9 @@
                           </rowConstraints>
                            <children>
                               <Label text="Generations: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label layoutX="25.0" layoutY="87.0" text="Best Fitness:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Label text="Last Generation Best Fitness:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label fx:id="GenerationsLabel" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                               <Label fx:id="BestFitnessCurrent" layoutX="155.0" layoutY="87.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <Label fx:id="BestFitnessTotal" layoutX="155.0" layoutY="117.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                               <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="580.0" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="5" GridPane.vgrow="ALWAYS">
                                  <content>
                                     <TableView fx:id="resultsTimeTable" prefHeight="200.0" prefWidth="200.0">
