@@ -24,7 +24,7 @@ public enum ResultDisplay {
         }
     };
 
-    int id;
+    int id = 1;
 
     public int getId() {
         return id;

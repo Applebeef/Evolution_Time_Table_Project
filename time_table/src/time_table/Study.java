@@ -21,6 +21,6 @@ public class Study {
 
     @Override
     public String toString() {
-        return "Subject no. " + subjectId + ": " + hours + " hours.";//TODO add subject name?(optional)
+        return "Subject no. " + subjectId + ": " + hours + " hours.";
     }
 }

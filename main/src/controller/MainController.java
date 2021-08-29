@@ -2,6 +2,7 @@ package controller;
 
 import Generated.ETTDescriptor;
 import Mains.Util.ResultDisplay;
+import Mains.Util.Row;
 import Mains.Util.TimeTableSolutionDisplayer;
 import controller.dynamic.*;
 import descriptor.Descriptor;
@@ -84,9 +85,6 @@ public class MainController {
     private Label BestFitnessCurrent;
 
     @FXML
-    private Label BestFitnessTotal;
-
-    @FXML
     private Button loadFileButton;
 
     @FXML
@@ -112,10 +110,13 @@ public class MainController {
     private HBox timeTableDisplayPane;
 
     @FXML
-    private TableView<TimeTableSolutionDisplayer> resultsTimeTable;
+    private TableView<Row> resultsTimeTable;
 
     @FXML
-    private TableColumn<TimeTableSolutionDisplayer, String> baseColumn;
+    private TableColumn<Row, String> baseColumn;
+
+    @FXML
+    private TextArea rawDisplay;
 
     @FXML
     private Slider resultsGenerationSlider;
@@ -148,9 +149,10 @@ public class MainController {
     private MenuButton displayClass;
 
     @FXML
-    private Button displayRaw;
+    private Label currentDisplayFitness;
 
-    ResultDisplay resultDisplay;
+
+    ResultDisplay resultDisplay = ResultDisplay.TEACHER;
 
     @FXML
     void displayAllSolutions(ActionEvent event) {
@@ -418,7 +420,6 @@ public class MainController {
 
     private void initUI() {
         displayTeacher.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
-        displayRaw.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
         displayClass.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
         daysDisplayLabel.textProperty().bind(descriptor.getTimeTable().daysProperty().asString());
         hoursDisplayLabel.textProperty().bind(descriptor.getTimeTable().hoursProperty().asString());
@@ -453,6 +454,8 @@ public class MainController {
                 DisplayAllSolutionsCheckBox.disableProperty().set(true);
                 DisplayBestSolutionCheckBox.disableProperty().set(false);
                 DisplayBestSolutionCheckBox.selectedProperty().set(false);
+                resultsGenerationSlider.setValue(0);
+                currentGenerationViewLabel.setText("0");
             }
         });
         DisplayBestSolutionCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -468,11 +471,27 @@ public class MainController {
                         .set(String.valueOf(descriptor.getEngine().getBestSolution().getV1())));
             }
         });
+        descriptor.getEngine().newBestSolutionProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                Platform.runLater(() -> {
+                    currentGenerationViewLabel.textProperty()
+                            .set(String.valueOf(descriptor.getEngine().getBestSolution().getV1()));
+                    updateTable(descriptor.getEngine().getBestSolution().getV1());
+                });
+            }
+        });
+        descriptor.getEngine().currentGenerationProperty().addListener((observable, oldValue, newValue) -> {
+            double fitness = descriptor.getEngine().getSolutionList().get(0).getFitness();
+            Platform.runLater(() -> {
+                GenerationsLabel.setText(newValue.toString());
+                BestFitnessCurrent.setText(String.format("%.2f", fitness));
+            });
+        });
     }
 
     private void initResultsMenu() {
         for (SchoolClass schoolClass : descriptor.getTimeTable().getSchoolClasses().getClassList()) {
-            MenuItem menuItem = new MenuItem(schoolClass.getName() + "-" + schoolClass.getId());
+            MenuItem menuItem = new MenuItem(schoolClass.getName() + " - " + schoolClass.getId());
             menuItem.setOnAction(event -> {
                 resultDisplay = ResultDisplay.CLASS;
                 resultDisplay.setId(schoolClass.getId());
@@ -481,7 +500,7 @@ public class MainController {
             displayClass.getItems().add(menuItem);
         }
         for (Teacher teacher : descriptor.getTimeTable().getTeachers().getTeacherList()) {
-            MenuItem menuItem = new MenuItem(teacher.getName() + "-" + teacher.getId());
+            MenuItem menuItem = new MenuItem(teacher.getName() + " - " + teacher.getId());
             menuItem.setOnAction(event -> {
                 resultDisplay = ResultDisplay.TEACHER;
                 resultDisplay.setId(teacher.getId());
@@ -489,41 +508,50 @@ public class MainController {
             });
             displayTeacher.getItems().add(menuItem);
         }
-        displayRaw.setOnAction(event -> {
-            resultDisplay = ResultDisplay.RAW;
-            updateTable(Integer.parseInt(currentGenerationViewLabel.getText()));
-        });
 
-        displayRaw.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
         displayClass.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
         displayTeacher.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
     }
 
     private void initTable() {
         resultsTimeTable.getColumns().clear();
-        baseColumn.setCellValueFactory(f -> new SimpleStringProperty(String.valueOf(resultsTimeTable.getItems().size() + 1)));//FIXME
+        baseColumn.setCellValueFactory(f -> new SimpleStringProperty(String.valueOf(f.getValue().getHour())));
         resultsTimeTable.getColumns().add(baseColumn);
 
         for (int i = 1; i <= descriptor.getTimeTable().getDays(); i++) {
-            TableColumn<TimeTableSolutionDisplayer, String> tableColumn = new TableColumn<>(String.valueOf(i));
+            TableColumn<Row, String> tableColumn = new TableColumn<>(String.valueOf(i));
             tableColumn.setSortable(false);
             tableColumn.setResizable(false);
             tableColumn.setPrefWidth(baseColumn.getPrefWidth());
             resultsTimeTable.getColumns().add(tableColumn);
             int finalI = i;
-            tableColumn.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getDisplay(resultsTimeTable.getItems().size() + 1, finalI)));//FIXME
+            tableColumn.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getDisplay(finalI)));
         }
     }
 
     private void updateTable(int solutionGeneration) {
         resultsTimeTable.getItems().clear();
-        for (int i=1;i<=descriptor.getTimeTable().getHours();i++){
-            if (DisplayBestSolutionCheckBox.isSelected()) {
-                TimeTableSolutionDisplayer solutionDisplayer =
-                        new TimeTableSolutionDisplayer((TimeTableSolution) descriptor.getEngine().getBestSolution().getV2(), resultDisplay);
-                resultsTimeTable.getItems().add(solutionDisplayer);
+        TimeTableSolutionDisplayer solutionDisplayer;
+        TimeTableSolution solution;
+        if (DisplayBestSolutionCheckBox.isSelected()) {
+            solution = (TimeTableSolution) descriptor.getEngine().getBestSolution().getV2();
+            if (solution == null) {
+                return;
             }
+            solutionDisplayer =
+                    new TimeTableSolutionDisplayer(solution, resultDisplay);
+        } else {
+            solution = (TimeTableSolution) descriptor.getEngine().getBestSolutionsPerFrequency().get(solutionGeneration);
+            if (solution == null) {
+                return;
+            }
+            solutionDisplayer = new TimeTableSolutionDisplayer(solution, resultDisplay);
         }
+        currentDisplayFitness.setText(String.format("Current fitness: %.2f", solution.getFitness()));
+        for (int i = 1; i <= descriptor.getTimeTable().getHours(); i++) {
+            resultsTimeTable.getItems().add(solutionDisplayer.getDisplay(i));
+        }
+        rawDisplay.setText(solution.toString());
     }
 
     @FXML
@@ -551,6 +579,7 @@ public class MainController {
         pauseButton.setText("Pause");
         resultsGenerationSlider.setValue(0);
         currentGenerationViewLabel.textProperty().set("0");
+        DisplayBestSolutionCheckBox.setSelected(true);
 
         descriptor.getEngine().initSolutionPopulation(descriptor.getTimeTable(), Integer.parseInt(generationEndConditionTextField.getText()));
         descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),

@@ -34,14 +34,13 @@ public class TimeTableSolution implements Solution {
         FIFTHS_LIST(1, "Display solution as a fifths list.") {
             @Override
             public String getDisplayString(TimeTableSolution timeTableSolution) {
-                String res = "{";
+                String res = "";
                 int i;
                 for (i = 0; i < timeTableSolution.fifthsList.size() - 1; i++) {
                     res += timeTableSolution.fifthsList.get(i);
-                    res += ",";
+                    res += ", ";
                 }
                 res += timeTableSolution.fifthsList.get(i);
-                res += '}';
                 return res;
             }
         },
@@ -253,7 +252,7 @@ public class TimeTableSolution implements Solution {
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
             int maxListSize = timeTable.getMaxListSize();
-            for (int i = 0; i < ((Crossover) crossover).getCuttingPoints(); i++) {
+            for (int i = 0; i < crossover.getCuttingPoints(); i++) {
                 // Randomize cutting points. Amount according to CuttingPoints:
                 do {
                     cuttingPoint = Randomizer.getRandomNumber(1, maxListSize - 1);

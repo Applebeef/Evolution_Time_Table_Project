@@ -5,6 +5,7 @@ import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 
 
@@ -30,6 +31,8 @@ public class EvolutionEngine implements Runnable {
     private BooleanProperty engineStarted;
     private BooleanProperty enginePaused;
     private BooleanProperty solutionsReady;
+    private BooleanProperty newBestSolution;
+
     private Integer number_of_generations;
 
     private int frequency;
@@ -46,6 +49,7 @@ public class EvolutionEngine implements Runnable {
         engineStarted = new SimpleBooleanProperty(false);
         enginePaused = new SimpleBooleanProperty(true);
         solutionsReady = new SimpleBooleanProperty(false);
+        newBestSolution = new SimpleBooleanProperty(false);
         bestSolutionFitness = new SimpleDoubleProperty(0);
         currentGenerationProperty = new SimpleIntegerProperty(0);
         currentTime = new SimpleLongProperty(0);
@@ -123,6 +127,8 @@ public class EvolutionEngine implements Runnable {
         solutionList.sort(Collections.reverseOrder());
         bestSolutionsPerFrequency.put(0, solutionList.get(0));
         bestSolution = new Pair<>(0, solutionList.get(0));
+        newBestSolution.set(true);
+        newBestSolution.set(false);
         engineStarted.set(true);
         solutionsReady.set(true);
     }
@@ -130,7 +136,7 @@ public class EvolutionEngine implements Runnable {
     public void runEvolution() {
         // Main loop: #iterations = number of generations
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
-        System.out.println("stuff");//TODO debug - delete
+
         startTime = Instant.now();
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
             updateCurrentTime();
@@ -147,7 +153,7 @@ public class EvolutionEngine implements Runnable {
                 synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
                     bestSolutionsPerFrequency.put(i, solution);
-                    System.out.println(i); //TODO debug - delete
+
                 }
                 currentGenerationProperty.set(i);
             }
@@ -156,22 +162,24 @@ public class EvolutionEngine implements Runnable {
                     bestSolution.setV1(i);
                     bestSolution.setV2(solutionList.get(0));
                     bestSolutionFitness.set(solutionList.get(0).getFitness());
+                    newBestSolution.set(true);
+                    newBestSolution.set(false);
                 }
             }
             synchronized (Thread.currentThread()) {
                 if (isEnginePaused()) {
                     try {
-                        System.out.println("paused");//TODO debug - delete
+
                         Thread.currentThread().wait();
                     } catch (InterruptedException e) {
                         break;
                     }
                 }
             }
-            System.out.println("running");//TODO debug - delete
+
         }
-        System.out.println("finished");//TODO debug - delete
-        engineStarted.set(false);//TODO make sure display is available after engine stops
+
+        engineStarted.set(false);
         setEnginePaused(true);
     }
 
@@ -329,5 +337,17 @@ public class EvolutionEngine implements Runnable {
 
     public synchronized Pair<Integer, Solution> getBestSolution() {
         return bestSolution;
+    }
+
+    public boolean isNewBestSolution() {
+        return newBestSolution.get();
+    }
+
+    public BooleanProperty newBestSolutionProperty() {
+        return newBestSolution;
+    }
+
+    public void setNewBestSolution(boolean newBestSolution) {
+        this.newBestSolution.set(newBestSolution);
     }
 }
