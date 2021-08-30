@@ -136,7 +136,6 @@ public class EvolutionEngine implements Runnable {
     public void runEvolution() {
         // Main loop: #iterations = number of generations
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
-
         startTime = Instant.now();
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
             updateCurrentTime();
@@ -153,7 +152,6 @@ public class EvolutionEngine implements Runnable {
                 synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
                     bestSolutionsPerFrequency.put(i, solution);
-
                 }
                 currentGenerationProperty.set(i);
             }
@@ -169,14 +167,12 @@ public class EvolutionEngine implements Runnable {
             synchronized (Thread.currentThread()) {
                 if (isEnginePaused()) {
                     try {
-
                         Thread.currentThread().wait();
                     } catch (InterruptedException e) {
                         break;
                     }
                 }
             }
-
         }
 
         engineStarted.set(false);

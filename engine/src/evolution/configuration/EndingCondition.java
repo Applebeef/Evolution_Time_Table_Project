@@ -25,7 +25,7 @@ public enum EndingCondition {
         @Override
         boolean test(Number current) {
             if (max.intValue() != 0) {
-                return current.intValue() >= max.intValue();
+                return current.intValue() > max.intValue();
             } else {
                 return false;
             }

@@ -521,6 +521,7 @@ public class MainController {
         for (int i = 1; i <= descriptor.getTimeTable().getDays(); i++) {
             TableColumn<Row, String> tableColumn = new TableColumn<>(String.valueOf(i));
             tableColumn.setSortable(false);
+            tableColumn.setEditable(false);
             tableColumn.setResizable(false);
             tableColumn.setPrefWidth(baseColumn.getPrefWidth());
             resultsTimeTable.getColumns().add(tableColumn);
