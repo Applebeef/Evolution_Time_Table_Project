@@ -1,11 +1,14 @@
 package solution;
 
+import evolution.configuration.CrossoverIFC;
+import evolution.configuration.MutationIFC;
+import evolution.configuration.MutationsIFC;
 import evolution.util.Randomizer;
-import evolution.configuration.Crossover;
-import evolution.configuration.Mutation;
-import evolution.configuration.Mutations;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
+import settings.Crossover;
+import settings.Mutation;
+import settings.Mutations;
 import time_table.*;
 import evolution.util.Pair;
 
@@ -31,14 +34,13 @@ public class TimeTableSolution implements Solution {
         FIFTHS_LIST(1, "Display solution as a fifths list.") {
             @Override
             public String getDisplayString(TimeTableSolution timeTableSolution) {
-                String res = "{";
+                String res = "";
                 int i;
                 for (i = 0; i < timeTableSolution.fifthsList.size() - 1; i++) {
                     res += timeTableSolution.fifthsList.get(i);
-                    res += ",";
+                    res += ", ";
                 }
                 res += timeTableSolution.fifthsList.get(i);
-                res += '}';
                 return res;
             }
         },
@@ -89,15 +91,15 @@ public class TimeTableSolution implements Solution {
 
     public TimeTableSolution(TimeTableSolution other) {
         this.fifthsList = new ArrayList<>(other.fifthsList.size());
-        for(Fifth fifth : other.fifthsList){
+        for (Fifth fifth : other.fifthsList) {
             this.fifthsList.add(fifth.copy());
         }
-        this.fitness=other.fitness;
-        this.timeTable=other.timeTable;
-        this.presentationOption=other.presentationOption;
-        this.dayTimeComparator=other.dayTimeComparator;
-        this.teacherAspectComparator=other.teacherAspectComparator;
-        this.classAspectComparator=other.classAspectComparator;
+        this.fitness = other.fitness;
+        this.timeTable = other.timeTable;
+        this.presentationOption = other.presentationOption;
+        this.dayTimeComparator = other.dayTimeComparator;
+        this.teacherAspectComparator = other.teacherAspectComparator;
+        this.classAspectComparator = other.classAspectComparator;
     }
 
     public TimeTableSolution(TimeTable timeTable) {
@@ -174,33 +176,6 @@ public class TimeTableSolution implements Solution {
         return this.fitness;
     }
 
-    @Override
-    public void mutate(Mutations mutations) {
-        double probability;
-        int mutatedNumber;
-        // Iterate through mutations:
-        for (Mutation mutation : mutations.getMutationList()) {
-            // Randomize a real number from 0 to 1:
-            probability = Math.random();
-            // If the random number "hits" the mutation probability then the mutation will happend:
-            if (probability <= mutation.getProbability()) {
-                // mutatedNumber = maximum amount of tupples with the mutation:
-                mutatedNumber = Randomizer.getRandomNumber(1, Math.abs(mutation.getTupples()));
-
-                switch (mutation.getName()) {
-                    case ("Flipping"):
-                        flippingMutation(mutatedNumber, mutation);
-                        break;
-                    case ("Sizer"):
-                        sizerMutation(mutatedNumber, mutation);
-                        break;
-                }
-
-            }
-        }
-        calculateFitness();
-    }
-
     private void sizerMutation(int mutatedNumber, Mutation mutation) {
         if (mutation.getTupples() < 0) {
             sizerReduce(mutatedNumber);
@@ -223,7 +198,7 @@ public class TimeTableSolution implements Solution {
         }
     }
 
-    private Fifth generateRandomFifth() {
+    public Fifth generateRandomFifth() {
         int day, hour, schoolClass, teacher, subject;
         schoolClass = Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses());
         subject = Randomizer.getRandomNumber(1, timeTable.getAmountofSubjects());
@@ -263,12 +238,12 @@ public class TimeTableSolution implements Solution {
 
 
     @Override
-    public List<Solution> crossover(Solution solution, Crossover crossover) {
+    public List<Solution> crossover(Solution solution, CrossoverIFC crossover) {
         List<Solution> res = new ArrayList<>();
         if (solution instanceof TimeTableSolution) {
             TimeTableSolution other_timeTable_solution = (TimeTableSolution) solution;
             // Choose correspondent comparator (according to crossover definition):
-            Comparator<Fifth> comparator = chooseFifthComparator(crossover);
+            Comparator<Fifth> comparator = chooseFifthComparator((Crossover) crossover);
             // Sort my fifths:
             this.getFifthsList().sort(comparator);
             // Sort other's fifths:
@@ -276,7 +251,7 @@ public class TimeTableSolution implements Solution {
 
             List<Integer> cuttingPointsList = new ArrayList<>();
             Integer cuttingPoint;
-            int maxListSize = getMaxListSize();
+            int maxListSize = timeTable.getMaxListSize();
             for (int i = 0; i < crossover.getCuttingPoints(); i++) {
                 // Randomize cutting points. Amount according to CuttingPoints:
                 do {
@@ -315,11 +290,21 @@ public class TimeTableSolution implements Solution {
         return res;
     }
 
-    private int getMaxListSize() {
-        return timeTable.getDays() * timeTable.getHours() * timeTable.getAmountofTeachers() * timeTable.getAmountofSubjects() * timeTable.getAmountofSchoolClasses();
+    public int getMaxTeacherListSize() {
+        return timeTable.getDays()
+                * timeTable.getHours()
+                * timeTable.getAmountofSubjects()
+                * timeTable.getAmountofSchoolClasses();
     }
 
-    private List<List<Fifth>> splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList) {
+    public int getMaxSchoolClassListSize() {
+        return timeTable.getDays()
+                * timeTable.getHours()
+                * timeTable.getAmountofSubjects()
+                * timeTable.getAmountofTeachers();
+    }
+
+    public List<List<Fifth>> splitToParts(List<Fifth> fifthsList, List<Integer> cuttingPointsList) {
         List<List<Fifth>> res = new ArrayList<>(cuttingPointsList.size() + 1);
         for (int i = 0; i < cuttingPointsList.size() + 1; i++) {
             res.add(new ArrayList<>());

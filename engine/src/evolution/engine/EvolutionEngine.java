@@ -1,51 +1,58 @@
 package evolution.engine;
 
-import evolution.configuration.Crossover;
-import evolution.configuration.InitialPopulation;
-import evolution.configuration.Mutations;
-import evolution.configuration.Selection;
+import evolution.configuration.*;
 import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.application.Platform;
+import javafx.beans.property.*;
 
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class EvolutionEngine implements Runnable {
     private InitialPopulation initialSolutionPopulation;
-    private Mutations mutations;
-    private Selection selection;
-    private Crossover crossover;
+
+    private MutationsIFC mutations;
+    private List<SelectionIFC> selectionIFCList;
+    private List<CrossoverIFC> crossoverIFCList;
 
     private List<Solution> solutionList;
     private List<Solution> offspringSolutionsList;
-    private List<Pair<Integer, Solution>> bestSolutionsPerFrequency;
+    private Map<Integer, Solution> bestSolutionsPerFrequency;
     private Pair<Integer, Solution> bestSolution;
+
+    private DoubleProperty bestSolutionFitness;
+    private IntegerProperty currentGenerationProperty;
 
     private BooleanProperty engineStarted;
     private BooleanProperty enginePaused;
     private BooleanProperty solutionsReady;
+    private BooleanProperty newBestSolution;
+
     private Integer number_of_generations;
 
     private int frequency;
-    private int max_fitness;
-    private Consumer<String> consumer;
+    private EndingConditions endingConditions;
+    private Instant startTime;
+    private LongProperty currentTime;
 
     public EvolutionEngine(ETTEvolutionEngine gen) {
         initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
-        mutations = new Mutations(gen.getETTMutations());
-        selection = new Selection(gen.getETTSelection());
-        crossover = new Crossover(gen.getETTCrossover());
+        number_of_generations = 1;
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
-        bestSolutionsPerFrequency = new ArrayList<>();
+        bestSolutionsPerFrequency = new HashMap<>();
         engineStarted = new SimpleBooleanProperty(false);
         enginePaused = new SimpleBooleanProperty(true);
         solutionsReady = new SimpleBooleanProperty(false);
+        newBestSolution = new SimpleBooleanProperty(false);
+        bestSolutionFitness = new SimpleDoubleProperty(0);
+        currentGenerationProperty = new SimpleIntegerProperty(0);
+        currentTime = new SimpleLongProperty(0);
     }
 
     public boolean isSolutionsReady() {
@@ -64,7 +71,7 @@ public class EvolutionEngine implements Runnable {
         return engineStarted;
     }
 
-    public boolean isEnginePaused() {
+    public synchronized boolean isEnginePaused() {
         return enginePaused.get();
     }
 
@@ -72,7 +79,7 @@ public class EvolutionEngine implements Runnable {
         return enginePaused;
     }
 
-    public void setEnginePaused(boolean enginePaused) {
+    public synchronized void setEnginePaused(boolean enginePaused) {
         this.enginePaused.set(enginePaused);
     }
 
@@ -80,16 +87,16 @@ public class EvolutionEngine implements Runnable {
         return initialSolutionPopulation;
     }
 
-    public Mutations getMutations() {
+    public MutationsIFC getMutations() {
         return mutations;
     }
 
-    public Selection getSelection() {
-        return selection;
+    public List<SelectionIFC> getSelectionIFCList() {
+        return selectionIFCList;
     }
 
-    public Crossover getCrossover() {
-        return crossover;
+    public List<CrossoverIFC> getCrossoverIFCList() {
+        return crossoverIFCList;
     }
 
     public List<Solution> getSolutionList() {
@@ -100,9 +107,15 @@ public class EvolutionEngine implements Runnable {
         return engineStarted.get();
     }
 
+
     public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
         Solution solution;
         this.number_of_generations = number_of_generations;
+        solutionList = new ArrayList<>();
+
+        mutations = problem.getMutations();
+        selectionIFCList = problem.getSelectionsList();
+        crossoverIFCList = problem.getCrossoverList();
 
         for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
             // Create solution:
@@ -112,46 +125,64 @@ public class EvolutionEngine implements Runnable {
         }
         // Sort list:
         solutionList.sort(Collections.reverseOrder());
+        bestSolutionsPerFrequency.put(0, solutionList.get(0));
         bestSolution = new Pair<>(0, solutionList.get(0));
+        newBestSolution.set(true);
+        newBestSolution.set(false);
         engineStarted.set(true);
-        enginePaused.set(false);
         solutionsReady.set(true);
     }
 
     public void runEvolution() {
         // Main loop: #iterations = number of generations
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
-        for (int i = 1; i <= number_of_generations && solutionList.get(0).getFitness() < max_fitness && !Thread.currentThread().isInterrupted(); i++) {
+        startTime = Instant.now();
+        for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
+            updateCurrentTime();
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
-            solutionList.forEach(solution -> solution.mutate(mutations));
+            for (Solution solution : solutionList) {
+                mutations.getMutationList().forEach(mutationIFC -> mutationIFC.mutate(solution));
+            }
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
-            synchronized (bestSolutionsPerFrequency) {
-                if (i % frequency == 0 || i == 1) {
+            if (i % frequency == 0) {
+                synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
-                    //consumer.accept("Generation " + i + " " + String.format("%.1f", solution.getFitness()));
-                    bestSolutionsPerFrequency.add(new Pair<>(i, solution));
+                    bestSolutionsPerFrequency.put(i, solution);
                 }
+                currentGenerationProperty.set(i);
             }
             if (solutionList.get(0).getFitness() > bestSolution.getV2().getFitness()) {
                 synchronized (bestSolution) {
                     bestSolution.setV1(i);
                     bestSolution.setV2(solutionList.get(0));
+                    bestSolutionFitness.set(solutionList.get(0).getFitness());
+                    newBestSolution.set(true);
+                    newBestSolution.set(false);
                 }
             }
-            while (enginePaused.get()){//TODO make sure this works.
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    break;
+            synchronized (Thread.currentThread()) {
+                if (isEnginePaused()) {
+                    try {
+                        Thread.currentThread().wait();
+                    } catch (InterruptedException e) {
+                        break;
+                    }
                 }
             }
         }
-        consumer.accept("Engine is finished.");
+
         engineStarted.set(false);
+        setEnginePaused(true);
+    }
+
+    private void updateCurrentTime() {
+        //if (currentTime.get() + 5 <= getCurrentTimeLive()) {
+        currentTime.set(getCurrentTimeLive());
+        //}
     }
 
     public String getBestSolutionDisplay(int choice) {
@@ -170,44 +201,55 @@ public class EvolutionEngine implements Runnable {
 
     private void spawnGeneration() {
         this.offspringSolutionsList = new ArrayList<>();
-        List<Solution> selectedSolutions;
-        // Elitism:
-        List<Solution> eliteList = solutionList.subList(0, this.selection.getElitism());
-        List<Solution> copiedEliteList = new ArrayList<>(eliteList.size());
-        eliteList.forEach(solution -> copiedEliteList.add(solution.copy()));
-        offspringSolutionsList.addAll(copiedEliteList);
-
-        // Using crossover (class EvolutionEngine), create an offspring Solution List:
-        while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
-            // Receive the solutions to be crossed over:
-            selectedSolutions = this.selection.select(solutionList);
-            // Crossover the two solutions:
-            // TODO: Think of crossover method implementation (inside Crossover or inside Solution instantiation).
-
-            offspringSolutionsList.addAll(
-                    selectedSolutions.get(0)
-                            .crossover(selectedSolutions.get(1), this.crossover)
-            );
+        SelectionIFC activeSelection = null;
+        CrossoverIFC activeCrossover = null;
+        for (SelectionIFC selection : getSelectionIFCList()) {
+            if (selection.isActive()) {
+                activeSelection = selection;
+                break;
+            }
         }
-        // Shrink to initial population size:
-        if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {
-            this.solutionList = offspringSolutionsList.subList(0, initialSolutionPopulation.getSize());
-        } else {
-            this.solutionList = offspringSolutionsList;
+        for (CrossoverIFC crossover : getCrossoverIFCList()) {
+            if (crossover.isActive()) {
+                activeCrossover = crossover;
+                break;
+            }
         }
+        if (activeSelection != null && activeCrossover != null) {
+            List<Solution> selectedSolutions;
+            // Elitism:
+            List<Solution> eliteList = solutionList.subList(0, activeSelection.getElitism());
+            List<Solution> copiedEliteList = new ArrayList<>(eliteList.size());
+            eliteList.forEach(solution -> copiedEliteList.add(solution.copy()));
+            offspringSolutionsList.addAll(copiedEliteList);
+
+            // Using crossover (class EvolutionEngine), create an offspring Solution List:
+            while (offspringSolutionsList.size() < initialSolutionPopulation.getSize()) {
+                // Receive the solutions to be crossed over:
+                selectedSolutions = activeSelection.select(solutionList);
+                // Crossover the two solutions:
+
+                offspringSolutionsList.addAll(activeCrossover.cross(selectedSolutions.get(0), selectedSolutions.get(1)));
+                /**/
+            }
+            // Shrink to initial population size:
+            if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {
+                this.solutionList = offspringSolutionsList.subList(0, initialSolutionPopulation.getSize());
+            } else {
+                this.solutionList = offspringSolutionsList;
+            }
+        }
+
     }
 
 
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return "Initial population - " + initialSolutionPopulation + lineSeparator + lineSeparator +
-                "Mutations - " + lineSeparator + mutations + lineSeparator +
-                "Selection - " + selection + lineSeparator + lineSeparator +
-                "Crossover - " + lineSeparator + crossover;
+        return "Initial population - " + initialSolutionPopulation + lineSeparator + lineSeparator;
     }
 
-    public List<Pair<Integer, Solution>> getBestSolutionsPerFrequency() {
+    public Map<Integer, Solution> getBestSolutionsPerFrequency() {
         return bestSolutionsPerFrequency;
     }
 
@@ -216,10 +258,9 @@ public class EvolutionEngine implements Runnable {
         runEvolution();
     }
 
-    public void initThreadParameters(int frequency, int max_fitness, Consumer<String> consumer) {
+    public void initThreadParameters(int frequency, double max_fitness, long max_time) {
         this.frequency = frequency;
-        this.max_fitness = max_fitness;
-        this.consumer = consumer;
+        this.endingConditions = new EndingConditions(this.number_of_generations, max_fitness, max_time);
     }
 
     public void setEngineStarted(boolean engineStarted) {
@@ -227,10 +268,82 @@ public class EvolutionEngine implements Runnable {
     }
 
     public void reset() {
-        solutionList.clear();
-        bestSolutionsPerFrequency.clear();
-        offspringSolutionsList.clear();
+        if (isSolutionsReady()) {
+            solutionList.clear();
+            bestSolutionsPerFrequency.clear();
+            offspringSolutionsList.clear();
+        }
         engineStarted.set(false);
         solutionsReady.set(false);
+    }
+
+    public double getBestSolutionFitness() {
+        return bestSolutionFitness.get();
+    }
+
+    public DoubleProperty bestSolutionFitnessProperty() {
+        return bestSolutionFitness;
+    }
+
+    public int getCurrentGenerationProperty() {
+        return currentGenerationProperty.get();
+    }
+
+    public IntegerProperty currentGenerationProperty() {
+        return currentGenerationProperty;
+    }
+
+    public EndingConditions getEndingConditions() {
+        return endingConditions;
+    }
+
+    public void addToMaxTime(long timeOffset) {
+        if (EndingCondition.TIME.getMax().longValue() != 0) {
+            EndingCondition.TIME.setMax(EndingCondition.TIME.getMax().longValue() + timeOffset);
+        }
+    }
+
+    public long getCurrentTimeLive() {
+        return ChronoUnit.SECONDS.between(startTime, Instant.now());
+    }
+
+    public Integer getNumber_of_generations() {
+        return number_of_generations;
+    }
+
+    public LongProperty currentTimeProperty() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime.set(currentTime);
+    }
+
+    public long getCurrentTime() {
+        return currentTime.get();
+    }
+
+    public long getMaxTime() {
+        return EndingCondition.TIME.getMax().longValue();
+    }
+
+    public double getMaxFitness() {
+        return EndingCondition.FITNESS.getMax().doubleValue();
+    }
+
+    public synchronized Pair<Integer, Solution> getBestSolution() {
+        return bestSolution;
+    }
+
+    public boolean isNewBestSolution() {
+        return newBestSolution.get();
+    }
+
+    public BooleanProperty newBestSolutionProperty() {
+        return newBestSolution;
+    }
+
+    public void setNewBestSolution(boolean newBestSolution) {
+        this.newBestSolution.set(newBestSolution);
     }
 }

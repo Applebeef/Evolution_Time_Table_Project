@@ -2,9 +2,7 @@ package controller.dynamic;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 public class mutationPaneController {
 
@@ -24,10 +22,10 @@ public class mutationPaneController {
     private Label componentTextLabel;
 
     @FXML
-    private TextField componentTextField;
+    private Label errorLabel;
 
     @FXML
-    private Label errorLabel;
+    private ChoiceBox<String> componentChoiceBox;
 
     @FXML
     void componentTextFieldChanged(ActionEvent event) {
@@ -41,10 +39,6 @@ public class mutationPaneController {
 
     public Label getName() {
         return name;
-    }
-
-    public void setComponentTextField(TextField componentTextField) {
-        this.componentTextField = componentTextField;
     }
 
     public Label getErrorLabel() {
@@ -67,8 +61,9 @@ public class mutationPaneController {
         return tupples;
     }
 
-    public TextField getComponentTextField() {
-        return componentTextField;
+
+    public ChoiceBox<String> getComponentChoiceBox() {
+        return componentChoiceBox;
     }
 
     public void setTupples(TextField tupples) {

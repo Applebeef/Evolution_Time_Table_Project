@@ -23,7 +23,7 @@ public class JavaFXMain extends Application {
         FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("../resources/main.fxml")));
         Parent load = loader.load();
         MainController controller = loader.getController();
-
+        controller.setTextBoundaries();
         controller.setPrimaryStage(primaryStage);
 
         Scene scene = new Scene(load);

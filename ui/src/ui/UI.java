@@ -173,7 +173,7 @@ public class UI {
                         System.out.println("Please choose a number between 1 and " + number_of_generations + ".");
                     }
                 }
-                ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness, System.out::println);
+                ui.descriptor.getEngine().initThreadParameters(frequency, max_fitness,0);
                 ui.createNewEngineThread();
                 ui.engine_thread.start();
             }
@@ -217,15 +217,15 @@ public class UI {
                 } else {
 
                     if (!ui.engine_thread.isAlive()) {
-                        List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutionsPerFrequency();
-                        printBestSolutions(bestSolutions);
+                        //List<Pair<Integer, Solution>> bestSolutions = ui.descriptor.getEngine().getBestSolutionsPerFrequency(); OLD
+                        //printBestSolutions(bestSolutions);
                     } else {
                         synchronized (ui.descriptor.getEngine().getBestSolutionsPerFrequency()) {
-                            List<Pair<Integer, Solution>> pairList = ui.descriptor.getEngine().getBestSolutionsPerFrequency();
+                            /*List<Pair<Integer, Solution>> pairList = ui.descriptor.getEngine().getBestSolutionsPerFrequency(); OLD
                             if (ui.descriptor.getEngine().getBestSolutionsPerFrequency().size() > 10) {
                                 pairList = pairList.subList(pairList.size() - 10, pairList.size());
                             }
-                            printBestSolutions(pairList);
+                            printBestSolutions(pairList);*/
                         }
                     }
                 }

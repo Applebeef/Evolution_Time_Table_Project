@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 
 public enum Rule {
-    //TODO add new EX2 rule
     TEACHER_IS_HUMAN("TeacherIsHuman") {
         @Override
         public double test(TimeTableSolution timeTableSolution) {
@@ -118,7 +117,7 @@ public enum Rule {
                 mapSchoolClassToSubjectHoursMapMap.get(fifth.getSchoolClass()).put(fifth.getSubject(), hours);
             }
             //Check if the total amount of learned hours is equal to the required amount of hours per subject:
-            for (SchoolClass schoolClass : timeTableSolution.getTimeTable().getSchoolClasses().getClassList()) {//FIXME random crashing on some runs.
+            for (SchoolClass schoolClass : timeTableSolution.getTimeTable().getSchoolClasses().getClassList()) {
                 for (Study study : schoolClass.requirements.studyList) {
                     int classID = schoolClass.getId();
                     int subjectID = study.getSubjectId();

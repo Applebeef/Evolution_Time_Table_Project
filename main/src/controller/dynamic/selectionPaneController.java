@@ -1,6 +1,8 @@
 package controller.dynamic;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -28,6 +30,9 @@ public class selectionPaneController {
     @FXML
     private Label topPercentNameLabel;
 
+    @FXML
+    private CheckBox activeCheckbox;
+
     public Label getTopPercentNameLabel() {
         return topPercentNameLabel;
     }
@@ -54,5 +59,13 @@ public class selectionPaneController {
 
     public TextField getTopPercentTextField() {
         return topPercentTextField;
+    }
+
+    public CheckBox getActiveCheckbox() {
+        return activeCheckbox;
+    }
+
+    public void setActiveCheckbox(CheckBox activeCheckbox) {
+        this.activeCheckbox = activeCheckbox;
     }
 }

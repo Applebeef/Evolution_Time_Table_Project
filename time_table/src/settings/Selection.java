@@ -1,15 +1,19 @@
-package evolution.configuration;
+package settings;
 
 import Generated.ETTSelection;
+import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Selection {
+public class Selection implements SelectionIFC {
     protected String type;
     protected IntegerProperty topPercent;
     protected IntegerProperty elitism;
@@ -44,6 +48,11 @@ public class Selection {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public boolean isActive() {
+        return false;
     }
 
     private List<Solution> truncationSelect(List<Solution> solutionList) {
