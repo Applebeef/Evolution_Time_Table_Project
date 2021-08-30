@@ -4,6 +4,7 @@ import Generated.ETTSubjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ public class Subjects {
 
     Subjects(ETTSubjects gen) {
         subjectList = gen.getETTSubject().stream().map(Subject::new).collect(Collectors.toList());
+        subjectList.sort(Comparator.comparingInt(Subject::getId));
     }
 
     public List<Subject> getSubjectList() {

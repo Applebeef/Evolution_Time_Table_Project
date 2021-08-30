@@ -124,6 +124,7 @@ public class EvolutionEngine implements Runnable {
             solutionList.add(solution);
         }
         // Sort list:
+        currentGenerationProperty().set(0);
         solutionList.sort(Collections.reverseOrder());
         bestSolutionsPerFrequency.put(0, solutionList.get(0));
         bestSolution = new Pair<>(0, solutionList.get(0));
@@ -137,6 +138,7 @@ public class EvolutionEngine implements Runnable {
         // Main loop: #iterations = number of generations
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
         startTime = Instant.now();
+        int lastGeneration = 0;
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
             updateCurrentTime();
             // Spawn new generation:
@@ -173,8 +175,9 @@ public class EvolutionEngine implements Runnable {
                     }
                 }
             }
+            lastGeneration = i;
         }
-
+        currentGenerationProperty.set(lastGeneration);
         engineStarted.set(false);
         setEnginePaused(true);
     }

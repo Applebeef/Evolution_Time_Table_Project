@@ -4,6 +4,7 @@ import Generated.ETTTeachers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ public class Teachers {
 
     Teachers(ETTTeachers gen) {
         teacherList = gen.getETTTeacher().stream().map(Teacher::new).collect(Collectors.toList());
+        teacherList.sort(Comparator.comparingInt(Teacher::getId));
     }
 
     public List<Teacher> getTeacherList() {

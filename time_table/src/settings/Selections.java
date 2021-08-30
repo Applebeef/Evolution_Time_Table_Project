@@ -102,7 +102,11 @@ public enum Selections implements SelectionIFC {
     }
 
     public void initFromXml(ETTSelection gen) {
-        setElitism(gen.getETTElitism());
+        if (gen.getETTElitism() == null) {
+            setElitism(0);
+        } else {
+            setElitism(gen.getETTElitism());
+        }
         setActive(true);
         parseString(gen.getConfiguration());
     }

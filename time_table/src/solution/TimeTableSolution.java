@@ -157,7 +157,7 @@ public class TimeTableSolution implements Solution {
     public double calculateFitness() {
         // Get weight of hard\soft rules:
         double hardRulesWeight = (double) timeTable.getRules().getHardRulesWeight() / 100;
-        double sofRulesWeight = 1 - hardRulesWeight;
+        double softRulesWeight = 1 - hardRulesWeight;
         double hardTotalScore = 0, softTotalScore = 0;
         int hardCount = 0, softCount = 0;
         // Iterate through Rules list and calculate data:
@@ -172,7 +172,7 @@ public class TimeTableSolution implements Solution {
         }
         // Calculate total fitness according to percentage given by user:
         this.fitness = (hardTotalScore / (double) hardCount) * hardRulesWeight +
-                (softTotalScore / (double) softCount) * sofRulesWeight;
+                (softTotalScore / (double) softCount) * softRulesWeight;
         return this.fitness;
     }
 

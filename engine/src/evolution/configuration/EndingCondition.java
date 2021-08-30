@@ -14,7 +14,7 @@ public enum EndingCondition {
         @Override
         boolean test(Number current) {
             if (max.doubleValue() != 0) {
-                return current.doubleValue() >= max.doubleValue();
+                return current.doubleValue() > max.doubleValue();
             } else {
                 return false;
             }
@@ -37,7 +37,7 @@ public enum EndingCondition {
         boolean test(Number current) {
             //current = ChronoUnit.SECONDS.between(Instant.EPOCH, Instant.now());
             if (max.longValue() != 0) {
-                return current.longValue() >= max.longValue();
+                return current.longValue() > max.longValue();
             } else
                 return false;
         }

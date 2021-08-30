@@ -10,6 +10,7 @@ public class SchoolClasses {
 
     SchoolClasses(ETTClasses gen) {
         classList = gen.getETTClass().stream().map(SchoolClass::new).collect(Collectors.toList());
+        classList.sort(Comparator.comparingInt(SchoolClass::getId));
     }
 
     public List<SchoolClass> getClassList() {

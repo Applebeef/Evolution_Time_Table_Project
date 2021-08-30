@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -428,9 +429,32 @@ public class MainController {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
-                descriptor = new Descriptor(ettdescriptor);
-                fileLoadedIndicator.setSelected(true);
-                initUI();
+                Descriptor tempDescriptor = new Descriptor(ettdescriptor);
+                Set<String> errorSet = tempDescriptor.checkValidity();
+                if (errorSet.size() == 1 && errorSet.contains("")) {
+                    descriptor = tempDescriptor;
+                    fileLoadedIndicator.setSelected(true);
+                    initUI();
+                } else {
+                    fileLoadedIndicator.setSelected(false);
+                    timeTableDisplayMenu.disableProperty().unbind();
+                    timeTableDisplayMenu.disableProperty().set(true);
+                    engineDisplayMenu.disableProperty().unbind();
+                    engineDisplayMenu.disableProperty().set(true);
+                    startButton.disableProperty().unbind();
+                    startButton.disableProperty().set(true);
+                    DisplayBestSolutionCheckBox.disableProperty().unbind();
+                    DisplayBestSolutionCheckBox.disableProperty().set(true);
+                    Stage errorStage = new Stage();
+                    HBox errors = new HBox();
+                    errorSet.forEach(error -> {
+                        Label errorLabel = new Label(error);
+                        errors.getChildren().add(errorLabel);
+                    });
+                    errorStage.setScene(new Scene(errors, 400, 400));
+                    errorStage.setTitle("Errors");
+                    errorStage.show();
+                }
             } catch (JAXBException ignored) {
             }
         }
@@ -599,17 +623,33 @@ public class MainController {
         resultsGenerationSlider.setValue(0);
         currentGenerationViewLabel.textProperty().set("0");
         DisplayBestSolutionCheckBox.setSelected(true);
+        GenerationsLabel.setText("0");
 
         descriptor.getEngine().initSolutionPopulation(descriptor.getTimeTable(), Integer.parseInt(generationEndConditionTextField.getText()));
+        BestFitnessCurrent.setText(String.format("%.2f", descriptor.getEngine().getBestSolution().getV2().getFitness()));
         descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),
                 Double.parseDouble(fitnessEndConditionTextField.getText()),
                 Long.parseLong(timeEndConditionTextField.getText()));
         thread = new Thread(descriptor.getEngine());
         thread.setName("Engine");
 
-        generationProgressBar.progressProperty().bind(descriptor.getEngine().currentGenerationProperty().divide((double) descriptor.getEngine().getNumber_of_generations()));
-        fitnessProgressBar.progressProperty().bind(descriptor.getEngine().bestSolutionFitnessProperty().divide(descriptor.getEngine().getMaxFitness()));
-        timeProgressBar.progressProperty().bind(descriptor.getEngine().currentTimeProperty().divide((double) descriptor.getEngine().getMaxTime()));
+        generationProgressBar.progressProperty().unbind();
+        generationProgressBar.progressProperty().set(0);
+        fitnessProgressBar.progressProperty().unbind();
+        fitnessProgressBar.progressProperty().set(0);
+        timeProgressBar.progressProperty().unbind();
+        timeProgressBar.progressProperty().set(0);
+
+
+        if (!generationEndConditionTextField.getText().equals("0")) {
+            generationProgressBar.progressProperty().bind(descriptor.getEngine().currentGenerationProperty().divide((double) descriptor.getEngine().getNumber_of_generations()));
+        }
+        if (!fitnessEndConditionTextField.getText().equals("0")) {
+            fitnessProgressBar.progressProperty().bind(descriptor.getEngine().bestSolutionFitnessProperty().divide(descriptor.getEngine().getMaxFitness()));
+        }
+        if (!timeEndConditionTextField.getText().equals("0")) {
+            timeProgressBar.progressProperty().bind(descriptor.getEngine().currentTimeProperty().divide((double) descriptor.getEngine().getMaxTime()));
+        }
 
         thread.setDaemon(true);
         thread.start();
@@ -636,8 +676,10 @@ public class MainController {
 
     public void setTextBoundaries() {
         generationEndConditionTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*") || newValue.equals("")) {
+            if (!newValue.matches("\\d*")) {
                 generationEndConditionTextField.setText(oldValue);
+            } else if (newValue.equals("")) {
+                generationEndConditionTextField.setText("0");
             } else {
                 BigInteger maxInt = BigInteger.valueOf(Integer.MAX_VALUE);
                 BigInteger value = new BigInteger(newValue);
@@ -653,8 +695,10 @@ public class MainController {
             }
         }));
         fitnessEndConditionTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*") || newValue.equals("")) {
+            if (!newValue.matches("\\d*")) {
                 fitnessEndConditionTextField.setText(oldValue);
+            } else if (newValue.equals("")) {
+                fitnessEndConditionTextField.setText("0");
             } else if (Integer.parseInt(newValue) > 100 || Integer.parseInt(newValue) < 0) {
                 fitnessEndConditionTextField.setText(oldValue);
             } else if (Integer.parseInt(newValue) == 0 &&
@@ -663,8 +707,10 @@ public class MainController {
             }
         }));
         timeEndConditionTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*") || newValue.equals("")) {
+            if (!newValue.matches("\\d*")) {
                 timeEndConditionTextField.setText(oldValue);
+            } else if (newValue.equals("")) {
+                timeEndConditionTextField.setText("0");
             } else {
                 BigInteger maxInt = BigInteger.valueOf(Integer.MAX_VALUE);
                 BigInteger value = new BigInteger(newValue);
