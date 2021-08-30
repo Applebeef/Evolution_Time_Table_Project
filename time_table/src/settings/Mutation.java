@@ -140,7 +140,7 @@ public enum Mutation implements MutationIFC {
         this.name = name;
         probability = new SimpleDoubleProperty(0);
         tupples = new SimpleIntegerProperty(0);
-        component = new SimpleStringProperty("");
+        component = new SimpleStringProperty("D");
     }
 
     protected abstract void parseString(String config);

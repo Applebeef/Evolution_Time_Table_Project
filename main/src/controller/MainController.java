@@ -264,6 +264,20 @@ public class MainController {
                     }
                 });
                 Bindings.bindBidirectional(controller.getTupples().textProperty(), mutation.tupplesProperty(), new NumberStringConverter());
+
+                //if (!mutation.componentProperty().getValue().equals("")) {
+                controller.getComponentChoiceBox().getItems().add("Days");
+                controller.getComponentChoiceBox().getItems().add("Hours");
+                controller.getComponentChoiceBox().getItems().add("Teacher");
+                controller.getComponentChoiceBox().getItems().add("Class");
+                controller.getComponentChoiceBox().getItems().add("Subject");
+                StringProperty temp = new SimpleStringProperty();
+                temp.bind(Bindings.createStringBinding(() ->
+                        controller.getComponentChoiceBox().valueProperty().get().substring(0,1),
+                        controller.getComponentChoiceBox().valueProperty()));
+                Bindings.bindBidirectional(temp,
+                        mutation.componentProperty());
+
                 if (mutation.componentProperty() != null) {
                     controller.getComponentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                         if (!newValue.equalsIgnoreCase("T") && !newValue.equalsIgnoreCase("C")
