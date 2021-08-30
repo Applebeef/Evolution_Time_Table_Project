@@ -21,7 +21,7 @@
     <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
     <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
     <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
       <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="TOP" vgrow="NEVER" />
       <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="337.0" valignment="TOP" vgrow="ALWAYS" />
   </rowConstraints>
@@ -29,14 +29,13 @@
       <Label text="Name" />
       <Label fx:id="name" GridPane.columnIndex="1" GridPane.columnSpan="3" />
       <Label text="Max Tupples: " GridPane.columnSpan="2" GridPane.rowIndex="1" />
-      <Label text="Probability: " GridPane.rowIndex="3" GridPane.valignment="TOP" />
-      <Slider fx:id="probabilitySlider" blockIncrement="0.1" max="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+      <Label text="Probability: " GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+      <Slider fx:id="probabilitySlider" blockIncrement="0.1" max="1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
       <Label fx:id="componentTextLabel" text="Component: " GridPane.rowIndex="2" />
-      <TextField fx:id="componentTextField" onAction="#componentTextFieldChanged" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
       <TextField fx:id="tupples" onAction="#tupplesTextFieldChanged" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
       <Label fx:id="probabilityLabel" prefWidth="28.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
       <Label fx:id="errorLabel" GridPane.columnSpan="5" GridPane.rowIndex="5" />
-      <ChoiceBox fx:id="componentChoiceBox" prefWidth="150.0" GridPane.rowIndex="4" />
+      <ChoiceBox fx:id="componentChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
    </children>
    <padding>
       <Insets left="5.0" right="5.0" />

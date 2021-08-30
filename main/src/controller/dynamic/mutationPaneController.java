@@ -22,9 +22,6 @@ public class mutationPaneController {
     private Label componentTextLabel;
 
     @FXML
-    private TextField componentTextField;
-
-    @FXML
     private Label errorLabel;
 
     @FXML
@@ -42,10 +39,6 @@ public class mutationPaneController {
 
     public Label getName() {
         return name;
-    }
-
-    public void setComponentTextField(TextField componentTextField) {
-        this.componentTextField = componentTextField;
     }
 
     public Label getErrorLabel() {
@@ -68,9 +61,6 @@ public class mutationPaneController {
         return tupples;
     }
 
-    public TextField getComponentTextField() {
-        return componentTextField;
-    }
 
     public ChoiceBox<String> getComponentChoiceBox() {
         return componentChoiceBox;

@@ -22,233 +22,240 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="491.0" prefWidth="981.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
-   <center>
-      <Accordion minHeight="200.0" minWidth="200.0" BorderPane.alignment="CENTER">
-        <panes>
-          <TitledPane id="EnginePage" fx:id="EnginePane" animated="false" text="Engine">
-               <content>
-                  <ScrollPane fitToHeight="true" fitToWidth="true">
+
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+   <content>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="491.0" prefWidth="981.0">
+         <center>
+            <Accordion minHeight="200.0" minWidth="200.0" BorderPane.alignment="CENTER">
+              <panes>
+                <TitledPane id="EnginePage" fx:id="EnginePane" animated="false" text="Engine">
                      <content>
-                        <GridPane prefHeight="255.0" prefWidth="591.0">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="10.0" prefWidth="78.0" />
-                              <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="143.0" minHeight="8.0" prefHeight="33.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="163.0" minHeight="1.0" prefHeight="43.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="129.0" vgrow="ALWAYS" />
-                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                           </rowConstraints>
-                           <children>
-                              <MenuButton fx:id="engineDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                 <items>
-                                    <MenuItem mnemonicParsing="false" onAction="#displayMutations" text="Mutations" />
-                                    <MenuItem mnemonicParsing="false" onAction="#displaySelection" text="Selection" />
-                                    <MenuItem mnemonicParsing="false" onAction="#displayCrossover" text="Crossover" />
-                                 </items>
-                              </MenuButton>
-                              <ScrollPane fitToHeight="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.rowSpan="3">
-                                 <content>
-                                    <HBox fx:id="engineDisplayPane" prefHeight="100.0" prefWidth="200.0" />
-                                 </content>
-                              </ScrollPane>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <ScrollPane>
+                           <content>
+                              <GridPane prefHeight="301.0" prefWidth="977.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="10.0" prefWidth="78.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="143.0" minHeight="8.0" prefHeight="33.0" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="163.0" minHeight="1.0" prefHeight="43.0" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="129.0" vgrow="ALWAYS" />
+                                    <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+                                 </rowConstraints>
                                  <children>
-                                    <Label text="Population Size: " />
-                                    <Label fx:id="populationSizeDisplay" text="0">
-                                       <padding>
-                                          <Insets left="2.0" />
-                                       </padding>
-                                    </Label>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </GridPane>
-                     </content>
-                  </ScrollPane>
-               </content>
-            </TitledPane>
-          <TitledPane id="TimeTablePane" fx:id="TimeTablePane" animated="false" text="Time Table">
-               <content>
-                  <ScrollPane fitToHeight="true" fitToWidth="true">
-                     <content>
-                        <GridPane minHeight="200.0" minWidth="200.0">
-                          <columnConstraints>
-                              <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="10.0" prefWidth="78.0" />
-                            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                            <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="32.0" vgrow="NEVER" />
-                            <RowConstraints maxHeight="143.0" minHeight="8.0" prefHeight="33.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="163.0" minHeight="1.0" prefHeight="29.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="114.0" vgrow="ALWAYS" />
-                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                          </rowConstraints>
-                           <children>
-                              <MenuButton fx:id="timeTableDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                <items>
-                                  <MenuItem mnemonicParsing="false" onAction="#displayTeachers" text="Teachers" />
-                                  <MenuItem mnemonicParsing="false" onAction="#displayClasses" text="Classes" />
-                                    <MenuItem mnemonicParsing="false" onAction="#displaySubjects" text="Subjects" />
-                                </items>
-                              </MenuButton>
-                              <ScrollPane fitToHeight="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="3" GridPane.vgrow="ALWAYS">
-                                 <content>
-                                    <HBox fx:id="timeTableDisplayPane" minHeight="200.0" minWidth="100.0">
-                                       <padding>
-                                          <Insets right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                 </content>
-                              </ScrollPane>
-                              <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <children>
-                                    <HBox prefHeight="100.0" prefWidth="200.0">
+                                    <MenuButton fx:id="engineDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#displayMutations" text="Mutations" />
+                                          <MenuItem mnemonicParsing="false" onAction="#displaySelection" text="Selection" />
+                                          <MenuItem mnemonicParsing="false" onAction="#displayCrossover" text="Crossover" />
+                                       </items>
+                                    </MenuButton>
+                                    <ScrollPane fitToHeight="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.rowSpan="3">
+                                       <content>
+                                          <HBox fx:id="engineDisplayPane" prefHeight="100.0" prefWidth="200.0" />
+                                       </content>
+                                    </ScrollPane>
+                                    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <Label text="Days: " />
-                                          <Label fx:id="daysDisplayLabel" text="0" />
-                                       </children>
-                                    </HBox>
-                                    <HBox prefHeight="100.0" prefWidth="200.0">
-                                       <children>
-                                          <Label text="Hours: " />
-                                          <Label fx:id="hoursDisplayLabel" text="0" />
+                                          <Label text="Population Size: " />
+                                          <Label fx:id="populationSizeDisplay" text="0">
+                                             <padding>
+                                                <Insets left="2.0" />
+                                             </padding>
+                                          </Label>
                                        </children>
                                     </HBox>
                                  </children>
-                              </VBox>
-                           </children>
-                        </GridPane>
+                              </GridPane>
+                           </content>
+                        </ScrollPane>
                      </content>
-                  </ScrollPane>
-               </content>
-            </TitledPane>
-            <TitledPane id="ResultsPane" fx:id="ResultsPane" animated="false" layoutX="10.0" layoutY="35.0" text="Results">
-               <content>
-                  <ScrollPane>
+                  </TitledPane>
+                <TitledPane id="TimeTablePane" fx:id="TimeTablePane" animated="false" text="Time Table">
                      <content>
-                        <GridPane>
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="NEVER" minWidth="5.0" prefWidth="5.0" />
-                              <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="183.0" minWidth="171.0" prefWidth="176.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="82.0" minWidth="80.0" prefWidth="82.0" />
-                              <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
-                              <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
-                              <ColumnConstraints hgrow="ALWAYS" maxWidth="435.0" minWidth="435.0" prefWidth="435.0" />
-                              <ColumnConstraints hgrow="ALWAYS" />
-                            <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                              <RowConstraints maxHeight="17.0" minHeight="17.0" prefHeight="17.0" vgrow="NEVER" />
-                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-                            <RowConstraints vgrow="ALWAYS" />
-                            <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                          </rowConstraints>
-                           <children>
-                              <Label text="Generations: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="Last Generation Best Fitness:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Label fx:id="GenerationsLabel" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                              <Label fx:id="BestFitnessCurrent" layoutX="155.0" layoutY="87.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <TableView fx:id="resultsTimeTable" focusTraversable="false" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="5">
-                                <columns>
-                                  <TableColumn fx:id="baseColumn" editable="false" prefWidth="75.0" sortable="false" text="Hours/Days" />
-                                </columns>
-                              </TableView>
-                              <Slider fx:id="resultsGenerationSlider" blockIncrement="100.0" majorTickUnit="10.0" min="1.0" minorTickCount="0" orientation="VERTICAL" showTickMarks="true" snapToTicks="true" value="1.0" visible="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="5" />
-                              <Label fx:id="currentGenerationViewLabel" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                              <CheckBox fx:id="DisplayAllSolutionsCheckBox" mnemonicParsing="false" onAction="#displayAllSolutions" text="Display All Solutions" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <CheckBox fx:id="DisplayBestSolutionCheckBox" disable="true" mnemonicParsing="false" onAction="#displayBestSolution" selected="true" text="Display Best Solution" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <MenuButton fx:id="displayTeacher" disable="true" mnemonicParsing="false" text="Teacher" GridPane.columnIndex="3" GridPane.rowIndex="3">
-                                 <GridPane.margin>
-                                    <Insets left="5.0" />
-                                 </GridPane.margin></MenuButton>
-                              <MenuButton fx:id="displayClass" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" text="Classes" GridPane.columnIndex="3" GridPane.rowIndex="4">
-                                 <GridPane.margin>
-                                    <Insets left="5.0" />
-                                 </GridPane.margin></MenuButton>
-                              <TextArea fx:id="rawDisplay" editable="false" focusTraversable="false" promptText="Raw Display" style="-fx-prompt-text-fill: BLACK;" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
-                              <Label fx:id="currentDisplayFitness" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-                              <Label text="Generation displayed: " GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                           </children>
-                        </GridPane>
+                        <ScrollPane>
+                           <content>
+                              <GridPane prefHeight="302.0" prefWidth="975.0">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="122.0" minWidth="10.0" prefWidth="122.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="10.0" prefWidth="78.0" />
+                                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+                                  <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="32.0" vgrow="NEVER" />
+                                  <RowConstraints maxHeight="143.0" minHeight="8.0" prefHeight="33.0" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="163.0" minHeight="1.0" prefHeight="29.0" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="114.0" vgrow="ALWAYS" />
+                                    <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+                                </rowConstraints>
+                                 <children>
+                                    <MenuButton fx:id="timeTableDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                      <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#displayTeachers" text="Teachers" />
+                                        <MenuItem mnemonicParsing="false" onAction="#displayClasses" text="Classes" />
+                                          <MenuItem mnemonicParsing="false" onAction="#displaySubjects" text="Subjects" />
+                                      </items>
+                                    </MenuButton>
+                                    <ScrollPane fitToHeight="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="3" GridPane.vgrow="ALWAYS">
+                                       <content>
+                                          <HBox fx:id="timeTableDisplayPane" minHeight="200.0" minWidth="100.0">
+                                             <padding>
+                                                <Insets right="5.0" />
+                                             </padding>
+                                          </HBox>
+                                       </content>
+                                    </ScrollPane>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Days: " />
+                                                <Label fx:id="daysDisplayLabel" text="0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Hours: " />
+                                                <Label fx:id="hoursDisplayLabel" text="0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </GridPane>
+                           </content>
+                        </ScrollPane>
                      </content>
-                  </ScrollPane>
-               </content>
-            </TitledPane>
-        </panes>
-      </Accordion>
-   </center>
-   <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="600.0" spacing="5.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFile" text="Load File" />
-            <CheckBox fx:id="fileLoadedIndicator" disable="true" mnemonicParsing="false" text="File Loaded">
-               <HBox.margin>
+                  </TitledPane>
+                  <TitledPane id="ResultsPane" fx:id="ResultsPane" animated="false" layoutX="10.0" layoutY="35.0" text="Results">
+                     <content>
+                        <ScrollPane>
+                           <content>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="NEVER" minWidth="5.0" prefWidth="5.0" />
+                                    <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="183.0" minWidth="171.0" prefWidth="176.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="82.0" minWidth="80.0" prefWidth="82.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="435.0" minWidth="435.0" prefWidth="435.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                  <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="17.0" minHeight="17.0" prefHeight="17.0" vgrow="NEVER" />
+                                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                  <RowConstraints vgrow="ALWAYS" />
+                                  <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Generations: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <Label text="Last Generation Best Fitness:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <Label fx:id="GenerationsLabel" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                    <Label fx:id="BestFitnessCurrent" layoutX="155.0" layoutY="87.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                    <TableView fx:id="resultsTimeTable" focusTraversable="false" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="5">
+                                      <columns>
+                                        <TableColumn fx:id="baseColumn" editable="false" prefWidth="75.0" sortable="false" text="Hours/Days" />
+                                      </columns>
+                                    </TableView>
+                                    <Slider fx:id="resultsGenerationSlider" blockIncrement="100.0" majorTickUnit="10.0" min="1.0" minorTickCount="0" orientation="VERTICAL" showTickMarks="true" snapToTicks="true" value="1.0" visible="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="5" />
+                                    <Label fx:id="currentGenerationViewLabel" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="DisplayAllSolutionsCheckBox" mnemonicParsing="false" onAction="#displayAllSolutions" text="Display All Solutions" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <CheckBox fx:id="DisplayBestSolutionCheckBox" disable="true" mnemonicParsing="false" onAction="#displayBestSolution" selected="true" text="Display Best Solution" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <MenuButton fx:id="displayTeacher" disable="true" mnemonicParsing="false" text="Teacher" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets left="5.0" />
+                                       </GridPane.margin>
+                                    </MenuButton>
+                                    <MenuButton fx:id="displayClass" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" text="Classes" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets left="5.0" />
+                                       </GridPane.margin>
+                                    </MenuButton>
+                                    <TextArea fx:id="rawDisplay" editable="false" focusTraversable="false" promptText="Raw Display" style="-fx-prompt-text-fill: BLACK;" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+                                    <Label fx:id="currentDisplayFitness" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                    <Label text="Generation displayed: " GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </TitledPane>
+              </panes>
+            </Accordion>
+         </center>
+         <top>
+            <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="600.0" spacing="5.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFile" text="Load File" />
+                  <CheckBox fx:id="fileLoadedIndicator" disable="true" mnemonicParsing="false" text="File Loaded">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </CheckBox>
+                  <Button fx:id="startButton" disable="true" mnemonicParsing="false" onAction="#start" text="Start" />
+                  <Button fx:id="pauseButton" disable="true" mnemonicParsing="false" onAction="#pause" text="Pause" />
+                  <Button fx:id="stopButton" disable="true" mnemonicParsing="false" onAction="#stop" text="Stop" />
+                  <Label text="Frequency: ">
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="frequencyTextField" prefHeight="25.0" prefWidth="43.0" text="10" />
+               </children>
+               <padding>
                   <Insets left="5.0" />
-               </HBox.margin>
-            </CheckBox>
-            <Button fx:id="startButton" disable="true" mnemonicParsing="false" onAction="#start" text="Start" />
-            <Button fx:id="pauseButton" disable="true" mnemonicParsing="false" onAction="#pause" text="Pause" />
-            <Button fx:id="stopButton" disable="true" mnemonicParsing="false" onAction="#stop" text="Stop" />
-            <Label text="Frequency: ">
-               <HBox.margin>
-                  <Insets left="50.0" />
-               </HBox.margin>
-            </Label>
-            <TextField fx:id="frequencyTextField" prefHeight="25.0" prefWidth="43.0" text="10" />
-         </children>
-         <padding>
-            <Insets left="5.0" />
-         </padding>
-      </HBox>
-   </top>
-   <bottom>
-      <GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="69.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-        <columnConstraints>
-            <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-            <ColumnConstraints hgrow="NEVER" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
-          <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
-          <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-        </rowConstraints>
-         <children>
-            <Label text="Generation Progress: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Fitness Progress: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Time Progress (Seconds): " GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ProgressBar fx:id="generationProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <ProgressBar fx:id="fitnessProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-            <ProgressBar fx:id="timeProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-            <TextField fx:id="generationEndConditionTextField" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" text="100" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <TextField fx:id="fitnessEndConditionTextField" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <TextField fx:id="timeEndConditionTextField" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-         </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-      </GridPane>
-   </bottom>
-</BorderPane>
+               </padding>
+            </HBox>
+         </top>
+         <bottom>
+            <GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="69.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                  <ColumnConstraints hgrow="NEVER" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+              </rowConstraints>
+               <children>
+                  <Label text="Generation Progress: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Fitness Progress: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Time Progress (Seconds): " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ProgressBar fx:id="generationProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <ProgressBar fx:id="fitnessProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <ProgressBar fx:id="timeProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  <TextField fx:id="generationEndConditionTextField" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" text="100" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <TextField fx:id="fitnessEndConditionTextField" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <TextField fx:id="timeEndConditionTextField" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </GridPane>
+         </bottom>
+      </BorderPane>
+   </content>
+</ScrollPane>

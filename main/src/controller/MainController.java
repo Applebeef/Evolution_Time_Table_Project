@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.util.converter.NumberStringConverter;
 import settings.Crossovers;
+import settings.Mutation;
 import settings.Mutations;
 import settings.Selections;
 import solution.Fifth;
@@ -271,29 +272,32 @@ public class MainController {
                 controller.getComponentChoiceBox().getItems().add("Teacher");
                 controller.getComponentChoiceBox().getItems().add("Class");
                 controller.getComponentChoiceBox().getItems().add("Subject");
-                StringProperty temp = new SimpleStringProperty();
-                temp.bind(Bindings.createStringBinding(() ->
-                        controller.getComponentChoiceBox().valueProperty().get().substring(0,1),
-                        controller.getComponentChoiceBox().valueProperty()));
-                Bindings.bindBidirectional(temp,
-                        mutation.componentProperty());
 
-                if (mutation.componentProperty() != null) {
-                    controller.getComponentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
-                        if (!newValue.equalsIgnoreCase("T") && !newValue.equalsIgnoreCase("C")
-                                && !newValue.equalsIgnoreCase("D") && !newValue.equalsIgnoreCase("H")
-                                && !newValue.equalsIgnoreCase("S") && !newValue.equalsIgnoreCase("")) {
-                            controller.getComponentTextField().setText(oldValue);
-                            controller.getErrorLabel().setText("Please choose a valid component (D,H,C,T,S).");
-                        } else {
-                            controller.getComponentTextField().setText(newValue.toUpperCase());
-                            controller.getErrorLabel().setText("");
-                        }
-                    }));
-                    Bindings.bindBidirectional(controller.getComponentTextField().textProperty(), mutation.componentProperty());
-                } else {
+                String value = mutation.componentProperty().getValue();
+                switch (value) {
+                    case "D":
+                        value = "Days";
+                        break;
+                    case "H":
+                        value = "Hours";
+                        break;
+                    case "T":
+                        value = "Teacher";
+                        break;
+                    case "C":
+                        value = "Class";
+                        break;
+                    case "S":
+                        value = "Subject";
+                        break;
+                }
+                controller.getComponentChoiceBox().setValue(value);
+                mutation.componentProperty().bind(Bindings.createStringBinding(() -> controller.getComponentChoiceBox().valueProperty().get().substring(0, 1)
+                        , controller.getComponentChoiceBox().valueProperty()));
+
+                if (mutation != Mutation.Flipping) {
                     controller.getComponentTextLabel().setVisible(false);
-                    controller.getComponentTextField().setVisible(false);
+                    controller.getComponentChoiceBox().setVisible(false);
                 }
                 Bindings.bindBidirectional(controller.getProbabilitySlider().valueProperty(), mutation.probabilityProperty());
                 controller.getProbabilityLabel().textProperty().bind(mutation.probabilityProperty().asString("%.1f"));

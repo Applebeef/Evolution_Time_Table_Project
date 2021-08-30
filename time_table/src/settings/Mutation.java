@@ -104,7 +104,6 @@ public enum Mutation implements MutationIFC {
             Matcher m = pattern.matcher(config);
             if (m.find()) {
                 this.tupples.set(Integer.parseInt(m.group(1)));
-                this.component = null;
             }
         }
 
