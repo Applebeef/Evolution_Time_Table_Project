@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -461,6 +462,7 @@ public class MainController {
     }
 
     private void initUI() {
+
         displayTeacher.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
         displayClass.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
         daysDisplayLabel.textProperty().bind(descriptor.getTimeTable().daysProperty().asString());
@@ -740,4 +742,5 @@ public class MainController {
             }
         }));
     }
+
 }

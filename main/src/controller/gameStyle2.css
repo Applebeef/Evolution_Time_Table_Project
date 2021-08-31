@@ -1,0 +1,92 @@
+.root{
+    -fx-font-family: "Cambria";
+     -fx-base: rgb(125, 145, 0);
+    -fx-background-color: rgb(148, 180, 146);
+    -fx-text-fill: whitesmoke;
+}
+
+.radio-button:hover{
+    -fx-animated: inherit;
+}
+
+.radio-button{
+    -fx-font-family: "Cambria";
+}
+
+.button{
+    -fx-font-family: "Cambria";
+}
+
+.button:hover {
+    -fx-focus-traversable: inherit;
+    -fx-animated: inherit;
+    -fx-background-color: #569167;
+    -fx-opacity: 50%;
+}
+
+.BLACK
+{
+    -fx-fill: black;
+    -fx-color: black;
+    -fx-background-color: black;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.EMPTY{
+    -fx-fill: #f0f0f0;
+    -fx-color: #f0f0f0;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.UNDEFINED{
+    -fx-background-color: linear-gradient(#7d9100, #81a07f);
+    -fx-border-color: darkgrey;
+    -fx-border-width: 1;
+}
+
+.ANIMEBLACK
+{
+    -fx-fill: black;
+    -fx-color: black;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.ANIMEEMPTY{
+    -fx-fill: #f0f0f0;
+    -fx-color: #f0f0f0;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.ANIMEUNDEFINED{
+    -fx-background-color: linear-gradient(#7d9100, #81a07f);
+    -fx-border-color: darkgrey;
+    -fx-border-width: 1;
+}
+
+.button{
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.BUTTON-ON-BOARD-IS-SELECTED{
+    -fx-border-color: #1b6128;
+    -fx-border-width: 1.5;
+}
+
+.label{
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+
+
+
+

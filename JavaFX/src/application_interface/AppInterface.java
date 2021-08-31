@@ -17,18 +17,9 @@ public class AppInterface extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("File Handler");
-        Button btn = new Button();
-        btn.setText("Load file");
-        FileChooser fileChooser = new FileChooser();
 
-        btn.setOnAction(e -> {
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            System.out.println("The file you have chosen is: " + selectedFile.getAbsolutePath());
-        });
-
-        VBox vBox = new VBox(btn);
+        VBox vBox = new VBox();
         Scene scene = new Scene(vBox, 960, 600);
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }
