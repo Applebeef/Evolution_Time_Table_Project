@@ -66,6 +66,8 @@ public class MainController {
     @FXML
     private Label hoursDisplayLabel;
 
+    @FXML
+    private Label hardRulesWeightDisplayLabel;
 
     @FXML
     private MenuButton timeTableDisplayMenu;
@@ -422,6 +424,29 @@ public class MainController {
     }
 
     @FXML
+    void displayRules(ActionEvent event) {
+        timeTableDisplayPane.getChildren().clear();
+
+        descriptor.getTimeTable().getRules().getRuleList().forEach(rule -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+                        .getResource("../resources/dynamic_fxmls/subjects.fxml")));
+                Parent load = loader.load();
+                subjectPaneController controller = loader.getController();
+                controller.getSubjectNameLabel().setText("Rule Name: ");
+                controller.getNameLabel().setText(rule.getRuleId());
+                controller.getIdNameLabel().setText("Type: ");
+                controller.getIdLabel().setText(rule.getType().toString());
+
+                timeTableDisplayPane.getChildren().add(load);
+            } catch (IOException e) {
+            }
+
+        });
+
+    }
+
+    @FXML
     void loadFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
@@ -475,6 +500,7 @@ public class MainController {
         displayClass.disableProperty().bind(fileLoadedIndicator.selectedProperty().not());
         daysDisplayLabel.textProperty().bind(descriptor.getTimeTable().daysProperty().asString());
         hoursDisplayLabel.textProperty().bind(descriptor.getTimeTable().hoursProperty().asString());
+        hardRulesWeightDisplayLabel.setText(String.valueOf(descriptor.getTimeTable().getRules().getHardRulesWeight()));
         populationSizeDisplay.textProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().asString());
         startButton.disableProperty().bind(descriptor.getEngine().engineStartedProperty());
         pauseButton.disableProperty().bind(Bindings.not(descriptor.getEngine().engineStartedProperty()));
@@ -770,7 +796,7 @@ public class MainController {
     }
 
     @FXML
-    void displayRules(ActionEvent event) {
+    void displayRulesInResult(ActionEvent event) {
         displayRawRadioButton.selectedProperty().set(false);
         rawDisplay.promptTextProperty().set("Rules display");
         if (descriptor.getEngine().isSolutionsReady()) {
