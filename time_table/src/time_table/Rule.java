@@ -241,4 +241,8 @@ public enum Rule {
     public String toString() {
         return ruleId + " is a " + type + " rule.";
     }
+
+    public String getRuleId() {
+        return ruleId;
+    }
 }

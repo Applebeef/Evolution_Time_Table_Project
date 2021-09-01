@@ -21,6 +21,7 @@ public class TimeTableSolution implements Solution {
     private Double fitness;
     private TimeTable timeTable;
     private PresentationOptions presentationOption;
+    private Map<Rule, Double> ruleGradeMap;
     private Comparator<Fifth> dayTimeComparator;
     private Comparator<Fifth> teacherAspectComparator;
     private Comparator<Fifth> classAspectComparator;
@@ -100,6 +101,7 @@ public class TimeTableSolution implements Solution {
         this.dayTimeComparator = other.dayTimeComparator;
         this.teacherAspectComparator = other.teacherAspectComparator;
         this.classAspectComparator = other.classAspectComparator;
+        this.ruleGradeMap = other.ruleGradeMap;
     }
 
     public TimeTableSolution(TimeTable timeTable) {
@@ -122,6 +124,7 @@ public class TimeTableSolution implements Solution {
         // Default presentation option is FIFTHS_LIST:
         this.presentationOption = PresentationOptions.FIFTHS_LIST;
         setComparators();
+        this.ruleGradeMap = new HashMap<>();
         this.calculateFitness();
     }
 
@@ -131,6 +134,7 @@ public class TimeTableSolution implements Solution {
         // Default presentation option is FIFTHS_LIST:
         this.presentationOption = PresentationOptions.FIFTHS_LIST;
         fifths.forEach(list -> fifthsList.addAll(list));
+        this.ruleGradeMap = new HashMap<>();
         this.calculateFitness();
         setComparators();
     }
@@ -160,15 +164,18 @@ public class TimeTableSolution implements Solution {
         double softRulesWeight = 1 - hardRulesWeight;
         double hardTotalScore = 0, softTotalScore = 0;
         int hardCount = 0, softCount = 0;
+        Double grade;
         // Iterate through Rules list and calculate data:
         for (Rule rule : timeTable.getRules().getRuleList()) {
+            grade = rule.test(this);
             if (rule.getType() == Type.HARD) {
                 hardCount++;
-                hardTotalScore += rule.test(this);
+                hardTotalScore += grade;
             } else {
                 softCount++;
-                softTotalScore += rule.test(this);
+                softTotalScore += grade;
             }
+            ruleGradeMap.put(rule, grade);
         }
         // Calculate total fitness according to percentage given by user:
         this.fitness = (hardTotalScore / (double) hardCount) * hardRulesWeight +
@@ -480,5 +487,9 @@ public class TimeTableSolution implements Solution {
     @Override
     public String toString() {
         return this.presentationOption.getDisplayString(this);
+    }
+
+    public Map<Rule, Double> getRuleGradeMap() {
+        return ruleGradeMap;
     }
 }

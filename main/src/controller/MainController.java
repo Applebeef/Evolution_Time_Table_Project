@@ -29,6 +29,7 @@ import settings.Mutations;
 import settings.Selections;
 import solution.Fifth;
 import solution.TimeTableSolution;
+import time_table.Rule;
 import time_table.SchoolClass;
 import time_table.Teacher;
 
@@ -89,6 +90,12 @@ public class MainController {
 
     @FXML
     private Button loadFileButton;
+
+    @FXML
+    private RadioButton displayRawRadioButton;
+
+    @FXML
+    private RadioButton displayRulesRadioButton;
 
     @FXML
     private CheckBox fileLoadedIndicator;
@@ -166,6 +173,7 @@ public class MainController {
     void displayBestSolution(ActionEvent event) {
         TimeTableSolution solution = (TimeTableSolution) descriptor.getEngine().getBestSolution().getV2();
         currentGenerationViewLabel.textProperty().set(String.valueOf(descriptor.getEngine().getBestSolution().getV1()));
+        updateTable(descriptor.getEngine().getBestSolution().getV1());
 
     }
 
@@ -596,7 +604,15 @@ public class MainController {
         for (int i = 1; i <= descriptor.getTimeTable().getHours(); i++) {
             resultsTimeTable.getItems().add(solutionDisplayer.getDisplay(i));
         }
-        rawDisplay.setText(solution.toString());
+        if (displayRawRadioButton.isSelected()) {
+            rawDisplay.setText(solution.toString());
+        } else {
+            StringBuilder stringBuilder = new StringBuilder("");
+            for (Map.Entry<Rule, Double> entry : solution.getRuleGradeMap().entrySet()) {
+                stringBuilder.append(entry.getKey().getRuleId()).append(" - ").append(String.format("%.2f", Math.abs(entry.getValue()))).append(System.lineSeparator());
+            }
+            rawDisplay.setText(stringBuilder.toString());
+        }
     }
 
     @FXML
@@ -742,5 +758,25 @@ public class MainController {
             }
         }));
     }
+
+
+    @FXML
+    void displayRaw(ActionEvent event) {
+        displayRulesRadioButton.selectedProperty().set(false);
+        rawDisplay.promptTextProperty().set("Raw display");
+        if (descriptor.getEngine().isSolutionsReady()) {
+            updateTable(Integer.parseInt(currentGenerationViewLabel.getText()));
+        }
+    }
+
+    @FXML
+    void displayRules(ActionEvent event) {
+        displayRawRadioButton.selectedProperty().set(false);
+        rawDisplay.promptTextProperty().set("Rules display");
+        if (descriptor.getEngine().isSolutionsReady()) {
+            updateTable(Integer.parseInt(currentGenerationViewLabel.getText()));
+        }
+    }
+
 
 }
