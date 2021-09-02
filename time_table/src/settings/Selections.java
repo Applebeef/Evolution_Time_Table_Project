@@ -4,10 +4,7 @@ import Generated.ETTSelection;
 import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +20,7 @@ public enum Selections implements SelectionIFC {
             int bestSolutionsAmount;
 
             // bestSolutionsAmount = the amount of the X% best solution (X is given)
-            bestSolutionsAmount = (int) Math.floor(solutionList.size() * ((double) topPercent.get() / 100));
+            bestSolutionsAmount = (int) Math.floor(solutionList.size() * (selectionValue.get() / 100));
             if (bestSolutionsAmount > 0) {
                 // Return one of the best solutions (random solution from 0 to bestSolutionsAmount):
                 res.add(solutionList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1)));
@@ -36,12 +33,12 @@ public enum Selections implements SelectionIFC {
 
         @Override
         void parseString(String configuration) {
-            int percent = 0;
+            int percent = 1;
             Pattern pattern = Pattern.compile("^TopPercent=(\\d+)$");
             Matcher m = pattern.matcher(configuration);
             if (m.find())
                 percent = Integer.parseInt(m.group(1));
-            topPercent.set(percent);
+            selectionValue.set(percent);
         }
     },
     ROULETTE_WHEEL("RouletteWheel", -1) {
@@ -78,17 +75,34 @@ public enum Selections implements SelectionIFC {
             }
             return res;
         }
+    },
+    TOURNAMENT("Tournament", 0.5) {
+        @Override
+        void parseString(String configuration) {
+            Pattern pattern = Pattern.compile("^pte=([0-9]+\\.?[0-9]*)$");
+            double value = 0.5;
+            Matcher m = pattern.matcher(configuration);
+            if (m.find())
+                value = Double.parseDouble(m.group(1));
+            selectionValue.set(value);
+        }
+
+        @Override
+        public List<Solution> select(List<Solution> solutionList) {
+            return null;
+        }
     };
+
     protected String type;
-    protected IntegerProperty topPercent;
+    protected DoubleProperty selectionValue;
     protected BooleanProperty active;
     protected IntegerProperty elitism;
 
-    Selections(String type, int topPercent) {
+    Selections(String type, double selectionValue) {
         this.type = type;
         elitism = new SimpleIntegerProperty(0);
         active = new SimpleBooleanProperty(false);
-        this.topPercent = new SimpleIntegerProperty(topPercent);
+        this.selectionValue = new SimpleDoubleProperty(selectionValue);
 
         active.addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(true)) {
@@ -127,16 +141,16 @@ public enum Selections implements SelectionIFC {
         this.type = type;
     }
 
-    public int getTopPercent() {
-        return topPercent.get();
+    public double getSelectionValue() {
+        return selectionValue.get();
     }
 
-    public IntegerProperty topPercentProperty() {
-        return topPercent;
+    public DoubleProperty selectionValueProperty() {
+        return selectionValue;
     }
 
-    public void setTopPercent(int topPercent) {
-        this.topPercent.set(topPercent);
+    public void setSelectionValue(int selectionValue) {
+        this.selectionValue.set(selectionValue);
     }
 
     public IntegerProperty elitismProperty() {

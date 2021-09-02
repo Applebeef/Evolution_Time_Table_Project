@@ -16,18 +16,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import javafx.util.converter.NumberStringConverter;
 import settings.Crossovers;
 import settings.Mutation;
 import settings.Mutations;
 import settings.Selections;
-import solution.Fifth;
 import solution.TimeTableSolution;
 import time_table.Rule;
 import time_table.SchoolClass;
@@ -350,7 +346,7 @@ public class MainController {
                 Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
                 controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
                 Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
-                if (selection.topPercentProperty().get() != -1) {
+                if (selection.selectionValueProperty().get() != -1) {
                     controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                         newValue = newValue.replace(",", "");
                         if (!newValue.matches("\\d*")) {
@@ -365,8 +361,8 @@ public class MainController {
                             controller.getErrorLabel().setText("");
                         }
                     }));
-                    Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
-                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
+                    Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.selectionValueProperty(), new NumberStringConverter());
+                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.selectionValueProperty());
                 } else {
                     controller.getTopPercentSlider().setVisible(false);
                     controller.getTopPercentTextField().setVisible(false);
