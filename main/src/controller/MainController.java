@@ -186,7 +186,7 @@ public class MainController {
         descriptor.getTimeTable().getSchoolClasses().getClassList().forEach(schoolClass -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/teacherSchoolClass.fxml")));
+                        .getResource("/resources/dynamic_fxmls/teacherSchoolClass.fxml")));
                 Parent load = loader.load();
                 teacherSchoolClassPaneController controller = loader.getController();
                 controller.getId().setText(String.valueOf(schoolClass.getId()));
@@ -206,7 +206,7 @@ public class MainController {
         for (Crossovers crossover : descriptor.getTimeTable().getCrossoverList()) {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/crossover.fxml")));
+                        .getResource("/resources/dynamic_fxmls/crossover.fxml")));
                 Parent load = loader.load();
                 crossoverPaneController controller = loader.getController();
 
@@ -259,7 +259,7 @@ public class MainController {
         mutations.getMutationList().forEach(mutation -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/mutation.fxml")));
+                        .getResource("/resources/dynamic_fxmls/mutation.fxml")));
                 Parent load = loader.load();
                 mutationPaneController controller = loader.getController();
                 controller.getName().setText(mutation.getName());
@@ -328,7 +328,7 @@ public class MainController {
         for (Selections selection : descriptor.getTimeTable().getSelectionsList()) {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/selection.fxml")));
+                        .getResource("/resources/dynamic_fxmls/selection.fxml")));
                 Parent load = loader.load();
                 selectionPaneController controller = loader.getController();
 
@@ -390,7 +390,7 @@ public class MainController {
         descriptor.getTimeTable().getSubjects().getSubjectList().forEach(subject -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/subjects.fxml")));
+                        .getResource("/resources/dynamic_fxmls/subjects.fxml")));
                 Parent load = loader.load();
                 subjectPaneController controller = loader.getController();
                 controller.getIdLabel().setText(String.valueOf(subject.getId()));
@@ -408,7 +408,7 @@ public class MainController {
         descriptor.getTimeTable().getTeachers().getTeacherList().forEach(teacher -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/teacherSchoolClass.fxml")));
+                        .getResource("/resources/dynamic_fxmls/teacherSchoolClass.fxml")));
                 Parent load = loader.load();
                 teacherSchoolClassPaneController controller = loader.getController();
                 controller.getId().setText(String.valueOf(teacher.getId()));
@@ -430,7 +430,7 @@ public class MainController {
         descriptor.getTimeTable().getRules().getRuleList().forEach(rule -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/subjects.fxml")));
+                        .getResource("/resources/dynamic_fxmls/subjects.fxml")));
                 Parent load = loader.load();
                 subjectPaneController controller = loader.getController();
                 controller.getSubjectNameLabel().setText("Rule Name: ");

@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: Mains.ConsoleMain
-Class-Path: ui.jar
+Main-Class: Mains.JavaFXMain
+Class-Path: engine.jar xml_parser.jar descriptor.jar time_table.jar
 
