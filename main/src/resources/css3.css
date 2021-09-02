@@ -1,0 +1,86 @@
+.root{
+    -fx-font-family: "David";
+    -fx-base: rgb(149, 203, 104);
+    -fx-background: rgb(228, 221, 122);
+}
+
+.button{
+    -fx-font-family: "David";
+}
+
+.list-view{
+    -fx-background-color: rgb(228, 221, 122);
+}
+
+.radio-button{
+    -fx-font-family: "David";
+}
+
+.radio-button:hover{
+    -fx-animated: inherit;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#58322e, #b1796e);
+}
+
+.BLACK
+{
+    -fx-fill: black;
+    -fx-color: black;
+    -fx-background-color: black;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.EMPTY{
+    -fx-fill: #ff8d73;
+    -fx-color: #ff8d73;
+    -fx-background-color: #ff8d73;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.UNDEFINED{
+    -fx-background-color: linear-gradient(#d38184, #a9827a);
+    -fx-border-color: darkgrey;
+    -fx-border-width: 1;
+}
+
+.ANIMEBLACK
+{
+    -fx-fill: black;
+    -fx-color: black;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.ANIMEEMPTY{
+    -fx-fill: #ff8d73;
+    -fx-color: #ff8d73;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.ANIMEUNDEFINED{
+    -fx-background-color: linear-gradient(#d38184, #a9827a);
+    -fx-border-color: darkgrey;
+    -fx-border-width: 1;
+}
+
+.BUTTON-ON-BOARD-IS-SELECTED{
+    -fx-border-color: #ab0c3c;
+    -fx-border-width: 1.5;
+}
+
+.label{
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #490011;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+
+
+
+

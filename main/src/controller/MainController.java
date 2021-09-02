@@ -16,18 +16,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import javafx.util.converter.NumberStringConverter;
 import settings.Crossovers;
 import settings.Mutation;
 import settings.Mutations;
 import settings.Selections;
-import solution.Fifth;
 import solution.TimeTableSolution;
 import time_table.Rule;
 import time_table.SchoolClass;
@@ -165,6 +161,8 @@ public class MainController {
 
 
     ResultDisplay resultDisplay = ResultDisplay.TEACHER;
+
+    private Scene scene;
 
     @FXML
     void displayAllSolutions(ActionEvent event) {
@@ -670,6 +668,9 @@ public class MainController {
         GenerationsLabel.setText("0");
 
         descriptor.getEngine().initSolutionPopulation(descriptor.getTimeTable(), Integer.parseInt(generationEndConditionTextField.getText()));
+        displayRawRadioButton.setDisable(false);
+        displayRulesRadioButton.setDisable(false);
+
         BestFitnessCurrent.setText(String.format("%.2f", descriptor.getEngine().getBestSolution().getV2().getFitness()));
         descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),
                 Double.parseDouble(fitnessEndConditionTextField.getText()),
@@ -805,4 +806,26 @@ public class MainController {
     }
 
 
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
+
+    @FXML
+    void displayCSS1(ActionEvent event) {
+        scene.getStylesheets().clear();
+        String css = Objects.requireNonNull(getClass().getResource("/resources/css1.css")).toExternalForm();
+        scene.getStylesheets().add(css);
+    }
+
+    @FXML
+    void displayCSS2(ActionEvent event) {
+        scene.getStylesheets().clear();
+        String css = Objects.requireNonNull(getClass().getResource("/resources/css3.css")).toExternalForm();
+        scene.getStylesheets().add(css);
+    }
+
+    @FXML
+    void displayDefaultCSS(ActionEvent event) {
+        scene.getStylesheets().clear();
+    }
 }

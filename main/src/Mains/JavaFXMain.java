@@ -27,6 +27,7 @@ public class JavaFXMain extends Application {
         controller.setPrimaryStage(primaryStage);
 
         Scene scene = new Scene(load);
+        controller.setScene(scene);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
