@@ -16,12 +16,6 @@ public enum ResultDisplay {
         String getDisplay(Fifth fifth) {
             return "Teacher: " + fifth.getTeacher() + System.lineSeparator() + "Subject: " + fifth.getSubject();
         }
-    },
-    RAW {
-        @Override
-        String getDisplay(Fifth fifth) {
-            return fifth.toString();
-        }
     };
 
     int id = 1;

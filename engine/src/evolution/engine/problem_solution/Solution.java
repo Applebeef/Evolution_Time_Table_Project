@@ -10,9 +10,6 @@ public interface Solution extends Comparable<Solution> {
     // Calculate and return fitness for solution:
     double calculateFitness();
 
-    // Crossover with other solution:
-    List<Solution> crossover(Solution solution, CrossoverIFC crossover);
-
     // Set presentation option:
     void setPresentationOption(int requested_presentation_option);
 

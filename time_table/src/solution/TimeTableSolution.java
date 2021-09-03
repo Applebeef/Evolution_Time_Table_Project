@@ -1,14 +1,8 @@
 package solution;
 
-import evolution.configuration.CrossoverIFC;
-import evolution.configuration.MutationIFC;
-import evolution.configuration.MutationsIFC;
 import evolution.util.Randomizer;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
-import settings.Crossover;
-import settings.Mutation;
-import settings.Mutations;
 import time_table.*;
 import evolution.util.Pair;
 
@@ -183,28 +177,6 @@ public class TimeTableSolution implements Solution {
         return this.fitness;
     }
 
-    private void sizerMutation(int mutatedNumber, Mutation mutation) {
-        if (mutation.getTupples() < 0) {
-            sizerReduce(mutatedNumber);
-        } else {
-            sizerIncrease(mutatedNumber);
-        }
-
-    }
-
-    private void sizerIncrease(int mutatedNumber) {
-        for (int i = 0; i < mutatedNumber && (fifthsList.size() <= timeTable.getDays() * timeTable.getHours()); i++) {
-            fifthsList.add(generateRandomFifth());
-        }
-    }
-
-    private void sizerReduce(int mutatedNumber) {
-        for (int i = 0; i < mutatedNumber && fifthsList.size() > timeTable.getDays(); i++) {
-            int randomIndex = Randomizer.getRandomNumber(0, fifthsList.size());
-            fifthsList.remove(randomIndex);
-        }
-    }
-
     public Fifth generateRandomFifth() {
         int day, hour, schoolClass, teacher, subject;
         schoolClass = Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses());
@@ -215,87 +187,6 @@ public class TimeTableSolution implements Solution {
         return new Fifth(day, hour, schoolClass, teacher, subject);
     }
 
-    private void flippingMutation(int mutatedNumber, Mutation mutation) {
-        List<Fifth> toBeMutated = new ArrayList<>();
-        for (int i = 0; i < mutatedNumber; i++) {
-            toBeMutated.add(this.getFifthsList().get(Randomizer.getRandomNumber(0, this.getFifthsList().size() - 1)));
-        }
-        String component = mutation.getComponent();
-        // Mutate the toBeMutated's according to the component in the mutation:
-        switch (component) {
-            case "D":
-                toBeMutated.forEach(fifth -> fifth.setDay(Randomizer.getRandomNumber(1, timeTable.getDays())));
-                break;
-            case "H":
-                toBeMutated.forEach(fifth -> fifth.setHour(Randomizer.getRandomNumber(1, timeTable.getHours())));
-                break;
-            case "C":
-                toBeMutated.forEach(fifth -> fifth.setSchoolClass(Randomizer.getRandomNumber(1, timeTable.getAmountofSchoolClasses())));
-                break;
-            case "T":
-                toBeMutated.forEach(fifth -> fifth.setTeacher(Randomizer.getRandomNumber(0, timeTable.getAmountofTeachers())));
-                break;
-            case "S":
-                toBeMutated.forEach(fifth -> fifth.setSubject(Randomizer.getRandomNumber(0, timeTable.getAmountofSubjects())));
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    @Override
-    public List<Solution> crossover(Solution solution, CrossoverIFC crossover) {
-        List<Solution> res = new ArrayList<>();
-        if (solution instanceof TimeTableSolution) {
-            TimeTableSolution other_timeTable_solution = (TimeTableSolution) solution;
-            // Choose correspondent comparator (according to crossover definition):
-            Comparator<Fifth> comparator = chooseFifthComparator((Crossover) crossover);
-            // Sort my fifths:
-            this.getFifthsList().sort(comparator);
-            // Sort other's fifths:
-            other_timeTable_solution.getFifthsList().sort(comparator);
-
-            List<Integer> cuttingPointsList = new ArrayList<>();
-            Integer cuttingPoint;
-            int maxListSize = timeTable.getMaxListSize();
-            for (int i = 0; i < crossover.getCuttingPoints(); i++) {
-                // Randomize cutting points. Amount according to CuttingPoints:
-                do {
-                    cuttingPoint = Randomizer.getRandomNumber(1, maxListSize - 1);
-                } while (cuttingPointsList.contains(cuttingPoint));
-                cuttingPointsList.add(cuttingPoint);
-            }
-
-            Collections.sort(cuttingPointsList);
-
-            List<List<Fifth>> list1Parts;
-            List<List<Fifth>> list2Parts;
-            list1Parts = splitToParts(this.getFifthsList(), cuttingPointsList);
-            list2Parts = splitToParts(other_timeTable_solution.getFifthsList(), cuttingPointsList);
-
-
-            List<List<Fifth>> crossoverList1 = new ArrayList<>();
-            List<List<Fifth>> crossoverList2 = new ArrayList<>();
-
-            for (int i = 0; i < list1Parts.size() && i < list2Parts.size(); i++) {
-                if (i % 2 == 0) {
-                    crossoverList1.add(list1Parts.get(i));
-                    crossoverList2.add(list2Parts.get(i));
-                } else {
-                    crossoverList1.add(list2Parts.get(i));
-                    crossoverList2.add(list1Parts.get(i));
-                }
-            }
-
-            TimeTableSolution solutionOffspring1 = new TimeTableSolution(this.getTimeTable(), crossoverList1);
-            TimeTableSolution solutionOffspring2 = new TimeTableSolution(other_timeTable_solution.getTimeTable(), crossoverList2);
-            res.add(solutionOffspring1);
-            res.add(solutionOffspring2);
-
-        }
-        return res;
-    }
 
     public int getMaxTeacherListSize() {
         return timeTable.getDays()
@@ -346,23 +237,6 @@ public class TimeTableSolution implements Solution {
                 (fifth.getDay() - 1) * timeTable.getAmountofSubjects() * timeTable.getAmountofTeachers() * timeTable.getAmountofSchoolClasses() * timeTable.getHours();
     }
 
-    private Comparator<Fifth> chooseFifthComparator(Crossover crossover) {
-        switch (crossover.getName()) {
-            case "DayTimeOriented":
-                return dayTimeComparator;
-            case "AspectOriented":
-                switch (crossover.getConfiguration()) {
-                    case "CLASS":
-                        return classAspectComparator;
-                    case "TEACHER":
-                        return teacherAspectComparator;
-                    default:
-                        return null;
-                }
-            default:
-                return null;
-        }
-    }
 
     @Override
     public void setPresentationOption(int requested_presentation_option) {
