@@ -60,6 +60,9 @@ public class MainController {
     private Label daysDisplayLabel;
 
     @FXML
+    private Label parameterLabel;
+
+    @FXML
     private Label hoursDisplayLabel;
 
     @FXML
@@ -329,6 +332,37 @@ public class MainController {
                 selectionPaneController controller = loader.getController();
 
                 controller.getType().setText(selection.getType());
+
+                // Set the label name:
+                if (selection.getType().equals("Tournament")) {
+                    controller.getParameterLabel().setText("PTE:");
+                    controller.getPteSlider().setVisible(true);
+                    controller.getPteTextField().setVisible(true);
+                } else {
+                    controller.getParameterLabel().setText("Elitism:");
+                    controller.getElitismSlider().setVisible(true);
+                    controller.getElitismTextField().setVisible(true);
+                }
+
+                controller.getPteTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                    if (!newValue.matches("^(0(\\.\\d+)?|1(\\.0+)?)$")) {
+                        controller.getPteTextField().setText("0.5");
+                        controller.getErrorLabel().setText("Must input a number between 0 and 1.");
+                    } else if (newValue.equals("")) {
+                        controller.getPteTextField().setText("0.5");
+                    } else if (Double.parseDouble(newValue) > 1.0) {
+                        controller.getPteTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("PTE must be between 0 and 1.");
+                    } else {
+                        controller.getErrorLabel().setText("");
+                    }
+                }));
+                Bindings.bindBidirectional(controller.getPteTextField().textProperty(),
+                        selection.selectionValueProperty(),
+                        new NumberStringConverter());
+                Bindings.bindBidirectional(controller.getPteSlider().valueProperty(),
+                        selection.selectionValueProperty());
+
                 controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                     newValue = newValue.replace(",", "");
                     if (!newValue.matches("\\d*")) {
@@ -638,7 +672,7 @@ public class MainController {
         if (displayRawRadioButton.isSelected()) {
             rawDisplay.setText(solution.toString());
         } else {
-            StringBuilder stringBuilder = new StringBuilder("");
+            StringBuilder stringBuilder = new StringBuilder();
             for (Map.Entry<Rule, Double> entry : solution.getRuleGradeMap().entrySet()) {
                 stringBuilder.append(entry.getKey().getRuleId()).append(" - ").append(String.format("%.2f", Math.abs(entry.getValue()))).append(System.lineSeparator());
             }

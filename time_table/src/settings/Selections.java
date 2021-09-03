@@ -8,9 +8,11 @@ import javafx.beans.property.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public enum Selections implements SelectionIFC {
     TRUNCATION("Truncation", 1) {
@@ -79,7 +81,7 @@ public enum Selections implements SelectionIFC {
     TOURNAMENT("Tournament", 0.5) {
         @Override
         void parseString(String configuration) {
-            Pattern pattern = Pattern.compile("^pte=([0-9]+\\.?[0-9]*)$");
+            Pattern pattern = Pattern.compile("^pte=(0(\\.\\d+)?|1(\\.0+)?)$");
             double value = 0.5;
             Matcher m = pattern.matcher(configuration);
             if (m.find())
@@ -89,7 +91,28 @@ public enum Selections implements SelectionIFC {
 
         @Override
         public List<Solution> select(List<Solution> solutionList) {
-            return null;
+            List<Solution> res = new ArrayList<>();
+            List<Solution> twoRandomSolutions = new ArrayList<>(2);
+            Solution s1, s2;
+            double randomNumber;
+            // Receive two random solutions from the solutionList:
+            for (int i = 0; i < 2; i++) {
+                twoRandomSolutions.add(solutionList.get(Randomizer.getRandomNumber(0, solutionList.size() - 1)));
+                twoRandomSolutions.add(solutionList.get(Randomizer.getRandomNumber(0, solutionList.size() - 1)));
+                twoRandomSolutions.sort((o1, o2) -> {
+                    // Sort top to bottom
+                    return (int)((o2.getFitness() - o1.getFitness()) * 1000);
+                });
+                randomNumber = Randomizer.getRandomNumber(0.0, 1.0);
+                if (randomNumber >= selectionValue.doubleValue()) {
+                    res.add(twoRandomSolutions.get(0));
+                }
+                else{
+                    res.add(twoRandomSolutions.get(1));
+                }
+                twoRandomSolutions.clear();
+            }
+            return res;
         }
     };
 

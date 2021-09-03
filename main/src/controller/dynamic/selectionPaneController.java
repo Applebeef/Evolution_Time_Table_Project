@@ -19,6 +19,12 @@ public class selectionPaneController {
     private Label errorLabel;
 
     @FXML
+    private Slider pteSlider;
+
+    @FXML
+    private TextField pteTextField;
+
+    @FXML
     private Slider elitismSlider;
 
     @FXML
@@ -32,6 +38,9 @@ public class selectionPaneController {
 
     @FXML
     private CheckBox activeCheckbox;
+
+    @FXML
+    private Label parameterLabel;
 
     public Label getTopPercentNameLabel() {
         return topPercentNameLabel;
@@ -63,6 +72,18 @@ public class selectionPaneController {
 
     public CheckBox getActiveCheckbox() {
         return activeCheckbox;
+    }
+
+    public Label getParameterLabel() {
+        return parameterLabel;
+    }
+
+    public Slider getPteSlider() {
+        return pteSlider;
+    }
+
+    public TextField getPteTextField() {
+        return pteTextField;
     }
 
     public void setActiveCheckbox(CheckBox activeCheckbox) {

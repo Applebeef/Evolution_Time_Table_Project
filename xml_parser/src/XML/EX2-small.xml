@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V2.xsd">
-	<ETT-TimeTable days="7" hours="24">
+	<ETT-TimeTable days="4" hours="5">
 		<ETT-Teachers>
 			<ETT-Teacher id="1">
 				<ETT-Name>Mika Rali</ETT-Name>
@@ -98,7 +98,7 @@
 		</ETT-Selection>
 		<ETT-Crossover name="AspectOriented" cutting-points="1" configuration="Orientation=CLASS"/>
 		<ETT-Mutations>
-
+			<ETT-Mutation name="Flipping" probability="0.2" configuration="MaxTupples=3,Component=D"/>
 			<ETT-Mutation name="Sizer" probability="0.3" configuration="TotalTupples=7"/>			
 		</ETT-Mutations>
 	</ETT-EvolutionEngine>

@@ -164,6 +164,35 @@ public enum Rule {
             return score;
         }
     },
+    DAY_OFF_CLASS("DayOffClass"){
+        @Override
+        public double test(TimeTableSolution timeTableSolution) {
+            double score = 100;
+            double reduction = (double) 100 / timeTableSolution.getTimeTable().getAmountofSchoolClasses();
+            //Map with the key representing each teacher,
+            //the value is a set, if a teacher is teaching in a certain day this day is added to the set.
+            Map<Integer, Set<Integer>> weeklyMapPerSchoolClass = new HashMap<>();
+            for (Fifth fifth : timeTableSolution.getFifthsList()) {
+                if (fifth.getTeacher() != 0 && fifth.getSubject() != 0) {
+                    if (!weeklyMapPerSchoolClass.containsKey(fifth.getSchoolClass())) {
+                        weeklyMapPerSchoolClass.put(fifth.getSchoolClass(), new HashSet<>());
+                    }
+                    weeklyMapPerSchoolClass.get(fifth.getSchoolClass()).add(fifth.getDay());
+                }
+            }
+            //for n=day, n(n+1)/2
+            int daysSigma = timeTableSolution.getTimeTable().getDays() * (timeTableSolution.getTimeTable().getDays() + 1) / 2;
+            for (int i = 1; i <= timeTableSolution.getTimeTable().getAmountofSchoolClasses(); i++) {
+                if (weeklyMapPerSchoolClass.containsKey(i)) {
+                    int sum = weeklyMapPerSchoolClass.get(i).stream().mapToInt(Integer::intValue).sum();
+                    if (sum == daysSigma) {
+                        score -= reduction;
+                    }
+                }
+            }
+            return score;
+        }
+    },
     SEQUENTIALITY("Sequentiality") {
         @Override
         public double test(TimeTableSolution timeTableSolution) {
