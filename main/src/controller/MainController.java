@@ -48,6 +48,9 @@ public class MainController {
     Instant pauseStart;
 
     @FXML
+    private ScrollPane mainScrollPane;
+
+    @FXML
     private TitledPane EnginePane;
 
     @FXML
@@ -161,8 +164,6 @@ public class MainController {
 
 
     ResultDisplay resultDisplay = ResultDisplay.TEACHER;
-
-    private Scene scene;
 
     @FXML
     void displayAllSolutions(ActionEvent event) {
@@ -806,12 +807,9 @@ public class MainController {
     }
 
 
-    public void setScene(Scene scene) {
-        this.scene = scene;
-    }
-
     @FXML
     void displayCSS1(ActionEvent event) {
+        Scene scene = mainScrollPane.getScene();
         scene.getStylesheets().clear();
         String css = Objects.requireNonNull(getClass().getResource("/resources/css1.css")).toExternalForm();
         scene.getStylesheets().add(css);
@@ -819,6 +817,7 @@ public class MainController {
 
     @FXML
     void displayCSS2(ActionEvent event) {
+        Scene scene = mainScrollPane.getScene();
         scene.getStylesheets().clear();
         String css = Objects.requireNonNull(getClass().getResource("/resources/css3.css")).toExternalForm();
         scene.getStylesheets().add(css);
@@ -826,6 +825,7 @@ public class MainController {
 
     @FXML
     void displayDefaultCSS(ActionEvent event) {
+        Scene scene = mainScrollPane.getScene();
         scene.getStylesheets().clear();
     }
 }

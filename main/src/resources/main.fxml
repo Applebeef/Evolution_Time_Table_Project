@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<ScrollPane fx:id="mainScrollPane" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <content>
       <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
          <top>
@@ -46,9 +46,9 @@
                   <TextField fx:id="frequencyTextField" prefHeight="25.0" prefWidth="43.0" text="10" />
                   <MenuButton mnemonicParsing="false" text="Themes">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#displayCSS1" text="CSS 1" />
-                      <MenuItem mnemonicParsing="false" onAction="#displayCSS2" text="CSS 2" />
-                        <MenuItem mnemonicParsing="false" onAction="#displayDefaultCSS" text="Default" />
+                      <MenuItem mnemonicParsing="false" onAction="#displayCSS1" text="Theme 1" />
+                      <MenuItem mnemonicParsing="false" onAction="#displayCSS2" text="Theme 2" />
+                        <MenuItem mnemonicParsing="false" onAction="#displayDefaultCSS" text="Default Theme" />
                     </items>
                      <HBox.margin>
                         <Insets left="200.0" />
@@ -87,19 +87,19 @@
                                           <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
                                        </rowConstraints>
                                        <children>
-                                          <MenuButton fx:id="engineDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Choose Display" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                          <MenuButton fx:id="engineDisplayMenu" disable="true" mnemonicParsing="false" prefHeight="25.0" text="Choose Display" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
                                              <items>
                                                 <MenuItem mnemonicParsing="false" onAction="#displayMutations" text="Mutations" />
                                                 <MenuItem mnemonicParsing="false" onAction="#displaySelection" text="Selection" />
                                                 <MenuItem mnemonicParsing="false" onAction="#displayCrossover" text="Crossover" />
                                              </items>
                                           </MenuButton>
-                                          <ScrollPane fitToHeight="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.rowSpan="3">
+                                          <ScrollPane fitToHeight="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.rowSpan="3">
                                              <content>
                                                 <HBox fx:id="engineDisplayPane" prefHeight="100.0" prefWidth="200.0" />
                                              </content>
                                           </ScrollPane>
-                                          <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                          <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                              <children>
                                                 <Label text="Population Size: " />
                                                 <Label fx:id="populationSizeDisplay" text="0">
