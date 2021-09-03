@@ -256,7 +256,7 @@
                                               <CategoryAxis side="BOTTOM" fx:id="xAxis" />
                                             </xAxis>
                                             <yAxis>
-                                              <NumberAxis fx:id="yAxis" side="LEFT" upperBound="200.0" />
+                                              <NumberAxis fx:id="yAxis" side="LEFT" upperBound="90.0" />
                                             </yAxis>
                                           </LineChart>
                                           <MenuButton fx:id="tableOrGraphMenu" mnemonicParsing="false" prefWidth="98.0" text="Table/Graph" GridPane.columnIndex="7" GridPane.rowIndex="1" GridPane.valignment="TOP">
