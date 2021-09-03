@@ -251,7 +251,7 @@
                                                 <Insets />
                                              </GridPane.margin>
                                           </HBox>
-                                          <LineChart fx:id="solutionsGraph" title="Solutions Graph" visible="false" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="5">
+                                          <LineChart fx:id="solutionsGraph" legendVisible="false" title="Solutions Graph" visible="false" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="5">
                                             <xAxis>
                                               <CategoryAxis side="BOTTOM" fx:id="xAxis" />
                                             </xAxis>
