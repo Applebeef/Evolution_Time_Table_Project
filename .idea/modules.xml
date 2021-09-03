@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/engine/engine.iml" filepath="$PROJECT_DIR$/engine/engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
       <module fileurl="file://$PROJECT_DIR$/time_table/time_table.iml" filepath="$PROJECT_DIR$/time_table/time_table.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui/ui.iml" filepath="$PROJECT_DIR$/ui/ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/xml_parser/xml_parser.iml" filepath="$PROJECT_DIR$/xml_parser/xml_parser.iml" />
     </modules>
   </component>

@@ -7,6 +7,7 @@ import Mains.Util.TimeTableSolutionDisplayer;
 import controller.dynamic.*;
 import descriptor.Descriptor;
 
+import evolution.engine.problem_solution.Solution;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -15,6 +16,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -38,6 +43,7 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainController {
 
@@ -52,6 +58,9 @@ public class MainController {
 
     @FXML
     private TitledPane EnginePane;
+
+    @FXML
+    private MenuButton tableOrGraphMenu;
 
     @FXML
     private Label populationSizeDisplay;
@@ -162,6 +171,8 @@ public class MainController {
     @FXML
     private Label currentDisplayFitness;
 
+    @FXML
+    private LineChart<String, Number> solutionsGraph;
 
     ResultDisplay resultDisplay = ResultDisplay.TEACHER;
 
@@ -169,6 +180,7 @@ public class MainController {
     void displayAllSolutions(ActionEvent event) {
 
     }
+
 
     @FXML
     void displayBestSolution(ActionEvent event) {
@@ -533,6 +545,7 @@ public class MainController {
                 DisplayBestSolutionCheckBox.selectedProperty().set(false);
                 resultsGenerationSlider.setValue(0);
                 currentGenerationViewLabel.setText("0");
+                tableDisplay(new ActionEvent());
             }
         });
         DisplayBestSolutionCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -540,6 +553,7 @@ public class MainController {
                 DisplayBestSolutionCheckBox.disableProperty().set(true);
                 DisplayAllSolutionsCheckBox.selectedProperty().set(false);
                 DisplayAllSolutionsCheckBox.disableProperty().set(false);
+                tableDisplay(new ActionEvent());
             }
         });
         descriptor.getEngine().engineStartedProperty().addListener((observable, oldValue, newValue) -> {
@@ -697,6 +711,23 @@ public class MainController {
             timeProgressBar.progressProperty().bind(descriptor.getEngine().currentTimeProperty().divide((double) descriptor.getEngine().getMaxTime()));
         }
 
+        descriptor.getEngine().engineStartedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                Platform.runLater(() -> {
+                    solutionsGraph.setAnimated(true);
+                    solutionsGraph.getXAxis().setTickLength(Double.parseDouble(frequencyTextField.getText()));
+                    Map<Integer, Solution> map = descriptor.getEngine().getBestSolutionsPerFrequency();
+                    XYChart.Series<String, Number> series = new XYChart.Series<>();
+                    for (Map.Entry<Integer, Solution> entry : map.entrySet().stream().sorted(Comparator.comparingInt((Map.Entry::getKey))).collect(Collectors.toList())) {
+                        series.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue().getFitness()));
+                    }
+                    solutionsGraph.getData().clear();
+                    solutionsGraph.getData().add(series);
+                    solutionsGraph.setAnimated(false);
+                });
+            }
+        });
+
         thread.setDaemon(true);
         thread.start();
     }
@@ -725,7 +756,11 @@ public class MainController {
             if (!newValue.matches("\\d*")) {
                 generationEndConditionTextField.setText(oldValue);
             } else if (newValue.equals("")) {
-                generationEndConditionTextField.setText("0");
+                if ((fitnessEndConditionTextField.getText().equals("0") && timeEndConditionTextField.getText().equals("0"))) {
+                    generationEndConditionTextField.setText(oldValue);
+                } else {
+                    generationEndConditionTextField.setText("0");
+                }
             } else {
                 BigInteger maxInt = BigInteger.valueOf(Integer.MAX_VALUE);
                 BigInteger value = new BigInteger(newValue);
@@ -744,7 +779,11 @@ public class MainController {
             if (!newValue.matches("\\d*")) {
                 fitnessEndConditionTextField.setText(oldValue);
             } else if (newValue.equals("")) {
-                fitnessEndConditionTextField.setText("0");
+                if ((generationEndConditionTextField.getText().equals("0") && timeEndConditionTextField.getText().equals("0"))) {
+                    fitnessEndConditionTextField.setText(oldValue);
+                } else {
+                    fitnessEndConditionTextField.setText("0");
+                }
             } else if (Integer.parseInt(newValue) > 100 || Integer.parseInt(newValue) < 0) {
                 fitnessEndConditionTextField.setText(oldValue);
             } else if (Integer.parseInt(newValue) == 0 &&
@@ -756,7 +795,11 @@ public class MainController {
             if (!newValue.matches("\\d*")) {
                 timeEndConditionTextField.setText(oldValue);
             } else if (newValue.equals("")) {
-                timeEndConditionTextField.setText("0");
+                if ((fitnessEndConditionTextField.getText().equals("0") && generationEndConditionTextField.getText().equals("0"))) {
+                    timeEndConditionTextField.setText(oldValue);
+                } else {
+                    timeEndConditionTextField.setText("0");
+                }
             } else {
                 BigInteger maxInt = BigInteger.valueOf(Integer.MAX_VALUE);
                 BigInteger value = new BigInteger(newValue);
@@ -827,5 +870,17 @@ public class MainController {
     void displayDefaultCSS(ActionEvent event) {
         Scene scene = mainScrollPane.getScene();
         scene.getStylesheets().clear();
+    }
+
+    @FXML
+    void tableDisplay(ActionEvent event) {
+        solutionsGraph.setVisible(false);
+        resultsTimeTable.setVisible(true);
+    }
+
+    @FXML
+    void graphDisplay(ActionEvent event) {
+        resultsTimeTable.setVisible(false);
+        solutionsGraph.setVisible(true);
     }
 }

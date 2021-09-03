@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -193,13 +196,14 @@
                                           <ColumnConstraints hgrow="NEVER" maxWidth="82.0" minWidth="80.0" prefWidth="82.0" />
                                           <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
                                           <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
-                                          <ColumnConstraints hgrow="ALWAYS" maxWidth="435.0" minWidth="435.0" prefWidth="435.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" minWidth="257.0" />
                                           <ColumnConstraints hgrow="ALWAYS" />
                                         <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                           <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-                                          <RowConstraints maxHeight="17.0" minHeight="17.0" prefHeight="17.0" vgrow="NEVER" />
+                                          <RowConstraints maxHeight="30.0" minHeight="30.0" vgrow="NEVER" />
                                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
@@ -232,7 +236,7 @@
                                           </MenuButton>
                                           <TextArea fx:id="rawDisplay" editable="false" focusTraversable="false" promptText="Raw Display" style="-fx-prompt-text-fill: BLACK;" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
                                           <Label fx:id="currentDisplayFitness" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-                                          <HBox GridPane.columnIndex="5" GridPane.rowIndex="1">
+                                          <HBox alignment="CENTER_LEFT" GridPane.columnIndex="5" GridPane.rowIndex="1">
                                              <children>
                                                 <Label text="Generation displayed: " />
                                                 <Label fx:id="currentGenerationViewLabel" />
@@ -247,6 +251,20 @@
                                                 <Insets />
                                              </GridPane.margin>
                                           </HBox>
+                                          <LineChart fx:id="solutionsGraph" title="Solutions Graph" visible="false" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="5">
+                                            <xAxis>
+                                              <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+                                            </xAxis>
+                                            <yAxis>
+                                              <NumberAxis fx:id="yAxis" side="LEFT" upperBound="200.0" />
+                                            </yAxis>
+                                          </LineChart>
+                                          <MenuButton fx:id="tableOrGraphMenu" mnemonicParsing="false" prefWidth="98.0" text="Table/Graph" GridPane.columnIndex="7" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                            <items>
+                                              <MenuItem mnemonicParsing="false" onAction="#tableDisplay" text="Table" />
+                                              <MenuItem mnemonicParsing="false" onAction="#graphDisplay" text="Graph" />
+                                            </items>
+                                          </MenuButton>
                                        </children>
                                     </GridPane>
                                  </content>
