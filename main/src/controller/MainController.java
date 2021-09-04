@@ -277,7 +277,6 @@ public class MainController {
                 });
                 Bindings.bindBidirectional(controller.getTupples().textProperty(), mutation.tupplesProperty(), new NumberStringConverter());
 
-                //if (!mutation.componentProperty().getValue().equals("")) {
                 controller.getComponentChoiceBox().getItems().add("Days");
                 controller.getComponentChoiceBox().getItems().add("Hours");
                 controller.getComponentChoiceBox().getItems().add("Teacher");
