@@ -718,7 +718,7 @@ public class MainController {
         BestFitnessCurrent.setText(String.format("%.2f", descriptor.getEngine().getBestSolution().getV2().getFitness()));
         descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),
                 Double.parseDouble(fitnessEndConditionTextField.getText()),
-                Long.parseLong(timeEndConditionTextField.getText()));
+                Long.parseLong(timeEndConditionTextField.getText())*60);
         thread = new Thread(descriptor.getEngine());
         thread.setName("Engine");
 

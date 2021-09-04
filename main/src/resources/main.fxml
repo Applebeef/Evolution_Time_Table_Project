@@ -192,7 +192,7 @@
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="NEVER" minWidth="5.0" prefWidth="5.0" />
                                           <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="183.0" minWidth="171.0" prefWidth="176.0" />
-                                          <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                                          <ColumnConstraints hgrow="NEVER" />
                                           <ColumnConstraints hgrow="NEVER" maxWidth="82.0" minWidth="80.0" prefWidth="82.0" />
                                           <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
                                           <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
@@ -295,7 +295,7 @@
                <children>
                   <Label text="Generation Progress: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Fitness Progress: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Label maxHeight="1.7976931348623157E308" text="Time Progress (Seconds): " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label maxHeight="1.7976931348623157E308" text="Time Progress (Minutes): " GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <ProgressBar fx:id="generationProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                   <ProgressBar fx:id="fitnessProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                   <ProgressBar fx:id="timeProgressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
