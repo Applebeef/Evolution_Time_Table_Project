@@ -339,9 +339,9 @@ public class MainController {
                     controller.getPteSlider().setVisible(true);
                     controller.getPteTextField().setVisible(true);
                 } else {
-                    controller.getParameterLabel().setText("Elitism:");
-                    controller.getElitismSlider().setVisible(true);
-                    controller.getElitismTextField().setVisible(true);
+                    controller.getParameterLabel().setText("Top Percent:");
+                    controller.getTopPercentSlider().setVisible(true);
+                    controller.getTopPercentTextField().setVisible(true);
                 }
 
                 controller.getPteTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
@@ -358,10 +358,10 @@ public class MainController {
                     }
                 }));
                 Bindings.bindBidirectional(controller.getPteTextField().textProperty(),
-                        selection.selectionValueProperty(),
+                        selection.pteProperty(),
                         new NumberStringConverter());
                 Bindings.bindBidirectional(controller.getPteSlider().valueProperty(),
-                        selection.selectionValueProperty());
+                        selection.pteProperty());
 
                 controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                     newValue = newValue.replace(",", "");
@@ -380,7 +380,7 @@ public class MainController {
                 Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
                 controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
                 Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
-                if (selection.getType().equals("Truncation")) {
+
                     controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                         newValue = newValue.replace(",", "");
                         if (!newValue.matches("\\d*")) {
@@ -393,24 +393,11 @@ public class MainController {
                             controller.getErrorLabel().setText("Cant choose over 100%.");
                         } else {
                             controller.getErrorLabel().setText("");
-                            controller.getTopPercentSlider().setValue(Integer.parseInt(newValue));
                         }
                     }));
-                    controller.getTopPercentSlider().valueProperty().addListener((observable, oldValue, newValue) -> {
-                        if (newValue != null && !newValue.equals(oldValue) && !controller.getTopPercentSlider().isValueChanging()) {
-                            controller.getTopPercentTextField().textProperty().set(String.format("%.0f", newValue.doubleValue()));
-                        }
-                    });
-                    controller.getTopPercentSlider().setMajorTickUnit(1);
-                    controller.getTopPercentSlider().snapToTicksProperty().set(true);
-                    controller.getTopPercentSlider().blockIncrementProperty().set(1);
-                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.selectionValueProperty());
+                    Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
+                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
 
-                } else {
-                    controller.getTopPercentSlider().setVisible(false);
-                    controller.getTopPercentTextField().setVisible(false);
-                    controller.getTopPercentNameLabel().setVisible(false);
-                }
                 Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), selection.activeProperty());
                 controller.getActiveCheckbox().disableProperty().bind(selection.activeProperty());
                 load.disableProperty().bind(paused.not());

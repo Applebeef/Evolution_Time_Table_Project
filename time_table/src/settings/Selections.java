@@ -22,7 +22,7 @@ public enum Selections implements SelectionIFC {
             int bestSolutionsAmount;
 
             // bestSolutionsAmount = the amount of the X% best solution (X is given)
-            bestSolutionsAmount = (int) Math.floor(solutionList.size() * (selectionValue.get() / 100));
+            bestSolutionsAmount = (int) Math.floor(solutionList.size() * (topPercentProperty.get() / 100));
             if (bestSolutionsAmount > 0) {
                 // Return one of the best solutions (random solution from 0 to bestSolutionsAmount):
                 res.add(solutionList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1)));
@@ -40,7 +40,7 @@ public enum Selections implements SelectionIFC {
             Matcher m = pattern.matcher(configuration);
             if (m.find())
                 percent = Integer.parseInt(m.group(1));
-            selectionValue.set(percent);
+            topPercentProperty.set(percent);
         }
     },
     ROULETTE_WHEEL("RouletteWheel", -1) {
@@ -78,15 +78,15 @@ public enum Selections implements SelectionIFC {
             return res;
         }
     },
-    TOURNAMENT("Tournament", 0.5) {
+    TOURNAMENT("Tournament", -1) {
         @Override
         void parseString(String configuration) {
             Pattern pattern = Pattern.compile("^pte=(0(\\.\\d+)?|1(\\.0+)?)$");
-            double value = 0.5;
+            int value = 1;
             Matcher m = pattern.matcher(configuration);
             if (m.find())
-                value = Double.parseDouble(m.group(1));
-            selectionValue.set(value);
+                value = Integer.parseInt(m.group(1));
+            topPercentProperty.set(value);
         }
 
         @Override
@@ -104,7 +104,7 @@ public enum Selections implements SelectionIFC {
                     return (int)((o2.getFitness() - o1.getFitness()) * 1000);
                 });
                 randomNumber = Randomizer.getRandomNumber(0.0, 1.0);
-                if (randomNumber >= selectionValue.doubleValue()) {
+                if (randomNumber >= pte.doubleValue()) {
                     res.add(twoRandomSolutions.get(0));
                 }
                 else{
@@ -117,15 +117,18 @@ public enum Selections implements SelectionIFC {
     };
 
     protected String type;
-    protected DoubleProperty selectionValue;
+    protected IntegerProperty topPercentProperty;
     protected BooleanProperty active;
     protected IntegerProperty elitism;
+    protected DoubleProperty pte;
 
-    Selections(String type, double selectionValue) {
+    Selections(String type, int topPercentValue) {
         this.type = type;
         elitism = new SimpleIntegerProperty(0);
         active = new SimpleBooleanProperty(false);
-        this.selectionValue = new SimpleDoubleProperty(selectionValue);
+        this.topPercentProperty = new SimpleIntegerProperty(topPercentValue);
+        this.pte = new SimpleDoubleProperty(0.5);
+
 
         active.addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(true)) {
@@ -150,6 +153,11 @@ public enum Selections implements SelectionIFC {
 
     abstract void parseString(String configuration);
 
+
+    public DoubleProperty pteProperty() {
+        return pte;
+    }
+
     @Override
     public int getElitism() {
         return elitism.get();
@@ -164,16 +172,8 @@ public enum Selections implements SelectionIFC {
         this.type = type;
     }
 
-    public double getSelectionValue() {
-        return selectionValue.get();
-    }
-
-    public DoubleProperty selectionValueProperty() {
-        return selectionValue;
-    }
-
-    public void setSelectionValue(int selectionValue) {
-        this.selectionValue.set(selectionValue);
+    public IntegerProperty topPercentProperty() {
+        return topPercentProperty;
     }
 
     public IntegerProperty elitismProperty() {
@@ -195,6 +195,8 @@ public enum Selections implements SelectionIFC {
     public void setActive(boolean active) {
         this.active.set(active);
     }
+
+
 
     @Override
     public String checkElitismValidity(int size) {
