@@ -93,7 +93,7 @@
 	</ETT-TimeTable>
 	<ETT-EvolutionEngine>
 		<ETT-InitialPopulation size="100"/>
-		<ETT-Selection type="RouletteWheel">
+		<ETT-Selection type="Tournament" configuration="pte=0.7">
 			<ETT-Elitism>5</ETT-Elitism>
 		</ETT-Selection>
 		<ETT-Crossover name="AspectOriented" cutting-points="1" configuration="Orientation=CLASS"/>

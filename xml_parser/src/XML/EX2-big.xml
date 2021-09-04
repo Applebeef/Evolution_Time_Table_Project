@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V2.xsd">
-	<ETT-TimeTable days="20" hours="20">
+	<ETT-TimeTable days="6" hours="8">
 		<ETT-Teachers>
 			<ETT-Teacher id="1">
 				<ETT-Name>Dina Mit</ETT-Name>

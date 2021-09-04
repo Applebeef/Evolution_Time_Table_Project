@@ -72,6 +72,9 @@ public class MainController {
     private Label daysDisplayLabel;
 
     @FXML
+    private Label parameterLabel;
+
+    @FXML
     private Label hoursDisplayLabel;
 
     @FXML
@@ -289,7 +292,6 @@ public class MainController {
                 });
                 Bindings.bindBidirectional(controller.getTupples().textProperty(), mutation.tupplesProperty(), new NumberStringConverter());
 
-                //if (!mutation.componentProperty().getValue().equals("")) {
                 controller.getComponentChoiceBox().getItems().add("Days");
                 controller.getComponentChoiceBox().getItems().add("Hours");
                 controller.getComponentChoiceBox().getItems().add("Teacher");
@@ -344,6 +346,37 @@ public class MainController {
                 selectionPaneController controller = loader.getController();
 
                 controller.getType().setText(selection.getType());
+
+                // Set the label name:
+                if (selection.getType().equals("Tournament")) {
+                    controller.getParameterLabel().setText("PTE:");
+                    controller.getPteSlider().setVisible(true);
+                    controller.getPteTextField().setVisible(true);
+                } else if (selection.getType().equals("Truncation")) {
+                    controller.getParameterLabel().setText("Top Percent:");
+                    controller.getTopPercentSlider().setVisible(true);
+                    controller.getTopPercentTextField().setVisible(true);
+                }
+
+                controller.getPteTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                    if (!newValue.matches("^(0(\\.\\d+)?|1(\\.0+)?)$")) {
+                        controller.getPteTextField().setText("0.5");
+                        controller.getErrorLabel().setText("Must input a number between 0 and 1.");
+                    } else if (newValue.equals("")) {
+                        controller.getPteTextField().setText("0.5");
+                    } else if (Double.parseDouble(newValue) > 1.0) {
+                        controller.getPteTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("PTE must be between 0 and 1.");
+                    } else {
+                        controller.getErrorLabel().setText("");
+                    }
+                }));
+                Bindings.bindBidirectional(controller.getPteTextField().textProperty(),
+                        selection.pteProperty(),
+                        new NumberStringConverter());
+                Bindings.bindBidirectional(controller.getPteSlider().valueProperty(),
+                        selection.pteProperty());
+
                 controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
                     newValue = newValue.replace(",", "");
                     if (!newValue.matches("\\d*")) {
@@ -361,28 +394,24 @@ public class MainController {
                 Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
                 controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
                 Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
-                if (selection.topPercentProperty().get() != -1) {
-                    controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
-                        newValue = newValue.replace(",", "");
-                        if (!newValue.matches("\\d*")) {
-                            controller.getTopPercentTextField().setText(oldValue);
-                            controller.getErrorLabel().setText("Must input a number.");
-                        } else if (newValue.equals("")) {
-                            controller.getTopPercentTextField().setText("0");
-                        } else if (Integer.parseInt(newValue) > 100) {
-                            controller.getTopPercentTextField().setText(oldValue);
-                            controller.getErrorLabel().setText("Cant choose over 100%.");
-                        } else {
-                            controller.getErrorLabel().setText("");
-                        }
-                    }));
-                    Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
-                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
-                } else {
-                    controller.getTopPercentSlider().setVisible(false);
-                    controller.getTopPercentTextField().setVisible(false);
-                    controller.getTopPercentNameLabel().setVisible(false);
-                }
+
+                controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                    newValue = newValue.replace(",", "");
+                    if (!newValue.matches("\\d*")) {
+                        controller.getTopPercentTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Must input a number.");
+                    } else if (newValue.equals("")) {
+                        controller.getTopPercentTextField().setText("0");
+                    } else if (Integer.parseInt(newValue) > 100) {
+                        controller.getTopPercentTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Cant choose over 100%.");
+                    } else {
+                        controller.getErrorLabel().setText("");
+                    }
+                }));
+                Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
+                Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
+
                 Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), selection.activeProperty());
                 controller.getActiveCheckbox().disableProperty().bind(selection.activeProperty());
                 load.disableProperty().bind(paused.not());
@@ -450,7 +479,7 @@ public class MainController {
                 controller.getIdLabel().setText(rule.getType().toString());
 
                 timeTableDisplayPane.getChildren().add(load);
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
 
         });
@@ -646,7 +675,7 @@ public class MainController {
         if (displayRawRadioButton.isSelected()) {
             rawDisplay.setText(solution.toString());
         } else {
-            StringBuilder stringBuilder = new StringBuilder("");
+            StringBuilder stringBuilder = new StringBuilder();
             for (Map.Entry<Rule, Double> entry : solution.getRuleGradeMap().entrySet()) {
                 stringBuilder.append(entry.getKey().getRuleId()).append(" - ").append(String.format("%.2f", Math.abs(entry.getValue()))).append(System.lineSeparator());
             }
