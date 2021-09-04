@@ -82,10 +82,10 @@ public enum Selections implements SelectionIFC {
         @Override
         void parseString(String configuration) {
             Pattern pattern = Pattern.compile("^pte=(0(\\.\\d+)?|1(\\.0+)?)$");
-            int value = 1;
+            double value = 0.5;
             Matcher m = pattern.matcher(configuration);
             if (m.find())
-                value = Integer.parseInt(m.group(1));
+                value = Double.parseDouble(m.group(1));
             pte.set(value);
         }
 
