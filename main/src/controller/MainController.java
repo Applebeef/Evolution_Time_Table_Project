@@ -385,7 +385,7 @@ public class MainController {
                     newValue = newValue.replace(",", "");
                     if (!newValue.matches("\\d*")) {
                         controller.getTopPercentTextField().setText(oldValue);
-                        controller.getErrorLabel().setText("Must input a number22222.");
+                        controller.getErrorLabel().setText("Must input a number.");
                     } else if (newValue.equals("")) {
                         controller.getTopPercentTextField().setText("0");
                     } else if (Integer.parseInt(newValue) > 100) {
@@ -465,7 +465,7 @@ public class MainController {
                 controller.getIdLabel().setText(rule.getType().toString());
 
                 timeTableDisplayPane.getChildren().add(load);
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
 
         });
