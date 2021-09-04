@@ -338,7 +338,7 @@ public class MainController {
                     controller.getParameterLabel().setText("PTE:");
                     controller.getPteSlider().setVisible(true);
                     controller.getPteTextField().setVisible(true);
-                } else {
+                } else if (selection.getType().equals("Truncation")) {
                     controller.getParameterLabel().setText("Top Percent:");
                     controller.getTopPercentSlider().setVisible(true);
                     controller.getTopPercentTextField().setVisible(true);
@@ -381,22 +381,22 @@ public class MainController {
                 controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
                 Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
 
-                    controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
-                        newValue = newValue.replace(",", "");
-                        if (!newValue.matches("\\d*")) {
-                            controller.getTopPercentTextField().setText(oldValue);
-                            controller.getErrorLabel().setText("Must input a number.");
-                        } else if (newValue.equals("")) {
-                            controller.getTopPercentTextField().setText("0");
-                        } else if (Integer.parseInt(newValue) > 100) {
-                            controller.getTopPercentTextField().setText(oldValue);
-                            controller.getErrorLabel().setText("Cant choose over 100%.");
-                        } else {
-                            controller.getErrorLabel().setText("");
-                        }
-                    }));
-                    Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
-                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
+                controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+                    newValue = newValue.replace(",", "");
+                    if (!newValue.matches("\\d*")) {
+                        controller.getTopPercentTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Must input a number22222.");
+                    } else if (newValue.equals("")) {
+                        controller.getTopPercentTextField().setText("0");
+                    } else if (Integer.parseInt(newValue) > 100) {
+                        controller.getTopPercentTextField().setText(oldValue);
+                        controller.getErrorLabel().setText("Cant choose over 100%.");
+                    } else {
+                        controller.getErrorLabel().setText("");
+                    }
+                }));
+                Bindings.bindBidirectional(controller.getTopPercentTextField().textProperty(), selection.topPercentProperty(), new NumberStringConverter());
+                Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.topPercentProperty());
 
                 Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), selection.activeProperty());
                 controller.getActiveCheckbox().disableProperty().bind(selection.activeProperty());

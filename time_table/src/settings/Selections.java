@@ -43,7 +43,7 @@ public enum Selections implements SelectionIFC {
             topPercentProperty.set(percent);
         }
     },
-    ROULETTE_WHEEL("RouletteWheel", -1) {
+    ROULETTE_WHEEL("RouletteWheel", 1) {
         @Override
         void parseString(String configuration) {
 
@@ -78,7 +78,7 @@ public enum Selections implements SelectionIFC {
             return res;
         }
     },
-    TOURNAMENT("Tournament", -1) {
+    TOURNAMENT("Tournament", 1) {
         @Override
         void parseString(String configuration) {
             Pattern pattern = Pattern.compile("^pte=(0(\\.\\d+)?|1(\\.0+)?)$");
@@ -86,7 +86,7 @@ public enum Selections implements SelectionIFC {
             Matcher m = pattern.matcher(configuration);
             if (m.find())
                 value = Integer.parseInt(m.group(1));
-            topPercentProperty.set(value);
+            pte.set(value);
         }
 
         @Override
