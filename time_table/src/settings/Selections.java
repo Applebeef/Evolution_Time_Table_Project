@@ -22,7 +22,7 @@ public enum Selections implements SelectionIFC {
             int bestSolutionsAmount;
 
             // bestSolutionsAmount = the amount of the X% best solution (X is given)
-            bestSolutionsAmount = (int) Math.floor(solutionList.size() * (topPercentProperty.get() / 100));
+            bestSolutionsAmount = (int) Math.floor(solutionList.size() * (((double) topPercentProperty.get() / 100)));
             if (bestSolutionsAmount > 0) {
                 // Return one of the best solutions (random solution from 0 to bestSolutionsAmount):
                 res.add(solutionList.get(Randomizer.getRandomNumber(0, bestSolutionsAmount - 1)));
@@ -101,13 +101,12 @@ public enum Selections implements SelectionIFC {
                 twoRandomSolutions.add(solutionList.get(Randomizer.getRandomNumber(0, solutionList.size() - 1)));
                 twoRandomSolutions.sort((o1, o2) -> {
                     // Sort top to bottom
-                    return (int)((o2.getFitness() - o1.getFitness()) * 1000);
+                    return (int) ((o2.getFitness() - o1.getFitness()) * 1000);
                 });
                 randomNumber = Randomizer.getRandomNumber(0.0, 1.0);
                 if (randomNumber >= pte.doubleValue()) {
                     res.add(twoRandomSolutions.get(0));
-                }
-                else{
+                } else {
                     res.add(twoRandomSolutions.get(1));
                 }
                 twoRandomSolutions.clear();
@@ -195,7 +194,6 @@ public enum Selections implements SelectionIFC {
     public void setActive(boolean active) {
         this.active.set(active);
     }
-
 
 
     @Override
