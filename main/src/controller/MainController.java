@@ -631,6 +631,9 @@ public class MainController {
 
         displayClass.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
         displayTeacher.disableProperty().bind(descriptor.getEngine().solutionsReadyProperty().not());
+        for (ResultDisplay resultDisplay : ResultDisplay.values()) {
+            resultDisplay.setTimeTable(descriptor.getTimeTable());
+        }
     }
 
     private void initTable() {
@@ -642,8 +645,9 @@ public class MainController {
             TableColumn<Row, String> tableColumn = new TableColumn<>(String.valueOf(i));
             tableColumn.setSortable(false);
             tableColumn.setEditable(false);
-            tableColumn.setResizable(false);
-            tableColumn.setPrefWidth(baseColumn.getPrefWidth());
+            tableColumn.setResizable(true);
+            tableColumn.setPrefWidth(130);
+            tableColumn.setMinWidth(75);
             resultsTimeTable.getColumns().add(tableColumn);
             int finalI = i;
             tableColumn.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getDisplay(finalI)));
@@ -718,7 +722,7 @@ public class MainController {
         BestFitnessCurrent.setText(String.format("%.2f", descriptor.getEngine().getBestSolution().getV2().getFitness()));
         descriptor.getEngine().initThreadParameters(Integer.parseInt(frequencyTextField.getText()),
                 Double.parseDouble(fitnessEndConditionTextField.getText()),
-                Long.parseLong(timeEndConditionTextField.getText())*60);
+                Long.parseLong(timeEndConditionTextField.getText()) * 60);
         thread = new Thread(descriptor.getEngine());
         thread.setName("Engine");
 

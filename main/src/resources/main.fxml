@@ -218,7 +218,7 @@
                                           <Label fx:id="BestFitnessCurrent" layoutX="155.0" layoutY="87.0" text="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                           <TableView fx:id="resultsTimeTable" focusTraversable="false" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="5">
                                             <columns>
-                                              <TableColumn fx:id="baseColumn" editable="false" prefWidth="75.0" resizable="false" sortable="false" text="Hours/Days" />
+                                              <TableColumn fx:id="baseColumn" editable="false" minWidth="75.0" prefWidth="-1.0" sortable="false" text="Hours/Days" />
                                             </columns>
                                           </TableView>
                                           <Slider fx:id="resultsGenerationSlider" blockIncrement="100.0" majorTickUnit="10.0" min="1.0" minorTickCount="0" orientation="VERTICAL" showTickMarks="true" snapToTicks="true" value="1.0" visible="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="5" />
