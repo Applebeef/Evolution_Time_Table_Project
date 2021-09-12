@@ -8,8 +8,6 @@ import evolution.util.Pair;
 
 import java.util.*;
 
-import static java.util.Comparator.comparing;
-
 public class TimeTableSolution implements Solution {
     private List<Fifth> fifthsList;
     private Double fitness;
