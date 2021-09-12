@@ -140,6 +140,7 @@ public class EvolutionEngine implements Runnable {
         startTime = Instant.now();
         int lastGeneration = 0;
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
+
             updateCurrentTime();
             // Spawn new generation:
             spawnGeneration();
