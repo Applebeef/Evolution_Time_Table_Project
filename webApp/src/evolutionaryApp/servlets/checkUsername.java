@@ -2,6 +2,7 @@ package evolutionaryApp.servlets;
 
 import com.google.gson.Gson;
 import evolutionaryApp.constants.Constants;
+import evolutionaryApp.utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,19 +13,19 @@ import java.io.PrintWriter;
 
 
 public class checkUsername extends HttpServlet {
+    private final String CHAT_ROOM_URL = "pages/mainPage.html";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
-        String jsonResponse;
-        if (req.getSession(false) == null) {
-            jsonResponse = gson.toJson(null);
-        } else {
-            jsonResponse = gson.toJson(req.getSession(false).getAttribute(Constants.USERNAME));
-        }
-        System.out.println(jsonResponse);
-        try (PrintWriter out = resp.getWriter()) {
-            out.print(jsonResponse);
-            out.flush();
+        resp.setContentType("application/json");
+        if (SessionUtils.getUsername(req) != null) {
+            Gson gson = new Gson();
+            String jsonResponse = gson.toJson(CHAT_ROOM_URL);
+
+            try (PrintWriter out = resp.getWriter()) {
+                out.print(jsonResponse);
+                out.flush();
+            }
         }
     }
 }
