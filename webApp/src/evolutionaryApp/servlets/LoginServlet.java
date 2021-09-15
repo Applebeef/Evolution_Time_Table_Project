@@ -21,9 +21,9 @@ public class LoginServlet extends HttpServlet {
     // you can use absolute paths, but then you need to build them from scratch, starting from the context path
     // ( can be fetched from request.getContextPath() ) and then the 'absolute' path from it.
     // Each method with it's pros and cons...
-    //TODO: CHANGE URL'S!!!!!!!!!!
-    private final String CHAT_ROOM_URL = "../chatroom/chatroom.html";
-    private final String SIGN_UP_URL = "../signup/signup.html";
+    //TODO: CHANGE URLS!!!!!!!!!!
+    private final String CHAT_ROOM_URL = "pages/mainPage.html";
+    private final String SIGN_UP_URL = "index.html";
     private final String LOGIN_ERROR_URL = "/pages/loginerror/login_attempt_after_error.jsp";  // must start with '/' since will be used in request dispatcher...
 
 
