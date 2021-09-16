@@ -1,11 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
     <title>Evolutionary Time Table</title>
+    <script src="../common/jquery-2.0.3.min.js"></script>
 </head>
 <body>
-<div>"stuff"</div>
+
+<div class="button">
+    <form method="POST" action="uploadTimeTable">
+        <input type="file" id="timeTableXML" name="filename">
+        <input type="submit" value="Upload XML file">
+    </form>
+</div>
+
+<div class="table">
+    <table id="table">
+        <th>Uploader</th>
+        <th>something</th>
+        <th>something</th>
+    </table>
+</div>
+
+<script>
+    document.getElementById("table").insertRow(-1).innerHTML = '<td>1</td><td>2</td><td>3</td>'
+</script>
 
 </body>
 </html>
