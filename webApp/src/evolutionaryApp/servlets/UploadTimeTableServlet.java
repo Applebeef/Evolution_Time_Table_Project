@@ -14,12 +14,10 @@ import javax.servlet.http.Part;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.List;
-import java.util.Scanner;
+
 
 @WebServlet("/pages/uploadTimeTable")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
@@ -54,7 +52,4 @@ public class UploadTimeTableServlet extends HttpServlet {
         return new Descriptor(ettdescriptor);
     }
 
-    private String readFromInputStream(InputStream inputStream) {
-        return new Scanner(inputStream).useDelimiter("\\Z").next();
-    }
 }
