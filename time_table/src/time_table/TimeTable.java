@@ -4,12 +4,7 @@ import Generated.ETTTimeTable;
 import evolution.engine.problem_solution.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import settings.*;
 import solution.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TimeTable implements Problem {
     IntegerProperty days, hours;
@@ -17,6 +12,7 @@ public class TimeTable implements Problem {
     Subjects subjects;
     Teachers teachers;
     Rules rules;
+    String uploader;
 //    Mutations mutations;
 //    List<Crossovers> crossoversList;
 //    List<Selections> selectionsList;
@@ -82,7 +78,7 @@ public class TimeTable implements Problem {
     }
 
     public int getAmountofSchoolClasses() {
-        return this.schoolClasses.getClassList().size();
+        return this.schoolClasses.getSchoolClassList().size();
     }
 
     public int getAmountofTeachers() {
@@ -115,5 +111,13 @@ public class TimeTable implements Problem {
                 * getAmountofTeachers()
                 * getAmountofSubjects()
                 * getAmountofSchoolClasses();
+    }
+
+    public void setUploader(String uploader) {
+        this.uploader = uploader;
+    }
+
+    public String getUploader() {
+        return uploader;
     }
 }

@@ -179,7 +179,7 @@ public class MainController {
     void displayClasses(ActionEvent event) {
         timeTableDisplayPane.getChildren().clear();
 
-        descriptor.getTimeTable().getSchoolClasses().getClassList().forEach(schoolClass -> {
+        descriptor.getTimeTable().getSchoolClasses().getSchoolClassList().forEach(schoolClass -> {
             try {
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
                         .getResource("../resources/dynamic_fxmls/teacherSchoolClass.fxml")));
@@ -573,7 +573,7 @@ public class MainController {
     }
 
     private void initResultsMenu() {
-        for (SchoolClass schoolClass : descriptor.getTimeTable().getSchoolClasses().getClassList()) {
+        for (SchoolClass schoolClass : descriptor.getTimeTable().getSchoolClasses().getSchoolClassList()) {
             MenuItem menuItem = new MenuItem(schoolClass.getName() + " - " + schoolClass.getId());
             menuItem.setOnAction(event -> {
                 resultDisplay = ResultDisplay.CLASS;

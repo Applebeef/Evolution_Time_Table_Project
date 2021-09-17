@@ -202,7 +202,7 @@ public enum Crossovers implements CrossoverIFC {
             List<List<Fifth>> crossoverList1 = new ArrayList<>();
             List<List<Fifth>> crossoverList2 = new ArrayList<>();
 
-            for (SchoolClass schoolClass : s1.getTimeTable().getSchoolClasses().getClassList()) {
+            for (SchoolClass schoolClass : s1.getTimeTable().getSchoolClasses().getSchoolClassList()) {
                 for (int i = 0; i < this.getCuttingPoints(); i++) {
                     // Randomize cutting points. Amount according to CuttingPoints:
                     do {

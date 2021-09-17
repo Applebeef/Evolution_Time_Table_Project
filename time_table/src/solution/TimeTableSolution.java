@@ -58,7 +58,7 @@ public class TimeTableSolution implements Solution {
             public String getDisplayString(TimeTableSolution timeTableSolution) {
                 String res = "";
                 // Show TimeTableSolution for each teacher:
-                for (SchoolClass schoolClass : timeTableSolution.timeTable.getSchoolClasses().getClassList()) {
+                for (SchoolClass schoolClass : timeTableSolution.timeTable.getSchoolClasses().getSchoolClassList()) {
                     res += "Id: " + schoolClass.getId() + ", " +
                             "Name: " + schoolClass.getName() + ":";
                     res += lineSeparator;
@@ -102,11 +102,11 @@ public class TimeTableSolution implements Solution {
         this.timeTable = timeTable;
         fifthsList = new ArrayList<>();
         int day, hour, schoolClass, teacher, subject;
-        int amountOfClasses = timeTable.getSchoolClasses().getClassList().size();
+        int amountOfClasses = timeTable.getSchoolClasses().getSchoolClassList().size();
         for (int i = 0; i < amountOfClasses; i++) {
-            for (Study study : timeTable.getSchoolClasses().getClassList().get(i).getRequirements().getStudyList()) {
+            for (Study study : timeTable.getSchoolClasses().getSchoolClassList().get(i).getRequirements().getStudyList()) {
                 for (int j = 0; j < study.getHours(); j++) {
-                    schoolClass = timeTable.getSchoolClasses().getClassList().get(i).getId();
+                    schoolClass = timeTable.getSchoolClasses().getSchoolClassList().get(i).getId();
                     subject = study.getSubjectId();
                     day = Randomizer.getRandomNumber(1, timeTable.getDays());
                     hour = Randomizer.getRandomNumber(1, timeTable.getHours());

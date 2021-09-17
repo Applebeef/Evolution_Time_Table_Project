@@ -6,22 +6,22 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SchoolClasses {
-    List<SchoolClass> classList;
+    List<SchoolClass> schoolClassList;
 
     SchoolClasses(ETTClasses gen) {
-        classList = gen.getETTClass().stream().map(SchoolClass::new).collect(Collectors.toList());
-        classList.sort(Comparator.comparingInt(SchoolClass::getId));
+        schoolClassList = gen.getETTClass().stream().map(SchoolClass::new).collect(Collectors.toList());
+        schoolClassList.sort(Comparator.comparingInt(SchoolClass::getId));
     }
 
-    public List<SchoolClass> getClassList() {
-        return classList;
+    public List<SchoolClass> getSchoolClassList() {
+        return schoolClassList;
     }
 
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
         StringBuilder allClasses = new StringBuilder();
-        for (SchoolClass schoolClass : classList) {
+        for (SchoolClass schoolClass : schoolClassList) {
             allClasses.append(schoolClass.toString()).append(lineSeparator);
         }
         return allClasses.toString();
@@ -29,7 +29,7 @@ public class SchoolClasses {
 
     public String checkValidity() {
         List<Integer> list = new ArrayList<>();
-        for (SchoolClass schoolClass : classList) {
+        for (SchoolClass schoolClass : schoolClassList) {
             if (list.contains(schoolClass.getId())) {
                 return "File contains 2 classes with the same ID.";
             } else
@@ -47,7 +47,7 @@ public class SchoolClasses {
     public String checkSubjectValidity(Subjects subjects) {
         List<String> errorList = new ArrayList<>();
         boolean found = false;
-        for (SchoolClass schoolClass : classList) {
+        for (SchoolClass schoolClass : schoolClassList) {
             for (Study study : schoolClass.requirements.studyList) {
                 int id = study.getSubjectId();
                 for (Subject subject : subjects.getSubjectList()) {
@@ -72,7 +72,7 @@ public class SchoolClasses {
     public String checkHourValidity(int hours, int days) {
         int weeklyHours = hours * days;
         List<String> errorList = new ArrayList<>();
-        for (SchoolClass schoolClass : classList) {
+        for (SchoolClass schoolClass : schoolClassList) {
             int hoursSum = 0;
             for (Study study : schoolClass.getRequirements().getStudyList()) {
                 hoursSum += study.getHours();

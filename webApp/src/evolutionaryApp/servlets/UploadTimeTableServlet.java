@@ -3,6 +3,7 @@ package evolutionaryApp.servlets;
 import Generated.ETTDescriptor;
 import descriptor.Descriptor;
 import evolutionaryApp.utils.ServletUtils;
+import evolutionaryApp.utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -29,6 +30,7 @@ public class UploadTimeTableServlet extends HttpServlet {
         for (Part part : partCollection) {
             try {
                 Descriptor descriptor = getDescriptor(part.getInputStream());
+                descriptor.getTimeTable().setUploader(SessionUtils.getUsername(request));
                 ServletUtils.getTimeTableManager(request.getServletContext()).addTimetable(descriptor.getTimeTable());
             } catch (JAXBException ignored) {
             }
