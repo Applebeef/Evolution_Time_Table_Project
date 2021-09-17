@@ -1,6 +1,5 @@
 package settings;
 
-import Generated.ETTCrossover;
 import evolution.configuration.CrossoverIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
@@ -272,13 +271,13 @@ public enum Crossovers implements CrossoverIFC {
         return cuttingPoints.get();
     }
 
-    @Override
-    public void initFromXML(ETTCrossover ettCrossover) {
-        setName(ettCrossover.getName());
-        setActive(true);
-        setCuttingPoints(ettCrossover.getCuttingPoints());
-        parseString(ettCrossover.getConfiguration());
-    }
+//    @Override
+//    public void initFromXML(ETTCrossover ettCrossover) { TODO fix
+//        setName(ettCrossover.getName());
+//        setActive(true);
+//        setCuttingPoints(ettCrossover.getCuttingPoints());
+//        parseString(ettCrossover.getConfiguration());
+//    }
 
     abstract void parseString(String configuration);
 

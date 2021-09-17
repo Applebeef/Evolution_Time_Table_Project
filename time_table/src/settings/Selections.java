@@ -1,6 +1,5 @@
 package settings;
 
-import Generated.ETTSelection;
 import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
@@ -115,15 +114,15 @@ public enum Selections implements SelectionIFC {
         });
     }
 
-    public void initFromXml(ETTSelection gen) {
-        if (gen.getETTElitism() == null) {
-            setElitism(0);
-        } else {
-            setElitism(gen.getETTElitism());
-        }
-        setActive(true);
-        parseString(gen.getConfiguration());
-    }
+//    public void initFromXml(ETTSelection gen) { TODO fix
+//        if (gen.getETTElitism() == null) {
+//            setElitism(0);
+//        } else {
+//            setElitism(gen.getETTElitism());
+//        }
+//        setActive(true);
+//        parseString(gen.getConfiguration());
+//    }
 
     abstract void parseString(String configuration);
 

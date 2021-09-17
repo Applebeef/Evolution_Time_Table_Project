@@ -1,8 +1,5 @@
 package time_table;
 
-import Generated.ETTCrossover;
-import Generated.ETTMutations;
-import Generated.ETTSelection;
 import Generated.ETTTimeTable;
 import evolution.engine.problem_solution.*;
 import javafx.beans.property.IntegerProperty;
@@ -20,12 +17,12 @@ public class TimeTable implements Problem {
     Subjects subjects;
     Teachers teachers;
     Rules rules;
-    Mutations mutations;
-    List<Crossovers> crossoversList;
-    List<Selections> selectionsList;
+//    Mutations mutations;
+//    List<Crossovers> crossoversList;
+//    List<Selections> selectionsList;
 
 
-    public TimeTable(ETTTimeTable gen, ETTMutations mutationsSettings, ETTCrossover crossoverSettings, ETTSelection selectionSettings) {
+    public TimeTable(ETTTimeTable gen) {
         days = new SimpleIntegerProperty(gen.getDays());
         hours = new SimpleIntegerProperty(gen.getHours());
 
@@ -34,22 +31,22 @@ public class TimeTable implements Problem {
         teachers = new Teachers(gen.getETTTeachers());
         rules = new Rules(gen.getETTRules());
 
-        mutations = new Mutations(mutationsSettings);
-
-        selectionsList = Arrays.stream(Selections.values()).collect(Collectors.toList());
-        for (Selections s : selectionsList) {
-            if (s.getType().equals(selectionSettings.getType())) {
-                s.initFromXml(selectionSettings);
-                break;
-            }
-        }
-        crossoversList = Arrays.stream(Crossovers.values()).collect(Collectors.toList());
-        for (Crossovers c : crossoversList) {
-            if (c.getName().equals(crossoverSettings.getName())) {
-                c.initFromXML(crossoverSettings);
-                break;
-            }
-        }
+//        mutations = new Mutations(gen.get); OLD - left for future reference on how to build lists
+//
+//        selectionsList = Arrays.stream(Selections.values()).collect(Collectors.toList());
+//        for (Selections s : selectionsList) {
+//            if (s.getType().equals(selectionSettings.getType())) {
+//                s.initFromXml(selectionSettings);
+//                break;
+//            }
+//        }
+//        crossoversList = Arrays.stream(Crossovers.values()).collect(Collectors.toList());
+//        for (Crossovers c : crossoversList) {
+//            if (c.getName().equals(crossoverSettings.getName())) {
+//                c.initFromXML(crossoverSettings);
+//                break;
+//            }
+//        }
     }
 
     public int getDays() {
@@ -109,22 +106,7 @@ public class TimeTable implements Problem {
                 "The classes are: " + lineSeparator + schoolClasses + lineSeparator +
                 "The subjects are: " + lineSeparator + subjects + lineSeparator +
                 "The teachers are: " + lineSeparator + teachers + lineSeparator +
-                "The rules are: " + rules + lineSeparator +
-                "Mutations - " + lineSeparator + mutations + lineSeparator +
-                "Selection - " + selectionsList + lineSeparator + lineSeparator +
-                "Crossover - " + lineSeparator + crossoversList;
-    }
-
-    public Mutations getMutations() {
-        return mutations;
-    }
-
-    public List<Crossovers> getCrossoverList() {
-        return crossoversList;
-    }
-
-    public List<Selections> getSelectionsList() {
-        return selectionsList;
+                "The rules are: " + rules + lineSeparator;
     }
 
     public int getMaxListSize() {

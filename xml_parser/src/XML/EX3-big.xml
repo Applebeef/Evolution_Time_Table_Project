@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V2.xsd">
-	<ETT-TimeTable days="20" hours="20">
+<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V3.xsd">
+	<ETT-TimeTable days="6" hours="8">
 		<ETT-Teachers>
 			<ETT-Teacher id="1">
-				<ETT-Name>Dina Mit</ETT-Name>
+				<ETT-Name>Mik Chol</ETT-Name>
+				<ETT-Working-Hours>24</ETT-Working-Hours>				
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="1"/>
 					<ETT-Teaches subject-id="2"/>
 				</ETT-Teaching>
 			</ETT-Teacher>
 			<ETT-Teacher id="3">
-				<ETT-Name>Odri Kud</ETT-Name>
+				<ETT-Name>Gilla Prisha</ETT-Name>
+				<ETT-Working-Hours>36</ETT-Working-Hours>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="3"/>
 				</ETT-Teaching>
 			</ETT-Teacher>			
 			<ETT-Teacher id="2">
-				<ETT-Name>Karlo Batusik</ETT-Name>
+				<ETT-Name>Maya Feba</ETT-Name>
+				<ETT-Working-Hours>40</ETT-Working-Hours>				
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="4"/>
 					<ETT-Teaches subject-id="5"/>
 				</ETT-Teaching>
 			</ETT-Teacher>						
 			<ETT-Teacher id="4">
-				<ETT-Name>Assaf Aul</ETT-Name>
+				<ETT-Name>Boaz Orli</ETT-Name>
+				<ETT-Working-Hours>10</ETT-Working-Hours>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="6"/>
 					<ETT-Teaches subject-id="3"/>
@@ -31,7 +35,8 @@
 				</ETT-Teaching>
 			</ETT-Teacher>	
 			<ETT-Teacher id="6">
-				<ETT-Name>Nik Nass</ETT-Name>
+				<ETT-Name>Mali Veleze</ETT-Name>
+				<ETT-Working-Hours>8</ETT-Working-Hours>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="5"/>
 					<ETT-Teaches subject-id="1"/>
@@ -39,7 +44,8 @@
 				</ETT-Teaching>
 			</ETT-Teacher>
 			<ETT-Teacher id="5">
-				<ETT-Name>Mira Tzach</ETT-Name>
+				<ETT-Name>Anita Franit</ETT-Name>
+				<ETT-Working-Hours>44</ETT-Working-Hours>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="1"/>
 					<ETT-Teaches subject-id="2"/>
@@ -116,30 +122,32 @@
 				</ETT-Requirements>
 			</ETT-Class>								
 		</ETT-Classes>
-		<ETT-Rules hard-rules-weight="60">
+		<ETT-Rules hard-rules-weight="80">
 			<ETT-Rule type="Hard">
 				<ETT-RuleId>TeacherIsHuman</ETT-RuleId>
 			</ETT-Rule>
 			<ETT-Rule type="Hard">
 				<ETT-RuleId>Singularity</ETT-RuleId>
 			</ETT-Rule>
-			<ETT-Rule type="Soft">
+			<ETT-Rule type="Hard">
 				<ETT-RuleId>Satisfactory</ETT-RuleId>
 			</ETT-Rule>			
 			<ETT-Rule type="Soft">
 				<ETT-RuleId>Knowledgeable</ETT-RuleId>
 			</ETT-Rule>
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>DayOffTeacher</ETT-RuleId>
+			</ETT-Rule>
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>Sequentiality</ETT-RuleId>
+				<ETT-Configuration>TotalHours=2</ETT-Configuration>				
+			</ETT-Rule>				
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>DayOffClass</ETT-RuleId>
+			</ETT-Rule>
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>WorkingHoursPreference</ETT-RuleId>
+			</ETT-Rule>				
 		</ETT-Rules>
-	</ETT-TimeTable>
-	<ETT-EvolutionEngine>
-		<ETT-InitialPopulation size="500"/>
-		<ETT-Selection type="RouletteWheel">
-			<ETT-Elitism>20</ETT-Elitism>
-		</ETT-Selection>
-		<ETT-Crossover name="DayTimeOriented" cutting-points="4"/>
-		<ETT-Mutations>
-			<ETT-Mutation name="Sizer" probability="0.2" configuration="TotalTupples=20"/>
-			<ETT-Mutation name="Flipping" probability="0.1" configuration="MaxTupples=50,Component=H"/>
-		</ETT-Mutations>
-	</ETT-EvolutionEngine>
+	</ETT-TimeTable>	
 </ETT-Descriptor>

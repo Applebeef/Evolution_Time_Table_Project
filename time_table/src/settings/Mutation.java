@@ -1,6 +1,5 @@
 package settings;
 
-import Generated.ETTMutation;
 import evolution.configuration.MutationIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
@@ -164,11 +163,11 @@ public enum Mutation implements MutationIFC {
         return component;
     }
 
-    @Override
-    public void initFromXML(ETTMutation gen) {
-        setProbability(gen.getProbability());
-        parseString(gen.getConfiguration());
-    }
+//    @Override
+//    public void initFromXML(ETTMutation gen) { TODO fix
+//        setProbability(gen.getProbability());
+//        parseString(gen.getConfiguration());
+//    }
 
     @Override
     public String toString() {

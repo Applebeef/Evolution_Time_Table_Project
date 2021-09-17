@@ -1,6 +1,5 @@
 package evolution.configuration;
 
-import Generated.ETTMutation;
 import evolution.engine.problem_solution.Solution;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -13,7 +12,7 @@ public interface MutationIFC {
 
     int getTupples();
 
-    public void initFromXML(ETTMutation gen);
+    //public void initFromXML(ETTMutation gen); TODO fix
 
     public <T extends Solution> void mutate(T solution);
 

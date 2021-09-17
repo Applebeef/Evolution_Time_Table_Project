@@ -12,10 +12,7 @@ public class Descriptor {
     protected EvolutionEngine evolutionEngine;
 
     public Descriptor(ETTDescriptor gen) {
-        timeTable = new TimeTable(gen.getETTTimeTable(), gen.getETTEvolutionEngine().getETTMutations(),
-                gen.getETTEvolutionEngine().getETTCrossover(),
-                gen.getETTEvolutionEngine().getETTSelection());
-        evolutionEngine = new EvolutionEngine(gen.getETTEvolutionEngine());
+        timeTable = new TimeTable(gen.getETTTimeTable());
     }
 
     public TimeTable getTimeTable() {
@@ -51,9 +48,9 @@ public class Descriptor {
         errorSet.add(timeTable.getTeachers().checkSubjectValidity(timeTable.getSubjects()));
         errorSet.add(timeTable.getSubjects().checkValidity());
         errorSet.add(timeTable.getRules().checkValidity());
-        timeTable.getSelectionsList().forEach(selections -> {
-            errorSet.add(selections.checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
-        });
+//        timeTable.getSelectionsList().forEach(selections -> { TODO check if needs fix or delete
+//            errorSet.add(selections.checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
+//        });
         return errorSet;
     }
 }

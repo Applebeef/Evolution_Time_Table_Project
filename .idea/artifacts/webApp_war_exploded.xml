@@ -5,6 +5,13 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="webApp" />
+          <element id="module-output" name="descriptor" />
+          <element id="module-output" name="engine" />
+          <element id="module-output" name="xml_parser" />
+          <element id="module-output" name="time_table" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="google-gson-2" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="webApp/web/Web" />

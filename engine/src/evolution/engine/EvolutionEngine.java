@@ -1,7 +1,6 @@
 package evolution.engine;
 
 import evolution.configuration.*;
-import Generated.ETTEvolutionEngine;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
@@ -40,8 +39,8 @@ public class EvolutionEngine implements Runnable {
     private Instant startTime;
     private LongProperty currentTime;
 
-    public EvolutionEngine(ETTEvolutionEngine gen) {
-        initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation());
+    public EvolutionEngine() {//TODO add parameter (Settings)
+        //initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation()); TODO fix
         number_of_generations = 1;
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
@@ -113,9 +112,9 @@ public class EvolutionEngine implements Runnable {
         this.number_of_generations = number_of_generations;
         solutionList = new ArrayList<>();
 
-        mutations = problem.getMutations();
-        selectionIFCList = problem.getSelectionsList();
-        crossoverIFCList = problem.getCrossoverList();
+//        mutations = problem.getMutations(); TODO fix
+//        selectionIFCList = problem.getSelectionsList();
+//        crossoverIFCList = problem.getCrossoverList();
 
         for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
             // Create solution:

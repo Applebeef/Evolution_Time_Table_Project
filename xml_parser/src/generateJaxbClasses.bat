@@ -1,1 +1,1 @@
-xjc -p Generated XML/ETT-V2.xsd
+xjc -p Generated XML/ETT-V3.xsd

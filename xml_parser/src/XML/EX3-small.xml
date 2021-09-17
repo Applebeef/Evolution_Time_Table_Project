@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V2.xsd">
+<ETT-Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ETT-V3.xsd">
 	<ETT-TimeTable days="4" hours="5">
 		<ETT-Teachers>
 			<ETT-Teacher id="1">
-				<ETT-Name>Mika Rali</ETT-Name>
+				<ETT-Name>Sami Saviv</ETT-Name>
+				<ETT-Working-Hours>12</ETT-Working-Hours>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="1"/>
 					<ETT-Teaches subject-id="2"/>
 				</ETT-Teaching>
 			</ETT-Teacher>
 			<ETT-Teacher id="3">
-				<ETT-Name>Maya Tzalach</ETT-Name>
+				<ETT-Name>Alila Maslul</ETT-Name>
+				<ETT-Working-Hours>16</ETT-Working-Hours>				
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="3"/>
 				</ETT-Teaching>
 			</ETT-Teacher>			
 			<ETT-Teacher id="2">
-				<ETT-Name>Mia Charon</ETT-Name>
+				<ETT-Name>Mishka Fofer</ETT-Name>
+				<ETT-Working-Hours>4</ETT-Working-Hours>
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="2"/>
 					<ETT-Teaches subject-id="3"/>
 				</ETT-Teaching>
 			</ETT-Teacher>						
 			<ETT-Teacher id="4">
-				<ETT-Name>Mati Knili</ETT-Name>
+				<ETT-Name>Amit Gonen</ETT-Name>
+				<ETT-Working-Hours>10</ETT-Working-Hours>				
 				<ETT-Teaching>
 					<ETT-Teaches subject-id="2"/>
 					<ETT-Teaches subject-id="4"/>
@@ -69,7 +73,7 @@
 				</ETT-Requirements>
 			</ETT-Class>					
 		</ETT-Classes>
-		<ETT-Rules hard-rules-weight="70">
+		<ETT-Rules hard-rules-weight="80">
 			<ETT-Rule type="Hard">
 				<ETT-RuleId>TeacherIsHuman</ETT-RuleId>
 			</ETT-Rule>
@@ -77,26 +81,24 @@
 				<ETT-RuleId>Singularity</ETT-RuleId>
 			</ETT-Rule>
 			<ETT-Rule type="Hard">
-				<ETT-RuleId>Knowledgeable</ETT-RuleId>
+				<ETT-RuleId>Satisfactory</ETT-RuleId>
 			</ETT-Rule>			
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>Knowledgeable</ETT-RuleId>
+			</ETT-Rule>
 			<ETT-Rule type="Soft">
 				<ETT-RuleId>DayOffTeacher</ETT-RuleId>
 			</ETT-Rule>
 			<ETT-Rule type="Soft">
 				<ETT-RuleId>Sequentiality</ETT-RuleId>
-				<ETT-Configuration>TotalHours=2</ETT-Configuration>
-			</ETT-Rule>			
+				<ETT-Configuration>TotalHours=2</ETT-Configuration>				
+			</ETT-Rule>				
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>DayOffClass</ETT-RuleId>
+			</ETT-Rule>
+			<ETT-Rule type="Soft">
+				<ETT-RuleId>WorkingHoursPreference</ETT-RuleId>
+			</ETT-Rule>				
 		</ETT-Rules>
-	</ETT-TimeTable>
-	<ETT-EvolutionEngine>
-		<ETT-InitialPopulation size="100"/>
-		<ETT-Selection type="RouletteWheel">
-			<ETT-Elitism>101</ETT-Elitism>
-		</ETT-Selection>
-		<ETT-Crossover name="AspectOriented" cutting-points="1" configuration="Orientation=CLASS"/>
-		<ETT-Mutations>
-			<ETT-Mutation name="Flipping" probability="0.2" configuration="MaxTupples=3,Component=S"/>
-			<ETT-Mutation name="Sizer" probability="0.3" configuration="TotalTupples=7"/>			
-		</ETT-Mutations>
-	</ETT-EvolutionEngine>
+	</ETT-TimeTable>	
 </ETT-Descriptor>
