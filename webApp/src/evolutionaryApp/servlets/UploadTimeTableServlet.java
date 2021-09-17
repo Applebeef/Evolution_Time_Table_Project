@@ -29,15 +29,12 @@ public class UploadTimeTableServlet extends HttpServlet {
             throws ServletException, IOException {
         Collection<Part> partCollection = request.getParts();
         for (Part part : partCollection) {
-            part.write("tempFile");//TODO figure out how to find file
+            try {
+                Descriptor descriptor = getDescriptor(part.getInputStream());
+                ServletUtils.getTimeTableManager(request.getServletContext()).addTimetable(descriptor.getTimeTable());
+            } catch (JAXBException ignored) {
+            }
         }
-        File file = new File("tempFile");
-        System.out.println(file.getAbsolutePath());
-//        try {
-//            Descriptor descriptor = getDescriptor(fileContent.toString());
-//            ServletUtils.getTimeTableManager(request.getServletContext()).addTimetable(descriptor.getTimeTable());
-//        } catch (JAXBException ignored) {
-//        }
     }
 
     @Override
@@ -50,10 +47,10 @@ public class UploadTimeTableServlet extends HttpServlet {
         processRequest(req, resp);
     }
 
-    public Descriptor getDescriptor(File file) throws JAXBException {
+    public Descriptor getDescriptor(InputStream inputStream) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(ETTDescriptor.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(file);
+        ETTDescriptor ettdescriptor = (ETTDescriptor) jaxbUnmarshaller.unmarshal(inputStream);
         return new Descriptor(ettdescriptor);
     }
 
