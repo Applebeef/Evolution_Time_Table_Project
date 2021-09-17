@@ -21,15 +21,8 @@ public class TimeTableManager {
         timeTableList.remove(timeTable);
     }
 
-    public synchronized List<TimeTable> getUsers() {
+    public synchronized List<TimeTable> getTimeTables() {
         return Collections.unmodifiableList(timeTableList);
-    }
-
-    public synchronized List<TimeTable> getTimeTables(int fromIndex) {
-        if (fromIndex < 0 || fromIndex > timeTableList.size()) {
-            fromIndex = 0;
-        }
-        return timeTableList.subList(fromIndex, timeTableList.size());
     }
 
 }
