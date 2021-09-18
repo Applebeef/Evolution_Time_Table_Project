@@ -25,8 +25,8 @@ function refreshTableList(tables) {
             + '<td>' + classes + '</td>'
             + '<td>' +
             '<form method="GET" action="enterTable">' +
-            '<input type="number" name="index" value=' + i + '/>' +
-            '<input type="submit" value="enter"/></form>'
+            '<input type="hidden" name="index" value=' + i + '>' +
+            '<input type="submit" value="Choose"/></form>'
             + '</td >'
 
     }
