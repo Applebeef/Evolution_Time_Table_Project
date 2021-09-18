@@ -12,12 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/pages/mainPage/enterTable")
-public class chooseTable extends HttpServlet {
+@WebServlet("/pages/tablePage/getTableJSON")
+public class getTableServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
         int index = Integer.parseInt(req.getParameter("index"));
-        resp.sendRedirect("../tablePage/tablePage.html?index=" + index);
+        TimeTable timeTable = ServletUtils.getTimeTableManager(req.getServletContext()).getTimeTable(index);
+        Gson gson = new Gson();
+        String json = gson.toJson(timeTable);
+        try (PrintWriter out = resp.getWriter()) {
+            out.println(json);
+            out.flush();
+        }
     }
 }
