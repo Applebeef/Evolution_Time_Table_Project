@@ -38,20 +38,26 @@ $(function () {
     setInterval(ajaxTableUpdate, refreshRate);
 })
 
-$(function () { // onload...do
-    //add a function to the submit event
-    $("#upload").submit(function () {
-        $.ajax({
-            url: this.action,
-            timeout: 2000,
-            error: function () {
-                console.error("Failed to submit");
-            },
-            success: function (r) {
 
-            }
-        });
-        // by default - we'll always return false so it doesn't redirect the user.
-        return false;
-    });
-});
+$("#submitBtn").on("click", function(event) {
+
+    const fd = new FormData();
+
+    const files = $('#timeTableXML').prop('files');
+    fd.append('file', files[0]);
+    $.ajax({
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        url: "uploadTimeTable",
+        data: fd,
+        timeout: 2000,
+        error: function() {
+            console.error("Failed to submit")
+        },
+        success: function(r) {
+            return false
+        }
+    })
+    return false
+})

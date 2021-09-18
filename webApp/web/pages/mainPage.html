@@ -13,15 +13,15 @@
     <meta charset="UTF-8">
     <title>Evolutionary Time Table</title>
     <script src="../common/jquery-2.0.3.min.js"></script>
-    <script src="mainPage.js"></script>
 </head>
 <body>
 
+
 <div class="button">
-    <form id="upload" method="POST" action="uploadTimeTable" enctype="multipart/form-data">
-        <input type="file" id="timeTableXML" name="filename">
-        <input type="submit" value="Upload XML file">
-    </form>
+    <!-- <form id="upload"> -->
+    <input type="file" id="timeTableXML" name="filename">
+    <button id="submitBtn">Upload XML file</button>
+    <!-- </form> -->
 </div>
 
 <div class="table">
@@ -34,5 +34,7 @@
         <th>Subjects</th>
     </table>
 </div>
+<script src="mainPage.js"></script>
+
 </body>
 </html>
