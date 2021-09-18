@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 
 
 public class checkUsername extends HttpServlet {
-    private final String CHAT_ROOM_URL = "pages/mainPage.html";
+    private final String CHAT_ROOM_URL = "pages/mainPage/mainPage.html";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

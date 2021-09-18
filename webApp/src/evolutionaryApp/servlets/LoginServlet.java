@@ -22,7 +22,7 @@ public class LoginServlet extends HttpServlet {
     // ( can be fetched from request.getContextPath() ) and then the 'absolute' path from it.
     // Each method with it's pros and cons...
     //TODO: CHANGE URLS!!!!!!!!!!
-    private final String CHAT_ROOM_URL = "pages/mainPage.html";
+    private final String MAIN_PAGE_URL = "pages/mainPage/mainPage.html";
     private final String SIGN_UP_URL = "index.html";
     private final String LOGIN_ERROR_URL = "/pages/loginerror/login_attempt_after_error.jsp";  // must start with '/' since will be used in request dispatcher...
 
@@ -87,13 +87,13 @@ public class LoginServlet extends HttpServlet {
 
                         //redirect the request to the chat room - in order to actually change the URL
                         System.out.println("On login, request URI is: " + request.getRequestURI());
-                        response.sendRedirect(CHAT_ROOM_URL);
+                        response.sendRedirect(MAIN_PAGE_URL);
                     }
                 }
             }
         } else {
             //user is already logged in
-            response.sendRedirect(CHAT_ROOM_URL);
+            response.sendRedirect(MAIN_PAGE_URL);
         }
     }
 

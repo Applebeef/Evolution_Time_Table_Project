@@ -25,4 +25,8 @@ public class TimeTableManager {
         return Collections.unmodifiableList(timeTableList);
     }
 
+    public synchronized TimeTable getTimeTable(int index) {
+        return timeTableList.get(index);
+    }
+
 }

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet("/pages/tableListUpdate")
+@WebServlet("/pages/mainPage/tableListUpdate")
 public class TableListUpdate extends HttpServlet {
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (PrintWriter out = resp.getWriter()) {

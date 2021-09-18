@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 
 
-@WebServlet("/pages/uploadTimeTable")
+@WebServlet("/pages/mainPage/uploadTimeTable")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class UploadTimeTableServlet extends HttpServlet {
 
