@@ -1,24 +1,34 @@
 const TABLE_UPDATE_SERVLET = "tableListUpdate"
 const refreshRate = 2000
+let totalTables
 
 function refreshTableList(tables) {
     let table = $("#table")
     table.empty()
     table.append('<th>Uploader </th> <th>Days </th> <th>Hours </th> <th>Teachers </th> <th>Classes </th> <th>Subjects </th>')
 
-    for (let tablesKey of tables) {
-        let uploader = tablesKey.uploader
-        let days = tablesKey.days.value
-        let hours = tablesKey.hours.value
-        let teachers = tablesKey.teachers.teacherList.length
-        let subjects = tablesKey.subjects.subjectList.length
-        let classes = tablesKey.schoolClasses.schoolClassList.length
+
+    for (let i = 0; i < tables.length; i++) {
+        let uploader = tables[i].uploader
+        let days = tables[i].days.value
+        let hours = tables[i].hours.value
+        let teachers = tables[i].teachers.teacherList.length
+        let subjects = tables[i].subjects.subjectList.length
+        let classes = tables[i].schoolClasses.schoolClassList.length
+
+
         document.getElementById("table").insertRow(-1).innerHTML = '<td>' + uploader + '</td>'
             + '<td>' + days + '</td>'
             + '<td>' + hours + '</td>'
             + '<td>' + teachers + '</td>'
             + '<td>' + subjects + '</td>'
             + '<td>' + classes + '</td>'
+            + '<td>' +
+            '<form method="GET" action="enterTable">' +
+            '<input type="number" name="index" value=' + i + '/>' +
+            '<input type="submit" value="enter"/></form>'
+            + '</td >'
+
     }
 
 }
@@ -28,7 +38,8 @@ function ajaxTableUpdate() {
         url: TABLE_UPDATE_SERVLET,
         dataType: 'json',
         success: function (tables) {
-            console.log(tables)
+            console.log(tables) // TODO debug delete
+            totalTables = tables.length
             refreshTableList(tables);
         }
     });
@@ -39,7 +50,7 @@ $(function () {
 })
 
 
-$("#submitBtn").on("click", function(event) {
+$("#submitBtn").on("click", function () {
 
     const fd = new FormData();
 
@@ -52,10 +63,10 @@ $("#submitBtn").on("click", function(event) {
         url: "uploadTimeTable",
         data: fd,
         timeout: 2000,
-        error: function() {
+        error: function () {
             console.error("Failed to submit")
         },
-        success: function(r) {
+        success: function (r) {
             return false
         }
     })
