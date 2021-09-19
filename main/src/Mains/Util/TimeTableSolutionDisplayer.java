@@ -17,16 +17,15 @@ public class TimeTableSolutionDisplayer {
     public TimeTableSolutionDisplayer(TimeTableSolution solution, ResultDisplay resultDisplay) {
         this.resultDisplay = resultDisplay;
         List<Fifth> filteredSolutionList = null;
-        switch (resultDisplay) {
-            case RAW:
-                filteredSolutionList = solution.getFifthsList();
-                break;
-            case CLASS:
-                filteredSolutionList = solution.getFifthsList().stream().filter(fifth -> fifth.getSchoolClass().equals(resultDisplay.getId())).collect(Collectors.toList());
-                break;
-            case TEACHER:
-                filteredSolutionList = solution.getFifthsList().stream().filter(fifth -> fifth.getTeacher().equals(resultDisplay.getId())).collect(Collectors.toList());
-                break;
+        synchronized (solution){
+            switch (resultDisplay) {
+                case CLASS:
+                    filteredSolutionList = solution.getFifthsList().stream().filter(fifth -> fifth.getSchoolClass().equals(resultDisplay.getId())).collect(Collectors.toList());
+                    break;
+                case TEACHER:
+                    filteredSolutionList = solution.getFifthsList().stream().filter(fifth -> fifth.getTeacher().equals(resultDisplay.getId())).collect(Collectors.toList());
+                    break;
+            }
         }
         for (int i = 1; i <= solution.getTimeTable().getHours(); i++) {
             int finalI = i;
