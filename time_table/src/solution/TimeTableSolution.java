@@ -15,7 +15,7 @@ public class TimeTableSolution implements Solution {
     private Double fitness;
     private TimeTable timeTable;
     private PresentationOptions presentationOption;
-    private Map<Rule, Double> ruleGradeMap;
+    private Map<RuleWrapper, Double> ruleGradeMap;
     private Comparator<Fifth> dayTimeComparator;
     private Comparator<Fifth> teacherAspectComparator;
     private Comparator<Fifth> classAspectComparator;
@@ -160,7 +160,7 @@ public class TimeTableSolution implements Solution {
         int hardCount = 0, softCount = 0;
         Double grade;
         // Iterate through Rules list and calculate data:
-        for (Rule rule : timeTable.getRules().getRuleList()) {
+        for (RuleWrapper rule : timeTable.getRules().getRuleList()) {
             grade = rule.test(this);
             if (rule.getType() == Type.HARD) {
                 hardCount++;
@@ -363,7 +363,7 @@ public class TimeTableSolution implements Solution {
         return this.presentationOption.getDisplayString(this);
     }
 
-    public Map<Rule, Double> getRuleGradeMap() {
+    public Map<RuleWrapper, Double> getRuleGradeMap() {
         return ruleGradeMap;
     }
 }

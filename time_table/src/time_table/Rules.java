@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Rules {
-    List<Rule> ruleList;
+    List<RuleWrapper> ruleList;
     int hardRulesWeight;
 
     Rules(ETTRules gen) {
@@ -20,19 +20,14 @@ public class Rules {
         for (ETTRule r : gen.getETTRule()) {
             for (Rule rule : Rule.values()) {
                 if (r.getETTRuleId().equals(rule.ruleId)) {
-                    rule.setConfiguration(r.getETTConfiguration());
-                    if (r.getType().equals("Hard")) {
-                        rule.setType(Type.HARD);
-                    } else if (r.getType().equals("Soft")) {
-                        rule.setType((Type.SOFT));
-                    }
-                    ruleList.add(rule);
+                    RuleWrapper ruleWrapper = new RuleWrapper(rule, r.getETTConfiguration(), r.getType().equals("Hard") ? Type.HARD : Type.SOFT);
+                    ruleList.add(ruleWrapper);
                 }
             }
         }
     }
 
-    public List<Rule> getRuleList() {
+    public List<RuleWrapper> getRuleList() {
         return ruleList;
     }
 
@@ -44,7 +39,7 @@ public class Rules {
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
         StringBuilder result = new StringBuilder();
-        for (Rule rule : ruleList) {
+        for (RuleWrapper rule : ruleList) {
             result.append("    ").append(rule.toString()).append(lineSeparator);
         }
         return lineSeparator + result + "The weight of Hard rules is: " + hardRulesWeight;
@@ -52,12 +47,12 @@ public class Rules {
     }
 
     public String checkValidity() {
-        Set<Rule> ruleSet = new HashSet<>();
+        Set<RuleWrapper> ruleSet = new HashSet<>();
         List<String> duplicates = new ArrayList<>();
 
-        for (Rule rule : ruleList) {
+        for (RuleWrapper rule : ruleList) {
             if (!ruleSet.add(rule)) {
-                duplicates.add(rule.ruleId);
+                duplicates.add(rule.getRuleId());
             }
         }
         if (duplicates.isEmpty()) {

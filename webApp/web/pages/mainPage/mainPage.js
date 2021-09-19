@@ -5,7 +5,8 @@ let totalTables
 function refreshTableList(tables) {
     let table = $("#table")
     table.empty()
-    table.append('<th>Uploader </th> <th>Days </th> <th>Hours </th> <th>Teachers </th> <th>Classes </th> <th>Subjects </th>')
+    table.append('<th>Uploader </th> <th>Days </th> <th>Hours </th> <th>Teachers </th> <th>Classes </th> <th>Subjects </th>' +
+        '<th>Hard Rules </th><th>Soft Rules </th>')
 
 
     for (let i = 0; i < tables.length; i++) {
@@ -15,7 +16,15 @@ function refreshTableList(tables) {
         let teachers = tables[i].teachers.teacherList.length
         let subjects = tables[i].subjects.subjectList.length
         let classes = tables[i].schoolClasses.schoolClassList.length
-
+        let softCount = 0
+        let hardCount = 0
+        for (let j = 0; j < tables[i].rules.ruleList.length; j++) {
+            if (tables[i].rules.ruleList[j].type === "HARD") {
+                hardCount++
+            } else {
+                softCount++
+            }
+        }
 
         document.getElementById("table").insertRow(-1).innerHTML = '<td>' + uploader + '</td>'
             + '<td>' + days + '</td>'
@@ -23,6 +32,8 @@ function refreshTableList(tables) {
             + '<td>' + teachers + '</td>'
             + '<td>' + subjects + '</td>'
             + '<td>' + classes + '</td>'
+            + '<td>' + hardCount + '</td>'
+            + '<td>' + softCount + '</td>'
             + '<td>' +
             '<form method="GET" action="enterTable">' +
             '<input type="hidden" name="index" value=' + i + '>' +
@@ -39,7 +50,11 @@ function ajaxTableUpdate() {
         dataType: 'json',
         success: function (tables) {
             totalTables = tables.length
+            console.log(tables)
             refreshTableList(tables);
+        },
+        error: function (xhr, status, error) {
+            console.log(error)
         }
     });
 }

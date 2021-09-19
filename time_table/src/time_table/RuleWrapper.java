@@ -1,6 +1,7 @@
 package time_table;
 
 import evolution.rules.Type;
+import solution.TimeTableSolution;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,5 +26,17 @@ public class RuleWrapper {
             return Integer.parseInt(m.group(1));
         } else
             return 0;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public String getRuleId() {
+        return rule.ruleId;
+    }
+
+    public double test(TimeTableSolution timeTableSolution) {
+        return rule.test(timeTableSolution, configuration);
     }
 }

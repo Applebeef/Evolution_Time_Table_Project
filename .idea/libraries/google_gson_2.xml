@@ -1,14 +1,15 @@
 <component name="libraryTable">
   <library name="google-gson-2">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/webApp/3rd/google-gson-2.1" />
+      <root url="file://$PROJECT_DIR$/webApp/web/WEB-INF/lib/google-gson-2.1" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/webApp/3rd/google-gson-2.1/gson-2.1-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/webApp/web/WEB-INF/lib/google-gson-2.1/gson-2.1-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/webApp/3rd/google-gson-2.1/gson-2.1-sources.jar!/" />
+      <root url="file://$PROJECT_DIR$/webApp/web/WEB-INF/lib/google-gson-2.1" />
     </SOURCES>
-    <jarDirectory url="file://$PROJECT_DIR$/webApp/3rd/google-gson-2.1" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/webApp/web/WEB-INF/lib/google-gson-2.1" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/webApp/web/WEB-INF/lib/google-gson-2.1" recursive="false" type="SOURCES" />
   </library>
 </component>

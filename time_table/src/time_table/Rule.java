@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public enum Rule {
     TEACHER_IS_HUMAN("TeacherIsHuman") {
         @Override
-        public double test(TimeTableSolution timeTableSolution) {
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
             double score = 100;
             double reduction = score / timeTableSolution.getFifthsList().size();
             //Maps each teacher to all his assigned days/hours.
@@ -39,7 +39,7 @@ public enum Rule {
     },
     SINGULARITY("Singularity") {
         @Override
-        public double test(TimeTableSolution timeTableSolution) {
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
             double score = 100;
             double reduction = score / timeTableSolution.getFifthsList().size();
             //Maps mapping Day/Hour/Class to their subject/teachers.
@@ -68,7 +68,7 @@ public enum Rule {
     },
     KNOWLEDGEABLE("Knowledgeable") {
         @Override
-        public double test(TimeTableSolution timeTableSolution) {
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
             double score = 100;
             double reduction = score / timeTableSolution.getFifthsList().size();
             for (Fifth fifth : timeTableSolution.getFifthsList()) {
@@ -91,7 +91,7 @@ public enum Rule {
     },
     SATISFACTORY("Satisfactory") {
         @Override
-        public double test(TimeTableSolution timeTableSolution) {
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
             double score = 100;
             double reduction;
             int requiredSubjectsToCheck = 0;
@@ -137,7 +137,7 @@ public enum Rule {
     },
     DAY_OFF_TEACHER("DayOffTeacher") {
         @Override
-        public double test(TimeTableSolution timeTableSolution) {
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
             double score = 100;
             double reduction = (double) 100 / timeTableSolution.getTimeTable().getAmountofTeachers();
             //Map with the key representing each teacher,
@@ -166,9 +166,9 @@ public enum Rule {
     },
     SEQUENTIALITY("Sequentiality") {
         @Override
-        public double test(TimeTableSolution timeTableSolution) {
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
             double score = 100;
-            int totalHours = parseString();
+            int totalHours = configuration;
             Fifth f1, f2;
             // Reduction for each violation of the rule:
             double reduction = score /
@@ -215,7 +215,7 @@ public enum Rule {
     String Configuration;
     Type type;
 
-    abstract public double test(TimeTableSolution timeTableSolution);
+    abstract public double test(TimeTableSolution timeTableSolution, Integer configuration);
 
     Rule(String id) {
         ruleId = id;

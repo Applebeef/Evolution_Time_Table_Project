@@ -26,6 +26,7 @@ import settings.Mutations;
 import settings.Selections;
 import solution.TimeTableSolution;
 import time_table.Rule;
+import time_table.RuleWrapper;
 import time_table.SchoolClass;
 import time_table.Teacher;
 
@@ -195,198 +196,198 @@ public class MainController {
         });
     }
 
-    @FXML
-    void displayCrossover(ActionEvent event) {
-        engineDisplayPane.getChildren().clear();
-
-        for (Crossovers crossover : descriptor.getTimeTable().getCrossoverList()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/crossover.fxml")));
-                Parent load = loader.load();
-                crossoverPaneController controller = loader.getController();
-
-                controller.getType().setText(crossover.getName());
-
-                controller.getCuttingPointsTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
-                    newValue = newValue.replace(",", "");
-                    if (!newValue.matches("\\d*")) {
-                        controller.getCuttingPointsTextField().setText(oldValue);
-                        controller.getErrorLabel().setText("Must input a number.");
-                    } else if (newValue.equals("")) {
-                        controller.getCuttingPointsTextField().setText("0");
-                    } else if (Integer.parseInt(newValue) >= descriptor.getTimeTable().getMaxListSize()) {
-                        controller.getErrorLabel().setText("Too many cutting points.");
-                        controller.getCuttingPointsTextField().setText(oldValue);
-                    } else {
-                        controller.getErrorLabel().setText("");
-                    }
-                }));
-                Bindings.bindBidirectional(controller.getCuttingPointsTextField().textProperty(), crossover.cuttingPointsProperty(), new NumberStringConverter());
-                controller.getCuttingPointsSlider().maxProperty().set(descriptor.getTimeTable().getMaxListSize() - 1);
-                Bindings.bindBidirectional(controller.getCuttingPointsSlider().valueProperty(), crossover.cuttingPointsProperty());
-
-                if (!crossover.getOrientation().equals("")) {
-                    controller.getOrientationChoiceBox().getItems().add("CLASS");
-                    controller.getOrientationChoiceBox().getItems().add("TEACHER");
-                    Bindings.bindBidirectional(controller.getOrientationChoiceBox().valueProperty(), crossover.orientationProperty());
-                } else {
-                    controller.getOrientationChoiceBox().setVisible(false);
-                    controller.getOrientationNameLabel().setVisible(false);
-                }
-
-                Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), crossover.activeProperty());
-                controller.getActiveCheckbox().disableProperty().bind(crossover.activeProperty());
-                load.disableProperty().bind(paused.not());
-
-                engineDisplayPane.getChildren().add(load);
-
-            } catch (IOException ignored) {
-
-            }
-        }
-    }
-
-    @FXML
-    void displayMutations(ActionEvent event) {
-        engineDisplayPane.getChildren().clear();
-
-        Mutations mutations = descriptor.getTimeTable().getMutations();
-        mutations.getMutationList().forEach(mutation -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/mutation.fxml")));
-                Parent load = loader.load();
-                mutationPaneController controller = loader.getController();
-                controller.getName().setText(mutation.getName());
-                controller.getTupples().textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("\\d*")) {
-                        controller.getTupples().setText(oldValue);
-                        controller.getErrorLabel().setText("Must input a number.");
-                    } else if (newValue.equals("")) {
-                        controller.getTupples().setText("0");
-                    } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
-                        controller.getTupples().setText(oldValue);
-                        controller.getErrorLabel().setText("Tupples cant be higher than population size.");
-                    } else {
-                        controller.getErrorLabel().setText("");
-                    }
-                });
-                Bindings.bindBidirectional(controller.getTupples().textProperty(), mutation.tupplesProperty(), new NumberStringConverter());
-
-                //if (!mutation.componentProperty().getValue().equals("")) {
-                controller.getComponentChoiceBox().getItems().add("Days");
-                controller.getComponentChoiceBox().getItems().add("Hours");
-                controller.getComponentChoiceBox().getItems().add("Teacher");
-                controller.getComponentChoiceBox().getItems().add("Class");
-                controller.getComponentChoiceBox().getItems().add("Subject");
-
-                String value = mutation.componentProperty().getValue();
-                switch (value) {
-                    case "D":
-                        value = "Days";
-                        break;
-                    case "H":
-                        value = "Hours";
-                        break;
-                    case "T":
-                        value = "Teacher";
-                        break;
-                    case "C":
-                        value = "Class";
-                        break;
-                    case "S":
-                        value = "Subject";
-                        break;
-                }
-                controller.getComponentChoiceBox().setValue(value);
-                mutation.componentProperty().bind(Bindings.createStringBinding(() -> controller.getComponentChoiceBox().valueProperty().get().substring(0, 1)
-                        , controller.getComponentChoiceBox().valueProperty()));
-
-                if (mutation != Mutation.Flipping) {
-                    controller.getComponentTextLabel().setVisible(false);
-                    controller.getComponentChoiceBox().setVisible(false);
-                }
-                Bindings.bindBidirectional(controller.getProbabilitySlider().valueProperty(), mutation.probabilityProperty());
-                controller.getProbabilityLabel().textProperty().bind(mutation.probabilityProperty().asString("%.1f"));
-                load.disableProperty().bind(paused.not());
-                engineDisplayPane.getChildren().add(load);
-            } catch (IOException ignored) {
-            }
-        });
-
-    }
-
-    @FXML
-    void displaySelection(ActionEvent event) {
-        engineDisplayPane.getChildren().clear();
-
-        for (Selections selection : descriptor.getTimeTable().getSelectionsList()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
-                        .getResource("../resources/dynamic_fxmls/selection.fxml")));
-                Parent load = loader.load();
-                selectionPaneController controller = loader.getController();
-
-                controller.getType().setText(selection.getType());
-                controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
-                    newValue = newValue.replace(",", "");
-                    if (!newValue.matches("\\d*")) {
-                        controller.getElitismTextField().setText(oldValue);
-                        controller.getErrorLabel().setText("Must input a number.");
-                    } else if (newValue.equals("")) {
-                        controller.getElitismTextField().setText("0");
-                    } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
-                        controller.getElitismTextField().setText(oldValue);
-                        controller.getErrorLabel().setText("Elitism must be lower than population size.");
-                    } else {
-                        controller.getErrorLabel().setText("");
-                    }
-                }));
-                Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
-                controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
-                Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
-                if (selection.getType().equals("Truncation")) {
-                    controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
-                        newValue = newValue.replace(",", "");
-                        if (!newValue.matches("\\d*")) {
-                            controller.getTopPercentTextField().setText(oldValue);
-                            controller.getErrorLabel().setText("Must input a number.");
-                        } else if (newValue.equals("")) {
-                            controller.getTopPercentTextField().setText("0");
-                        } else if (Integer.parseInt(newValue) > 100) {
-                            controller.getTopPercentTextField().setText(oldValue);
-                            controller.getErrorLabel().setText("Cant choose over 100%.");
-                        } else {
-                            controller.getErrorLabel().setText("");
-                            controller.getTopPercentSlider().setValue(Integer.parseInt(newValue));
-                        }
-                    }));
-                    controller.getTopPercentSlider().valueProperty().addListener((observable, oldValue, newValue) -> {
-                        if (newValue != null && !newValue.equals(oldValue) && !controller.getTopPercentSlider().isValueChanging()) {
-                            controller.getTopPercentTextField().textProperty().set(String.format("%.0f", newValue.doubleValue()));
-                        }
-                    });
-                    controller.getTopPercentSlider().setMajorTickUnit(1);
-                    controller.getTopPercentSlider().snapToTicksProperty().set(true);
-                    controller.getTopPercentSlider().blockIncrementProperty().set(1);
-                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.selectionValueProperty());
-
-                } else {
-                    controller.getTopPercentSlider().setVisible(false);
-                    controller.getTopPercentTextField().setVisible(false);
-                    controller.getTopPercentNameLabel().setVisible(false);
-                }
-                Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), selection.activeProperty());
-                controller.getActiveCheckbox().disableProperty().bind(selection.activeProperty());
-                load.disableProperty().bind(paused.not());
-                engineDisplayPane.getChildren().add(load);
-
-            } catch (IOException ignored) {
-
-            }
-        }
-    }
+//    @FXML
+//    void displayCrossover(ActionEvent event) {
+//        engineDisplayPane.getChildren().clear();
+//
+//        for (Crossovers crossover : descriptor.getTimeTable().getCrossoverList()) {
+//            try {
+//                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+//                        .getResource("../resources/dynamic_fxmls/crossover.fxml")));
+//                Parent load = loader.load();
+//                crossoverPaneController controller = loader.getController();
+//
+//                controller.getType().setText(crossover.getName());
+//
+//                controller.getCuttingPointsTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+//                    newValue = newValue.replace(",", "");
+//                    if (!newValue.matches("\\d*")) {
+//                        controller.getCuttingPointsTextField().setText(oldValue);
+//                        controller.getErrorLabel().setText("Must input a number.");
+//                    } else if (newValue.equals("")) {
+//                        controller.getCuttingPointsTextField().setText("0");
+//                    } else if (Integer.parseInt(newValue) >= descriptor.getTimeTable().getMaxListSize()) {
+//                        controller.getErrorLabel().setText("Too many cutting points.");
+//                        controller.getCuttingPointsTextField().setText(oldValue);
+//                    } else {
+//                        controller.getErrorLabel().setText("");
+//                    }
+//                }));
+//                Bindings.bindBidirectional(controller.getCuttingPointsTextField().textProperty(), crossover.cuttingPointsProperty(), new NumberStringConverter());
+//                controller.getCuttingPointsSlider().maxProperty().set(descriptor.getTimeTable().getMaxListSize() - 1);
+//                Bindings.bindBidirectional(controller.getCuttingPointsSlider().valueProperty(), crossover.cuttingPointsProperty());
+//
+//                if (!crossover.getOrientation().equals("")) {
+//                    controller.getOrientationChoiceBox().getItems().add("CLASS");
+//                    controller.getOrientationChoiceBox().getItems().add("TEACHER");
+//                    Bindings.bindBidirectional(controller.getOrientationChoiceBox().valueProperty(), crossover.orientationProperty());
+//                } else {
+//                    controller.getOrientationChoiceBox().setVisible(false);
+//                    controller.getOrientationNameLabel().setVisible(false);
+//                }
+//
+//                Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), crossover.activeProperty());
+//                controller.getActiveCheckbox().disableProperty().bind(crossover.activeProperty());
+//                load.disableProperty().bind(paused.not());
+//
+//                engineDisplayPane.getChildren().add(load);
+//
+//            } catch (IOException ignored) {
+//
+//            }
+//        }
+//    }
+//
+//    @FXML
+//    void displayMutations(ActionEvent event) {
+//        engineDisplayPane.getChildren().clear();
+//
+//        Mutations mutations = descriptor.getTimeTable().getMutations();
+//        mutations.getMutationList().forEach(mutation -> {
+//            try {
+//                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+//                        .getResource("../resources/dynamic_fxmls/mutation.fxml")));
+//                Parent load = loader.load();
+//                mutationPaneController controller = loader.getController();
+//                controller.getName().setText(mutation.getName());
+//                controller.getTupples().textProperty().addListener((observable, oldValue, newValue) -> {
+//                    if (!newValue.matches("\\d*")) {
+//                        controller.getTupples().setText(oldValue);
+//                        controller.getErrorLabel().setText("Must input a number.");
+//                    } else if (newValue.equals("")) {
+//                        controller.getTupples().setText("0");
+//                    } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
+//                        controller.getTupples().setText(oldValue);
+//                        controller.getErrorLabel().setText("Tupples cant be higher than population size.");
+//                    } else {
+//                        controller.getErrorLabel().setText("");
+//                    }
+//                });
+//                Bindings.bindBidirectional(controller.getTupples().textProperty(), mutation.tupplesProperty(), new NumberStringConverter());
+//
+//                //if (!mutation.componentProperty().getValue().equals("")) {
+//                controller.getComponentChoiceBox().getItems().add("Days");
+//                controller.getComponentChoiceBox().getItems().add("Hours");
+//                controller.getComponentChoiceBox().getItems().add("Teacher");
+//                controller.getComponentChoiceBox().getItems().add("Class");
+//                controller.getComponentChoiceBox().getItems().add("Subject");
+//
+//                String value = mutation.componentProperty().getValue();
+//                switch (value) {
+//                    case "D":
+//                        value = "Days";
+//                        break;
+//                    case "H":
+//                        value = "Hours";
+//                        break;
+//                    case "T":
+//                        value = "Teacher";
+//                        break;
+//                    case "C":
+//                        value = "Class";
+//                        break;
+//                    case "S":
+//                        value = "Subject";
+//                        break;
+//                }
+//                controller.getComponentChoiceBox().setValue(value);
+//                mutation.componentProperty().bind(Bindings.createStringBinding(() -> controller.getComponentChoiceBox().valueProperty().get().substring(0, 1)
+//                        , controller.getComponentChoiceBox().valueProperty()));
+//
+//                if (mutation != Mutation.Flipping) {
+//                    controller.getComponentTextLabel().setVisible(false);
+//                    controller.getComponentChoiceBox().setVisible(false);
+//                }
+//                Bindings.bindBidirectional(controller.getProbabilitySlider().valueProperty(), mutation.probabilityProperty());
+//                controller.getProbabilityLabel().textProperty().bind(mutation.probabilityProperty().asString("%.1f"));
+//                load.disableProperty().bind(paused.not());
+//                engineDisplayPane.getChildren().add(load);
+//            } catch (IOException ignored) {
+//            }
+//        });
+//
+//    }
+//
+//    @FXML
+//    void displaySelection(ActionEvent event) {
+//        engineDisplayPane.getChildren().clear();
+//
+//        for (Selections selection : descriptor.getTimeTable().getSelectionsList()) {
+//            try {
+//                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass()
+//                        .getResource("../resources/dynamic_fxmls/selection.fxml")));
+//                Parent load = loader.load();
+//                selectionPaneController controller = loader.getController();
+//
+//                controller.getType().setText(selection.getType());
+//                controller.getElitismTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+//                    newValue = newValue.replace(",", "");
+//                    if (!newValue.matches("\\d*")) {
+//                        controller.getElitismTextField().setText(oldValue);
+//                        controller.getErrorLabel().setText("Must input a number.");
+//                    } else if (newValue.equals("")) {
+//                        controller.getElitismTextField().setText("0");
+//                    } else if (Integer.parseInt(newValue) > descriptor.getEngine().getInitialSolutionPopulation().getSize()) {
+//                        controller.getElitismTextField().setText(oldValue);
+//                        controller.getErrorLabel().setText("Elitism must be lower than population size.");
+//                    } else {
+//                        controller.getErrorLabel().setText("");
+//                    }
+//                }));
+//                Bindings.bindBidirectional(controller.getElitismTextField().textProperty(), selection.elitismProperty(), new NumberStringConverter());
+//                controller.getElitismSlider().maxProperty().bind(descriptor.getEngine().getInitialSolutionPopulation().sizeProperty().subtract(1));
+//                Bindings.bindBidirectional(controller.getElitismSlider().valueProperty(), selection.elitismProperty());
+//                if (selection.getType().equals("Truncation")) {
+//                    controller.getTopPercentTextField().textProperty().addListener(((observable, oldValue, newValue) -> {
+//                        newValue = newValue.replace(",", "");
+//                        if (!newValue.matches("\\d*")) {
+//                            controller.getTopPercentTextField().setText(oldValue);
+//                            controller.getErrorLabel().setText("Must input a number.");
+//                        } else if (newValue.equals("")) {
+//                            controller.getTopPercentTextField().setText("0");
+//                        } else if (Integer.parseInt(newValue) > 100) {
+//                            controller.getTopPercentTextField().setText(oldValue);
+//                            controller.getErrorLabel().setText("Cant choose over 100%.");
+//                        } else {
+//                            controller.getErrorLabel().setText("");
+//                            controller.getTopPercentSlider().setValue(Integer.parseInt(newValue));
+//                        }
+//                    }));
+//                    controller.getTopPercentSlider().valueProperty().addListener((observable, oldValue, newValue) -> {
+//                        if (newValue != null && !newValue.equals(oldValue) && !controller.getTopPercentSlider().isValueChanging()) {
+//                            controller.getTopPercentTextField().textProperty().set(String.format("%.0f", newValue.doubleValue()));
+//                        }
+//                    });
+//                    controller.getTopPercentSlider().setMajorTickUnit(1);
+//                    controller.getTopPercentSlider().snapToTicksProperty().set(true);
+//                    controller.getTopPercentSlider().blockIncrementProperty().set(1);
+//                    Bindings.bindBidirectional(controller.getTopPercentSlider().valueProperty(), selection.selectionValueProperty());
+//
+//                } else {
+//                    controller.getTopPercentSlider().setVisible(false);
+//                    controller.getTopPercentTextField().setVisible(false);
+//                    controller.getTopPercentNameLabel().setVisible(false);
+//                }
+//                Bindings.bindBidirectional(controller.getActiveCheckbox().selectedProperty(), selection.activeProperty());
+//                controller.getActiveCheckbox().disableProperty().bind(selection.activeProperty());
+//                load.disableProperty().bind(paused.not());
+//                engineDisplayPane.getChildren().add(load);
+//
+//            } catch (IOException ignored) {
+//
+//            }
+//        }
+//    }
 
     @FXML
     void displaySubjects(ActionEvent event) {
@@ -639,7 +640,7 @@ public class MainController {
             rawDisplay.setText(solution.toString());
         } else {
             StringBuilder stringBuilder = new StringBuilder("");
-            for (Map.Entry<Rule, Double> entry : solution.getRuleGradeMap().entrySet()) {
+            for (Map.Entry<RuleWrapper, Double> entry : solution.getRuleGradeMap().entrySet()) {
                 stringBuilder.append(entry.getKey().getRuleId()).append(" - ").append(String.format("%.2f", Math.abs(entry.getValue()))).append(System.lineSeparator());
             }
             rawDisplay.setText(stringBuilder.toString());

@@ -79,6 +79,23 @@ function printWeek(timetable) {
     $(".week").append("Days: " + days, " Hours: " + hours)
 }
 
+function printRules(rules) {
+    $(".weight").append("Hard rules weight: " + rules.hardRulesWeight)
+    let descriptionList = document.createElement("dl")
+    $("#rules").append(descriptionList)
+    for (let i = 0; i < rules.ruleList.length; i++) {
+        let ruleName = document.createElement("dt")
+        ruleName.innerText = rules.ruleList[i].rule.charAt(0) + rules.ruleList[i].rule.slice(1).toLowerCase()
+        descriptionList.append(ruleName)
+        let ruleConfig = document.createElement("dd")
+        ruleConfig.innerText = "Type: " + rules.ruleList[i].type.charAt(0) + rules.ruleList[i].type.slice(1).toLowerCase()
+        if (rules.ruleList[i].configuration !== 0) {
+            ruleConfig.append(", Total hours: " + rules.ruleList[i].configuration)
+        }
+        descriptionList.append(ruleConfig)
+    }
+}
+
 function updateData(timetable) {
     let pTimeTable = JSON.parse(timetable)
     console.log(pTimeTable)
@@ -86,6 +103,8 @@ function updateData(timetable) {
     printTeachers(pTimeTable.teachers.teacherList)
     printClasses(pTimeTable.schoolClasses.schoolClassList)
     printSubjects(pTimeTable.subjects.subjectList)
+    printRules(pTimeTable.rules);
+
 }
 
 $(function () {

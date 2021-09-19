@@ -20,10 +20,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
-    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
-    <orderEntry type="library" name="google-gson-2" level="project" />
     <orderEntry type="module" module-name="descriptor" />
     <orderEntry type="module" module-name="xml_parser" />
+    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" name="google-gson-2" level="project" />
   </component>
 </module>
