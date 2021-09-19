@@ -125,8 +125,18 @@ $(".topPercent").on("change", function () {
     if (topPercent.value > 100) {
         topPercent.value = 100;
     }
-    if (topPercent.value<1){
-        topPercent.value=1
+    if (topPercent.value < 1) {
+        topPercent.value = 1
     }
+})
+
+$(function () {
+    $("#startEngine").on("click", function () {
+        // $.ajax({
+        //     type: "POST"
+        // })
+        let a = $(".Truncation").prop('topPercent')
+        console.log(a)
+    })
 })
 
