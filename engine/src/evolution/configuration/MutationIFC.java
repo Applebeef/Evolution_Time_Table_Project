@@ -8,11 +8,14 @@ import javafx.beans.property.StringProperty;
 public interface MutationIFC {
     String getName();
 
-    double getProbability();
+    default Double getProbability() {
+        return null;
+    }
 
-    int getTupples();
+    default Integer getTupples() {
+        return null;
+    }
 
-    //public void initFromXML(ETTMutation gen); TODO fix
 
     public <T extends Solution> void mutate(T solution);
 
@@ -23,7 +26,8 @@ public interface MutationIFC {
     default StringProperty componentProperty() {
         return null;
     }
-    default DoubleProperty probabilityProperty(){
+
+    default DoubleProperty probabilityProperty() {
         return null;
     }
 }

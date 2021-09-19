@@ -7,9 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Mutations implements MutationsIFC {
-    private List<Mutation> mutationList;
+    private List<MutationWrapper> mutationList;
 
-//    public Mutations(ETTMutations gen) { TODO fix
+//    public Mutations(ETTMutations gen) { //TODO fix
 //        mutationList = Arrays.asList(Mutation.values());
 //        for (ETTMutation m : gen.getETTMutation()) {
 //            for (MutationIFC mutation : mutationList) {

@@ -4,7 +4,6 @@ import evolution.configuration.*;
 import evolution.engine.problem_solution.Problem;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Pair;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 
 

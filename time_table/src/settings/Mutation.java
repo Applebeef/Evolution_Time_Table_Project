@@ -3,30 +3,25 @@ package settings;
 import evolution.configuration.MutationIFC;
 import evolution.engine.problem_solution.Solution;
 import evolution.util.Randomizer;
-import javafx.beans.property.*;
 import solution.Fifth;
 import solution.TimeTableSolution;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public enum Mutation implements MutationIFC {
+public enum Mutation {
     Flipping("Flipping") {
-        @Override
-        public <T extends Solution> void mutate(T solution) {
+        public <T extends Solution> void mutate(T solution, String component, Double probability, Integer tupples) {
             if (solution instanceof TimeTableSolution) {
                 TimeTableSolution timeTableSolution = (TimeTableSolution) solution;
-                if (checkProbability()) {
+                if (checkProbability(probability)) {
                     List<Fifth> toBeMutated = new ArrayList<>();
-                    int mutatedNumber = Randomizer.getRandomNumber(1, getTupples());
+                    int mutatedNumber = Randomizer.getRandomNumber(1, tupples);
                     for (int i = 0; i < mutatedNumber; i++) {
                         toBeMutated.add(timeTableSolution.getFifthsList().get(Randomizer.getRandomNumber(0, timeTableSolution.getFifthsList().size() - 1)));
                     }
                     // Mutate the toBeMutated's according to the component in the mutation:
-                    switch (getComponent()) {
+                    switch (component) {
                         case "D":
                             toBeMutated.forEach(fifth -> fifth.setDay(Randomizer.getRandomNumber(1, timeTableSolution.getTimeTable().getDays())));
                             break;
@@ -49,31 +44,15 @@ public enum Mutation implements MutationIFC {
                 }
             }
         }
-
-        @Override
-        protected void parseString(String config) {
-            Pattern pattern = Pattern.compile("^MaxTupples=(\\d+),Component=([DHCTS])$");
-            Matcher m = pattern.matcher(config);
-            if (m.find()) {
-                this.tupples.set(Integer.parseInt(m.group(1)));
-                this.component = new SimpleStringProperty(m.group(2));
-            }
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + "MaxTupples - " + tupples + " Component - " + component;
-        }
     },
-
     Sizer("Sizer") {
         @Override
-        public <T extends Solution> void mutate(T solution) {
+        public <T extends Solution> void mutate(T solution, String component, Double probability, Integer tupples) {
             if (solution instanceof TimeTableSolution) {
-                if (checkProbability()) {
+                if (checkProbability(probability)) {
                     TimeTableSolution timeTableSolution = (TimeTableSolution) solution;
-                    int mutatedNumber = Randomizer.getRandomNumber(1, getTupples());
-                    if (getTupples() < 0) {
+                    int mutatedNumber = Randomizer.getRandomNumber(1, tupples);
+                    if (tupples < 0) {
                         sizerReduce(mutatedNumber, timeTableSolution);
                     } else {
                         sizerIncrease(mutatedNumber, timeTableSolution);
@@ -96,84 +75,22 @@ public enum Mutation implements MutationIFC {
                 solution.getFifthsList().remove(randomIndex);
             }
         }
-
-        @Override
-        protected void parseString(String config) {
-            Pattern pattern = Pattern.compile("^TotalTupples=(\\d+)$");
-            Matcher m = pattern.matcher(config);
-            if (m.find()) {
-                this.tupples.set(Integer.parseInt(m.group(1)));
-            }
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + "TotalTupples - " + tupples;
-        }
     };
 
-    DoubleProperty probability;
     String name;
-    IntegerProperty tupples;
-    StringProperty component;
 
-    public int getTupples() {
-        return tupples.get();
-    }
-
-    public IntegerProperty tupplesProperty() {
-        return tupples;
-    }
-
-    public String getComponent() {
-        return component.get();
-    }
-
-    boolean checkProbability() {
-        double random = Randomizer.getRandomNumber(0, getProbability());
-        return random < getProbability();
+    boolean checkProbability(double probability) {
+        double random = Randomizer.getRandomNumber(0, probability);
+        return random < probability;
     }
 
     Mutation(String name) {
         this.name = name;
-        probability = new SimpleDoubleProperty(0);
-        tupples = new SimpleIntegerProperty(0);
-        component = new SimpleStringProperty("D");
-    }
-
-    protected abstract void parseString(String config);
-
-    public double getProbability() {
-        return probability.get();
-    }
-
-    public void setProbability(double probability) {
-        this.probability.set(probability);
-    }
-
-    public DoubleProperty probabilityProperty() {
-        return probability;
     }
 
     public String getName() {
         return name;
     }
 
-    public StringProperty componentProperty() {
-        return component;
-    }
-
-//    @Override
-//    public void initFromXML(ETTMutation gen) { TODO fix
-//        setProbability(gen.getProbability());
-//        parseString(gen.getConfiguration());
-//    }
-
-    @Override
-    public String toString() {
-        String lineSeparator = System.getProperty("line.separator");
-        return "   " + "Name - " + name + lineSeparator +
-                "   " + "Probability - " + probability + lineSeparator +
-                "   " + "Configuration - ";
-    }
+    abstract public <T extends Solution> void mutate(T solution, String component, Double probability, Integer tupples);
 }

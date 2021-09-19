@@ -1,10 +1,17 @@
 package time_table;
 
 import Generated.ETTTimeTable;
+import evolution.engine.EvolutionEngine;
 import evolution.engine.problem_solution.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import settings.CrossoverWrapper;
+import settings.Mutations;
 import solution.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TimeTable implements Problem {
     IntegerProperty days, hours;
@@ -13,9 +20,10 @@ public class TimeTable implements Problem {
     Teachers teachers;
     Rules rules;
     String uploader;
-//    Mutations mutations;
-//    List<Crossovers> crossoversList;
+    Mutations mutations;
+    List<CrossoverWrapper> crossoversList;
 //    List<Selections> selectionsList;
+    Map<String, EvolutionEngine> engineMap;
 
 
     public TimeTable(ETTTimeTable gen) {
@@ -26,7 +34,7 @@ public class TimeTable implements Problem {
         subjects = new Subjects(gen.getETTSubjects());
         teachers = new Teachers(gen.getETTTeachers());
         rules = new Rules(gen.getETTRules());
-
+        engineMap = new HashMap<>();
 //        mutations = new Mutations(gen.get); OLD - left for future reference on how to build lists
 //
 //        selectionsList = Arrays.stream(Selections.values()).collect(Collectors.toList());
