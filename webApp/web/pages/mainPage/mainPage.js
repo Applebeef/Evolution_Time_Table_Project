@@ -38,7 +38,6 @@ function ajaxTableUpdate() {
         url: TABLE_UPDATE_SERVLET,
         dataType: 'json',
         success: function (tables) {
-            console.log(tables) // TODO debug delete
             totalTables = tables.length
             refreshTableList(tables);
         }
@@ -46,7 +45,9 @@ function ajaxTableUpdate() {
 }
 
 $(function () {
-    setInterval(ajaxTableUpdate, refreshRate);
+    ajaxTableUpdate()
+
+    setInterval(ajaxTableUpdate, refreshRate)
 })
 
 

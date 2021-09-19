@@ -15,14 +15,77 @@ $(function () {
     }
 })
 
-function updateData(timetable) {
-
-    let teachers = timetable.teachers.teacherList
-    let teacherList = document.getElementById("teachers").ap
-    for (let i = 0; i < teachers.length; i++) {
-        document.createElement("dl");
-        $("#teachers").append()
+function printTeaches(teaches) {
+    let teachesDOM = document.createElement("dd")
+    teachesDOM.append("Teaching subjects: ")
+    for (let i = 0; i < teaches.length; i++) {
+        teachesDOM.append(teaches[i].subjectId)
+        if (i < teaches.length - 1)
+            teachesDOM.append(", ")
     }
+    return teachesDOM
+}
+
+function printTeachers(teacherList) {
+    let descriptionList = document.createElement("dl");
+    $("#teachers").append(descriptionList)
+    for (let i = 0; i < teacherList.length; i++) {
+        let teacherName = document.createElement("dt")
+        let teacherInfo = printTeaches(teacherList[i].teaching.teachesList)
+        teacherName.innerText = teacherList[i].id + " - " + teacherList[i].name
+        descriptionList.append(teacherName)
+        descriptionList.append(teacherInfo)
+    }
+}
+
+function printRequirements(requirementsList) {
+    let requirementsDOM = document.createElement("dd")
+    requirementsDOM.innerText = "Learning: "
+    for (let i = 0; i < requirementsList.length; i++) {
+        requirementsDOM.append("Subject " + requirementsList[i].subjectId + " for " + requirementsList[i].hours + " hours")
+        if (i < requirementsList.length - 1)
+            requirementsDOM.append(", ")
+        else
+            requirementsDOM.append(".")
+    }
+    return requirementsDOM
+}
+
+function printClasses(schoolClassList) {
+    let descriptionList = document.createElement("dl")
+    $("#schoolClasses").append(descriptionList)
+    for (let i = 0; i < schoolClassList.length; i++) {
+        let schoolClassName = document.createElement("dt")
+        schoolClassName.innerText = schoolClassList[i].id + " - " + schoolClassList[i].name
+        let schoolClassInfo = printRequirements(schoolClassList[i].requirements.studyList)
+        descriptionList.append(schoolClassName)
+        descriptionList.append(schoolClassInfo)
+    }
+}
+
+function printSubjects(subjectList) {
+    let descriptionList = document.createElement("dl");
+    $("#subjects").append(descriptionList)
+    for (let i = 0; i < subjectList.length; i++) {
+        let subjectName = document.createElement("dt")
+        subjectName.innerText = subjectList[i].id + " - " + subjectList[i].name
+        descriptionList.append(subjectName)
+    }
+}
+
+function printWeek(timetable) {
+    let days = timetable.days.value
+    let hours = timetable.hours.value
+    $(".week").append("Days: " + days, " Hours: " + hours)
+}
+
+function updateData(timetable) {
+    let pTimeTable = JSON.parse(timetable)
+    console.log(pTimeTable)
+    printWeek(pTimeTable)
+    printTeachers(pTimeTable.teachers.teacherList)
+    printClasses(pTimeTable.schoolClasses.schoolClassList)
+    printSubjects(pTimeTable.subjects.subjectList)
 }
 
 $(function () {
@@ -30,7 +93,7 @@ $(function () {
     var index = url.searchParams.get("index");
     $.ajax({
         type: "GET",
-        data: index,
+        data: {index: index},
         url: "getTableJSON",
         success: function (timetable) {
             updateData(timetable)
