@@ -120,4 +120,13 @@ $(function () {
     })
 })
 
+$(".topPercent").on("change", function () {
+    topPercent = $(this)[0]
+    if (topPercent.value > 100) {
+        topPercent.value = 100;
+    }
+    if (topPercent.value<1){
+        topPercent.value=1
+    }
+})
 
