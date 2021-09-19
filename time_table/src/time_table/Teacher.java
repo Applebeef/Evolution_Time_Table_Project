@@ -5,17 +5,20 @@ import Generated.ETTTeacher;
 public class Teacher implements Identifiable {
     String name;
     int id;
+    int workingHours;
     Teaching teaching;
 
-    Teacher(ETTTeacher gen){
+    Teacher(ETTTeacher gen) {
         name = gen.getETTName();
         id = gen.getId();
+        workingHours = gen.getETTWorkingHours();
         teaching = new Teaching(gen.getETTTeaching());
     }
 
     public String getName() {
         return name;
     }
+
     @Override
     public int getId() {
         return id;
