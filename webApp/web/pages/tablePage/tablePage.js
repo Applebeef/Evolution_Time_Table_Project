@@ -121,22 +121,82 @@ $(function () {
 })
 
 $(".topPercent").on("change", function () {
-    topPercent = $(this)[0]
-    if (topPercent.value > 100) {
+    let topPercent = $(this)[0]
+    if (parseInt(topPercent.value) > 100) {
         topPercent.value = 100;
     }
-    if (topPercent.value < 1) {
+    if (parseInt(topPercent.value) < 1) {
         topPercent.value = 1
     }
 })
 
+$(".populationSize").on("change", function () {
+    let popSize = $(this)[0]
+    if (parseInt(popSize.value) < 100) {
+        popSize.value = 100
+    }
+    $(".elitism").trigger("change")
+})
+
+$(".elitism").on("change", function () {
+    let elitisms = $(".elitism")
+    let popSize = parseInt($(".populationSize")[0].value)
+    for (let i = 0; i < elitisms.length; i++) {
+        if (parseInt(elitisms[i].value) > popSize)
+            elitisms[i].value = popSize
+
+        if (parseInt(elitisms[i].value) < 0)
+            elitisms[i].value = 0
+    }
+})
+
+
+$(".selectionIsActive").on('change', function () {
+    let curr = $(this);
+    let checkboxes = $(".selectionIsActive")
+    if (curr.prop("checked") === true) {
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] !== curr) {
+                checkboxes[i].prop("checked", false)
+            }
+        }
+    } else {
+        curr.prop("checked", true)
+    }
+});
+
+function createTruncationObject(form) {
+    let Truncation = class {
+        constructor(topPercent, isActive, elitism) {
+            this.topPercent = topPercent
+            this.elitism = elitism
+            this.isActive = isActive
+        }
+    };
+    let elements = form.elements
+    let topPercent
+    let isActive
+    let elitism
+    for (let i = 0; i < elements.length; i++) {
+        switch (elements[i].name) {
+            case "topPercent":
+                topPercent = elements[i].value
+                break
+            case "isActive":
+                isActive = elements[i].checked
+                break
+            case "elitism":
+                elitism = elements[i].value
+                break
+        }
+    }
+    return new Truncation(topPercent, isActive, elitism)
+}
+
 $(function () {
     $("#startEngine").on("click", function () {
-        // $.ajax({
-        //     type: "POST"
-        // })
-        let a = document.getElementById('topPercentInput').value
-        console.log(a)
+        let populationSize = $(".populationSize")[0].value
+        let truncation = createTruncationObject($(".Truncation")[0])
     })
 })
 

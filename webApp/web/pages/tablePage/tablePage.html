@@ -56,14 +56,22 @@
     </div>
 </div>
 
-<button class="accordion">Engine</button>
+<button class="accordion">Engine
+</button>
 <div class="panel">
+    <button class="accordion">Initial Population</button>
+    <div class="panel" id="initPopulation">
+        Population Size: <input type="number" class="populationSize" name="populationSize" min="100" value="100">
+    </div>
     <button class="accordion">Selection</button>
     <div class="panel" id="selection">
         <form class="Truncation" style="border: 1px solid black">
-            <input type="checkbox">
+            <input type="checkbox" class="selectionIsActive" name="isActive" checked="checked">
             <a style="font-weight: bold; text-decoration: underline">Truncation</a><br>
-            Top Percent: <input id="topPercentInput" type="number" class="topPercent" name="topPercent" max="100" min="1" value="1"/>
+            Top Percent: <input id="topPercentInput" type="number" class="topPercent" name="topPercent" max="100"
+                                min="1" value="1"/>
+            Elitism: <input id="elitism" type="number" class="elitism" name="elitism"
+                            min="0" value="0"/>
         </form>
     </div>
     <button class="accordion">Crossover</button>
