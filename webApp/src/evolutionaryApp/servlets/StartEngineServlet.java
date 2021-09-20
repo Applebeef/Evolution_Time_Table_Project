@@ -24,6 +24,7 @@ public class StartEngineServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) {
         String str = request.getParameter("selections");
+        Integer initialPopulation = Integer.parseInt(request.getParameter("popSize"));
         Gson gson = new Gson();
         SelectionsJSON selections = gson.fromJson(str, SelectionsJSON.class);
     }

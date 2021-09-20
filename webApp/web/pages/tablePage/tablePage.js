@@ -271,14 +271,19 @@ function createSelectionObject() {
     return new Selections(truncation, rouletteWheel, tournament)
 }
 
+function createCrossoverObject() {
+    return undefined;
+}
+
 $(function () {
     $("#startEngine").on("click", function () {
         let populationSize = $(".populationSize")[0].value
         let selections = createSelectionObject()
+        let crossovers = createCrossoverObject()
 
         $.ajax({
             type: "GET",
-            data: {selections: JSON.stringify(selections)},
+            data: {selections: JSON.stringify(selections), popSize: JSON.stringify(populationSize)},
             url: "startEngine",
             success: function () {
                 console.log("success")
