@@ -66,22 +66,29 @@
     <button class="accordion">Selection</button>
     <div class="panel" id="selection">
         <form class="Truncation" style="border: 1px solid black">
-            <input type="checkbox" class="selectionIsActive" name="isActive" checked="checked">
-            <a style="font-weight: bold; text-decoration: underline">Truncation</a><br>
+            <input type="checkbox" id="truncationIsActive" class="selectionIsActive" name="isActive" checked>
+            <label for="truncationIsActive" style="font-weight: bold; text-decoration: underline">
+                Truncation<br>
+            </label>
             Top Percent: <input type="number" class="topPercent" name="topPercent" max="100"
                                 min="1" value="1"/>
             Elitism: <input type="number" class="elitism" name="elitism"
                             min="0" value="0"/>
         </form>
         <form class="RouletteWheel" style="border: 1px solid black">
-            <input type="checkbox" class="selectionIsActive" name="isActive">
-            <a style="font-weight: bold; text-decoration: underline">Roulette Wheel</a><br>
+            <input type="checkbox" id="rouletteIsActive" class="selectionIsActive" name="isActive">
+            <label for="rouletteIsActive" style="font-weight: bold; text-decoration: underline">
+                Roulette Wheel<br>
+            </label>
+            <!--            <a style="font-weight: bold; text-decoration: underline">Roulette Wheel</a><br>-->
             Elitism: <input type="number" class="elitism" name="elitism"
                             min="0" value="0"/>
         </form>
         <form class="Tournament" style="border: 1px solid black">
-            <input type="checkbox" class="selectionIsActive" name="isActive">
-            <a style="font-weight: bold; text-decoration: underline">Tournament</a><br>
+            <input type="checkbox" id="tournamentIsActive" class="selectionIsActive" name="isActive">
+            <label for="tournamentIsActive" style="font-weight: bold; text-decoration: underline">
+                Tournament<br>
+            </label>
             PTE: <input type="number" class="PTE" name="PTE" max="1"
                         min="0.01" value="0" step="0.01"/>
             Elitism: <input type="number" class="elitism" name="elitism"
@@ -111,7 +118,8 @@
     <div class="panel" id="mutations">
         <form class="flipping" style="border: 1px solid black">
             <a style="font-weight: bold; text-decoration: underline">Flipping</a><br>
-            Probability: <input type="number" class="probability" name="probability" value="0.5" step="0.01" min="0" max="1">
+            Probability: <input type="number" class="probability" name="probability" value="0.5" step="0.01" min="0"
+                                max="1">
             Max Tupples: <input type="number" class="tupples" name="tupples" value="10"/>
             <select name="component" id="component">
                 <option value="D">Day</option>
@@ -123,7 +131,8 @@
         </form>
         <form class="sizer" style="border: 1px solid black">
             <a style="font-weight: bold; text-decoration: underline">Sizer</a><br>
-            Probability: <input type="number" class="probability" name="probability" value="0.5" step="0.01" min="0" max="1">
+            Probability: <input type="number" class="probability" name="probability" value="0.5" step="0.01" min="0"
+                                max="1">
             Total Tupples: <input type="number" class="tupples" name="tupples" value="10"/>
         </form>
     </div>

@@ -150,22 +150,10 @@ $(".elitism").on("change", function () {
     }
 })
 
-
-$(".selectionIsActive").on('change', function () {//TODO make work
-    let curr = $(this);
-    let checkboxes = $(".selectionIsActive")
-    console.log(curr)
-    console.log(checkboxes[1])
-    if (curr.prop("checked") === true) {
-        for (let i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i] !== curr[0]) {
-                checkboxes[i].prop("checked", false)
-            }
-        }
-    } else {
-        //curr.prop("checked", true)
-    }
+$('.selectionIsActive').on('change', function () {
+    $('.selectionIsActive').not(this).prop('checked', false);
 });
+
 
 function createTruncationObject(form) {
     let Truncation = class {
