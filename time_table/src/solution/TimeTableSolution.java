@@ -4,6 +4,7 @@ import evolution.util.Randomizer;
 import evolution.engine.problem_solution.Solution;
 import evolution.rules.Type;
 
+import settings.Crossovers;
 import time_table.*;
 import evolution.util.Pair;
 

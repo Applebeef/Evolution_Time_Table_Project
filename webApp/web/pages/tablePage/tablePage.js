@@ -135,7 +135,7 @@ $(function () {
         // $.ajax({
         //     type: "POST"
         // })
-        let a = $(".Truncation").prop('topPercent')
+        let a = document.getElementById('topPercentInput').value
         console.log(a)
     })
 })
