@@ -14,7 +14,7 @@ import java.util.*;
 public class EvolutionEngine implements Runnable {
     private InitialPopulation initialSolutionPopulation;
 
-    private MutationsIFC mutations;
+    private List<MutationIFC> mutations;
     private List<SelectionIFC> selectionIFCList;
     private List<CrossoverIFC> crossoverIFCList;
 
@@ -38,9 +38,11 @@ public class EvolutionEngine implements Runnable {
     private Instant startTime;
     private LongProperty currentTime;
 
-    public EvolutionEngine() {//TODO add parameter (Settings)
-        //initialSolutionPopulation = new InitialPopulation(gen.getETTInitialPopulation()); TODO fix
-        number_of_generations = 1;
+    public EvolutionEngine(Integer initial_population,List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList) {
+        this.number_of_generations = initial_population;
+        this.selectionIFCList = selectionIFCList;
+        this.crossoverIFCList = crossoverIFCList;
+        this.mutations = mutationIFCList;
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new HashMap<>();
@@ -85,7 +87,7 @@ public class EvolutionEngine implements Runnable {
         return initialSolutionPopulation;
     }
 
-    public MutationsIFC getMutations() {
+    public List<MutationIFC> getMutationIFCList() {
         return mutations;
     }
 
@@ -144,7 +146,7 @@ public class EvolutionEngine implements Runnable {
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
             for (Solution solution : solutionList) {
-                mutations.getMutationList().forEach(mutationIFC -> mutationIFC.mutate(solution));
+                mutations.forEach(mutationIFC -> mutationIFC.mutate(solution));
             }
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());

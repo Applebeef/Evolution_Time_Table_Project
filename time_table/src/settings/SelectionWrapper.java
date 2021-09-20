@@ -2,9 +2,7 @@ package settings;
 
 import evolution.configuration.SelectionIFC;
 import evolution.engine.problem_solution.Solution;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.*;
 
 import java.util.List;
 
@@ -15,11 +13,12 @@ public class SelectionWrapper implements SelectionIFC {
     protected IntegerProperty elitism;
     protected DoubleProperty pte;
 
-    public SelectionWrapper(Selections selection, IntegerProperty topPercentProperty, IntegerProperty elitism, DoubleProperty pte) {
+    public SelectionWrapper(Selections selection, Integer topPercent, Integer elitism, Double pte, Boolean active) {
         this.selection = selection;
-        this.topPercentProperty = topPercentProperty;
-        this.elitism = elitism;
-        this.pte = pte;
+        this.topPercentProperty = new SimpleIntegerProperty(topPercent);
+        this.elitism = new SimpleIntegerProperty(elitism);
+        this.pte = new SimpleDoubleProperty(pte);
+        this.active = new SimpleBooleanProperty(active);
     }
 
     @Override
