@@ -336,18 +336,86 @@ function createCrossoverObject() {
     return new Crossovers(dayTimeOriented, aspectOriented)
 }
 
+function createFlippingObject(flippingElement) {
+    class Flipping {
+        constructor(probability, tupples, component) {
+            this.probability = probability
+            this.tupples = tupples
+            this.component = component
+        }
+    }
+
+    let elements = flippingElement.elements
+    let probability
+    let tupples
+    let component
+    for (let i = 0; i < elements.length; i++) {
+        switch (elements[i].name) {
+            case "probability":
+                probability = parseFloat(elements[i].value)
+                break
+            case "tupples":
+                tupples = parseInt(elements[i].value)
+                break
+            case "component":
+                component = elements[i].value
+                break
+        }
+    }
+    return new Flipping(probability, tupples, component)
+}
+
+function createSizerObjects(sizerElement) {
+    class Sizer {
+        constructor(probability, tupples) {
+            this.probability = probability
+            this.tupples = tupples
+        }
+    }
+
+    let elements = sizerElement.elements
+    let probability
+    let tupples
+    for (let i = 0; i < elements.length; i++) {
+        switch (elements[i].name) {
+            case "probability":
+                probability = parseFloat(elements[i].value)
+                break
+            case "tupples":
+                tupples = parseInt(elements[i].value)
+                break
+        }
+    }
+    return new Sizer(probability, tupples)
+}
+
+function createMutationObject() {
+    class Mutations {
+        constructor(flipping, sizer) {
+            this.flipping = flipping
+            this.sizer = sizer
+        }
+    }
+
+    let flipping = createFlippingObject($(".flipping")[0])
+    let sizer = createSizerObjects($(".sizer")[0])
+    return new Mutations(flipping, sizer)
+}
+
 $(function () {
     $("#startEngine").on("click", function () {
         let populationSize = $(".populationSize")[0].value
         let selections = createSelectionObject()
         let crossovers = createCrossoverObject()
+        let mutations = createMutationObject()
 
         $.ajax({
             type: "GET",
             data: {
                 selections: JSON.stringify(selections),
                 popSize: populationSize,
-                crossovers: JSON.stringify(crossovers)
+                crossovers: JSON.stringify(crossovers),
+                mutations: JSON.stringify(mutations)
             },
             url: "startEngine",
             success: function () {

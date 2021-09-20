@@ -80,7 +80,7 @@ public enum Mutation {
     String name;
 
     boolean checkProbability(double probability) {
-        double random = Randomizer.getRandomNumber(0, probability);
+        double random = Randomizer.getRandomNumber(0.0, 1.0);
         return random < probability;
     }
 

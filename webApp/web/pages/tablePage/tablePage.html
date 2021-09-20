@@ -97,7 +97,7 @@
                                    min="1" value="1"/>
         </form>
         <form class="aspectOriented" style="border: 1px solid black">
-            <input type="checkbox" class="selectionIsActive" name="isActive">
+            <input type="checkbox" class="crossoverIsActive" name="isActive">
             <a style="font-weight: bold; text-decoration: underline">Aspect Oriented</a><br>
             Cutting Points: <input type="number" class="cuttingPoints" name="cuttingPoints"
                                    min="1" value="1"/>
@@ -109,7 +109,23 @@
     </div>
     <button class="accordion">Mutations</button>
     <div class="panel" id="mutations">
-
+        <form class="flipping" style="border: 1px solid black">
+            <a style="font-weight: bold; text-decoration: underline">Flipping</a><br>
+            Probability: <input type="number" class="probability" name="probability" value="0.5" step="0.01" min="0" max="1">
+            Max Tupples: <input type="number" class="tupples" name="tupples" value="10"/>
+            <select name="component" id="component">
+                <option value="D">Day</option>
+                <option value="H">Hour</option>
+                <option value="C">Class</option>
+                <option value="T">Teacher</option>
+                <option value="S">Subjects</option>
+            </select>
+        </form>
+        <form class="sizer" style="border: 1px solid black">
+            <a style="font-weight: bold; text-decoration: underline">Sizer</a><br>
+            Probability: <input type="number" class="probability" name="probability" value="0.5" step="0.01" min="0" max="1">
+            Total Tupples: <input type="number" class="tupples" name="tupples" value="10"/>
+        </form>
     </div>
 </div>
 

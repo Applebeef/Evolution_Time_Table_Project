@@ -2,6 +2,7 @@ package evolutionaryApp.servlets;
 
 import com.google.gson.Gson;
 import evolutionaryApp.utils.engineDataUtils.Crossovers.CrossoversJSON;
+import evolutionaryApp.utils.engineDataUtils.Mutations.MutationsJSON;
 import evolutionaryApp.utils.engineDataUtils.Selections.SelectionsJSON;
 
 import javax.servlet.ServletException;
@@ -30,6 +31,8 @@ public class StartEngineServlet extends HttpServlet {
         SelectionsJSON selections = gson.fromJson(str, SelectionsJSON.class);
         str = request.getParameter("crossovers");
         CrossoversJSON crossovers = gson.fromJson(str, CrossoversJSON.class);
+        str = request.getParameter("mutations");
+        MutationsJSON mutations = gson.fromJson(str, MutationsJSON.class);
 
     }
 
