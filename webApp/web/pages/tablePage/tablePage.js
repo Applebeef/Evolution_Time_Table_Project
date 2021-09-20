@@ -151,7 +151,7 @@ $(".elitism").on("change", function () {
 })
 
 
-$(".selectionIsActive").on('change', function () {
+$(".selectionIsActive").on('change', function () {//TODO make work
     let curr = $(this);
     let checkboxes = $(".selectionIsActive")
     console.log(curr)
@@ -195,10 +195,87 @@ function createTruncationObject(form) {
     return new Truncation(topPercent, isActive, elitism)
 }
 
+$(".PTE").on("change", function () {
+    let pte = $(this)[0]
+    if (parseInt(pte.value) > 1) {
+        pte.value = 1
+    }
+    if (parseInt(pte.value) < 0) {
+        pte.value = 0
+    }
+})
+
+function createRouletteWheelObject(RouletteWheelElement) {
+    let RouletteWheel = class {
+        constructor(isActive, elitism) {
+            this.elitism = elitism
+            this.isActive = isActive
+        }
+    };
+    let elements = RouletteWheelElement.elements
+    let isActive
+    let elitism
+    for (let i = 0; i < elements.length; i++) {
+        switch (elements[i].name) {
+            case "isActive":
+                isActive = elements[i].checked
+                break
+            case "elitism":
+                elitism = elements[i].value
+                break
+        }
+    }
+    return new RouletteWheel(isActive, elitism)
+}
+
+function createTournamentObject(TournamentElement) {
+    let Tournament = class {
+        constructor(pte, isActive, elitism) {
+            this.pte = pte
+            this.elitism = elitism
+            this.isActive = isActive
+        }
+    };
+    let elements = TournamentElement.elements
+    let pte
+    let isActive
+    let elitism
+    for (let i = 0; i < elements.length; i++) {
+        switch (elements[i].name) {
+            case "PTE":
+                pte = elements[i].value
+                break
+            case "isActive":
+                isActive = elements[i].checked
+                break
+            case "elitism":
+                elitism = elements[i].value
+                break
+        }
+    }
+    return new Tournament(pte, isActive, elitism)
+}
+
+function createSelectionObject() {
+    class Selections {
+        constructor(truncation, rouletteWheel, tournament) {
+            this.truncation = truncation
+            this.rouletteWheel = rouletteWheel
+            this.tournament = tournament
+        }
+    }
+
+    let truncation = createTruncationObject($(".Truncation")[0])
+    let rouletteWheel = createRouletteWheelObject($(".RouletteWheel")[0])
+    let tournament = createTournamentObject($(".Tournament")[0])
+    return new Selections(truncation, rouletteWheel, tournament)
+}
+
 $(function () {
     $("#startEngine").on("click", function () {
         let populationSize = $(".populationSize")[0].value
-        let truncation = createTruncationObject($(".Truncation")[0])
+        let selections = createSelectionObject()
+        console.log(selections)
     })
 })
 

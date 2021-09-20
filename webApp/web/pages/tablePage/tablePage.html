@@ -68,15 +68,23 @@
         <form class="Truncation" style="border: 1px solid black">
             <input type="checkbox" class="selectionIsActive" name="isActive" checked="checked">
             <a style="font-weight: bold; text-decoration: underline">Truncation</a><br>
-            Top Percent: <input  type="number" class="topPercent" name="topPercent" max="100"
+            Top Percent: <input type="number" class="topPercent" name="topPercent" max="100"
                                 min="1" value="1"/>
-            Elitism: <input  type="number" class="elitism" name="elitism"
+            Elitism: <input type="number" class="elitism" name="elitism"
                             min="0" value="0"/>
         </form>
         <form class="RouletteWheel" style="border: 1px solid black">
             <input type="checkbox" class="selectionIsActive" name="isActive">
             <a style="font-weight: bold; text-decoration: underline">Roulette Wheel</a><br>
-            Elitism: <input  type="number" class="elitism" name="elitism"
+            Elitism: <input type="number" class="elitism" name="elitism"
+                            min="0" value="0"/>
+        </form>
+        <form class="Tournament" style="border: 1px solid black">
+            <input type="checkbox" class="selectionIsActive" name="isActive">
+            <a style="font-weight: bold; text-decoration: underline">Tournament</a><br>
+            PTE: <input type="number" class="PTE" name="PTE" max="1"
+                        min="0.01" value="0" step="0.01"/>
+            Elitism: <input type="number" class="elitism" name="elitism"
                             min="0" value="0"/>
         </form>
     </div>
