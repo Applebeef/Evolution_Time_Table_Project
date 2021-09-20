@@ -1,5 +1,8 @@
 package evolutionaryApp.servlets;
 
+import com.google.gson.Gson;
+import evolutionaryApp.utils.engineDataUtils.Selections.SelectionsJSON;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,11 +14,18 @@ import java.io.IOException;
 public class StartEngineServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        processRequest(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        processRequest(req, resp);
     }
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
+        String str = request.getParameter("selections");
+        Gson gson = new Gson();
+        SelectionsJSON selections = gson.fromJson(str, SelectionsJSON.class);
+    }
+
 }

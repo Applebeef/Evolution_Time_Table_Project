@@ -90,7 +90,22 @@
     </div>
     <button class="accordion">Crossover</button>
     <div class="panel" id="crossover">
-
+        <form class="dayTimeOriented" style="border: 1px solid black">
+            <input type="checkbox" class="crossoverIsActive" name="isActive" checked="checked">
+            <a style="font-weight: bold; text-decoration: underline">Day Time Oriented</a><br>
+            Cutting Points: <input type="number" class="cuttingPoints" name="cuttingPoints"
+                                   min="1" value="1"/>
+        </form>
+        <form class="aspectOriented" style="border: 1px solid black">
+            <input type="checkbox" class="selectionIsActive" name="isActive" checked="checked">
+            <a style="font-weight: bold; text-decoration: underline">Aspect Oriented</a><br>
+            Cutting Points: <input type="number" class="cuttingPoints" name="cuttingPoints"
+                                   min="1" value="1"/>
+            <select name="orientation" id="orientation">
+                <option value="TEACHER">Teacher</option>
+                <option value="CLASS">Class</option>
+            </select>
+        </form>
     </div>
     <button class="accordion">Mutations</button>
     <div class="panel" id="mutations">

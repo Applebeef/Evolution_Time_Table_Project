@@ -182,13 +182,13 @@ function createTruncationObject(form) {
     for (let i = 0; i < elements.length; i++) {
         switch (elements[i].name) {
             case "topPercent":
-                topPercent = elements[i].value
+                topPercent = parseInt(elements[i].value)
                 break
             case "isActive":
                 isActive = elements[i].checked
                 break
             case "elitism":
-                elitism = elements[i].value
+                elitism = parseInt(elements[i].value)
                 break
         }
     }
@@ -221,7 +221,7 @@ function createRouletteWheelObject(RouletteWheelElement) {
                 isActive = elements[i].checked
                 break
             case "elitism":
-                elitism = elements[i].value
+                elitism = parseInt(elements[i].value)
                 break
         }
     }
@@ -243,13 +243,13 @@ function createTournamentObject(TournamentElement) {
     for (let i = 0; i < elements.length; i++) {
         switch (elements[i].name) {
             case "PTE":
-                pte = elements[i].value
+                pte = parseFloat(elements[i].value)
                 break
             case "isActive":
                 isActive = elements[i].checked
                 break
             case "elitism":
-                elitism = elements[i].value
+                elitism = parseInt(elements[i].value)
                 break
         }
     }
@@ -275,7 +275,18 @@ $(function () {
     $("#startEngine").on("click", function () {
         let populationSize = $(".populationSize")[0].value
         let selections = createSelectionObject()
-        console.log(selections)
+
+        $.ajax({
+            type: "GET",
+            data: {selections: JSON.stringify(selections)},
+            url: "startEngine",
+            success: function () {
+                console.log("success")
+            },
+            error: function () {
+                console.log("error")
+            }
+        })
     })
 })
 
