@@ -154,14 +154,16 @@ $(".elitism").on("change", function () {
 $(".selectionIsActive").on('change', function () {
     let curr = $(this);
     let checkboxes = $(".selectionIsActive")
+    console.log(curr)
+    console.log(checkboxes[1])
     if (curr.prop("checked") === true) {
         for (let i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i] !== curr) {
+            if (checkboxes[i] !== curr[0]) {
                 checkboxes[i].prop("checked", false)
             }
         }
     } else {
-        curr.prop("checked", true)
+        //curr.prop("checked", true)
     }
 });
 
