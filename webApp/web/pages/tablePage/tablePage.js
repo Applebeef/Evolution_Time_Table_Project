@@ -151,7 +151,17 @@ $(".elitism").on("change", function () {
 })
 
 $('.selectionIsActive').on('change', function () {
-    $('.selectionIsActive').not(this).prop('checked', false);
+    let selections = $('.selectionIsActive')
+    selections.not(this).prop('checked', false);
+
+    let allFalse = true
+    for (let i = 0; i < selections.not(this).length; i++) {
+        if (selections.not(this).prop('checked') === true)
+            allFalse = false
+    }
+    if (allFalse === true) {
+        $(this).prop('checked', true)
+    }
 });
 
 
