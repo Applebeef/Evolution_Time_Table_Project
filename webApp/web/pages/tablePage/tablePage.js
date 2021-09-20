@@ -271,8 +271,69 @@ function createSelectionObject() {
     return new Selections(truncation, rouletteWheel, tournament)
 }
 
+function createDayTimeOrientedObject(dayTimeOrientedElement) {
+    class dayTimeOriented {
+        constructor(isActive, cuttingPoints) {
+            this.isActive = isActive
+            this.cuttingPoints = cuttingPoints
+        }
+    }
+
+    let elements = dayTimeOrientedElement.elements
+    let cuttingPoints
+    let isActive
+    for (let i = 0; i < elements.length; i++) {
+        switch (elements[i].name) {
+            case "isActive":
+                isActive = elements[i].checked
+                break
+            case "cuttingPoints":
+                cuttingPoints = parseInt(elements[i].value)
+                break
+        }
+    }
+    return new dayTimeOriented(isActive, cuttingPoints)
+}
+
+function createAspectOrientedObject(aspectOrientedElement) {
+    class aspectOriented {
+        constructor(isActive, cuttingPoints, aspect) {
+            this.isActive = isActive
+            this.cuttingPoints = cuttingPoints
+            this.aspect = aspect
+        }
+    }
+
+    let elements = aspectOrientedElement.elements
+    let isActive
+    let cuttingPoints
+    let aspect
+    for (let i = 0; i < elements.length; i++) {
+        switch (elements[i].name) {
+            case "isActive":
+                isActive = elements[i].checked
+                break
+            case "cuttingPoints":
+                cuttingPoints = parseInt(elements[i].value)
+                break
+            case "aspect":
+                aspect = elements[i].value
+        }
+    }
+    return new aspectOriented(isActive, cuttingPoints, aspect)
+}
+
 function createCrossoverObject() {
-    return undefined;
+    class Crossovers {
+        constructor(dayTimeOriented, aspectOriented) {
+            this.dayTimeOriented = dayTimeOriented
+            this.aspectOriented = aspectOriented
+        }
+    }
+
+    let dayTimeOriented = createDayTimeOrientedObject($(".dayTimeOriented")[0])
+    let aspectOriented = createAspectOrientedObject($(".aspectOriented")[0])
+    return new Crossovers(dayTimeOriented, aspectOriented)
 }
 
 $(function () {
@@ -283,7 +344,11 @@ $(function () {
 
         $.ajax({
             type: "GET",
-            data: {selections: JSON.stringify(selections), popSize: JSON.stringify(populationSize)},
+            data: {
+                selections: JSON.stringify(selections),
+                popSize: populationSize,
+                crossovers: JSON.stringify(crossovers)
+            },
             url: "startEngine",
             success: function () {
                 console.log("success")

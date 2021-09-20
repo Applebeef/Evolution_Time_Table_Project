@@ -1,6 +1,7 @@
 package evolutionaryApp.servlets;
 
 import com.google.gson.Gson;
+import evolutionaryApp.utils.engineDataUtils.Crossovers.CrossoversJSON;
 import evolutionaryApp.utils.engineDataUtils.Selections.SelectionsJSON;
 
 import javax.servlet.ServletException;
@@ -27,6 +28,9 @@ public class StartEngineServlet extends HttpServlet {
         Integer initialPopulation = Integer.parseInt(request.getParameter("popSize"));
         Gson gson = new Gson();
         SelectionsJSON selections = gson.fromJson(str, SelectionsJSON.class);
+        str = request.getParameter("crossovers");
+        CrossoversJSON crossovers = gson.fromJson(str, CrossoversJSON.class);
+
     }
 
 }
