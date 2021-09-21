@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("jsonschema2pojo")
-public class EndingConditions {
+public class EndingConditionsJSON {
 
     @SerializedName("generations")
     @Expose
@@ -16,7 +16,7 @@ public class EndingConditions {
     private Integer fitness;
     @SerializedName("time")
     @Expose
-    private Integer time;
+    private Long time;
 
     public Integer getGenerations() {
         return generations;
@@ -34,11 +34,11 @@ public class EndingConditions {
         this.fitness = fitness;
     }
 
-    public Integer getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(Integer time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 

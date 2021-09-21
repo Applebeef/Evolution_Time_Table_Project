@@ -5,10 +5,17 @@ import evolution.configuration.CrossoverIFC;
 import evolution.configuration.MutationIFC;
 import evolution.configuration.SelectionIFC;
 import evolution.engine.EvolutionEngine;
+import evolution.engine.problem_solution.Problem;
+import evolutionaryApp.utils.ServletUtils;
+import evolutionaryApp.utils.SessionUtils;
 import evolutionaryApp.utils.engineDataUtils.Crossovers.CrossoversJSON;
+import evolutionaryApp.utils.engineDataUtils.EndingConditionsJSON;
 import evolutionaryApp.utils.engineDataUtils.Mutations.MutationsJSON;
 import evolutionaryApp.utils.engineDataUtils.Selections.SelectionsJSON;
+import logicEngine.TimeTableManager.TimeTableManager;
 import settings.*;
+import solution.TimeTableSolution;
+import time_table.TimeTable;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,24 +39,39 @@ public class StartEngineServlet extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) {
-        String str = request.getParameter("selections");
-        Integer initialPopulation = Integer.parseInt(request.getParameter("popSize"));
         Gson gson = new Gson();
+        Integer index = Integer.parseInt(request.getParameter("index"));
+        Integer initialPopulation = Integer.parseInt(request.getParameter("popSize"));
+
+        String str = request.getParameter("selections");
         SelectionsJSON selections = gson.fromJson(str, SelectionsJSON.class);
         str = request.getParameter("crossovers");
         CrossoversJSON crossovers = gson.fromJson(str, CrossoversJSON.class);
         str = request.getParameter("mutations");
         MutationsJSON mutations = gson.fromJson(str, MutationsJSON.class);
+        str = request.getParameter("endingConditions");
+        EndingConditionsJSON endingConditionsJSON = gson.fromJson(str, EndingConditionsJSON.class);
+
 
         List<SelectionIFC> selectionsList = getSelectionsListFromJson(selections);
         List<CrossoverIFC> crossoverWrapperList = getCrossoverListFromJson(crossovers);
         List<MutationIFC> mutationWrapperList = getMutationsListFromJson(mutations);
+        TimeTableManager timeTableManager = ServletUtils.getTimeTableManager(request.getServletContext());
+        TimeTable timeTable = timeTableManager.getTimeTable(index);
 
-        //TODO: Initiate the engine (need to add ending conditions)
-
+        // Initiate the engine:
         EvolutionEngine engine = new EvolutionEngine(initialPopulation, selectionsList, crossoverWrapperList, mutationWrapperList);
-        //engine.initSolutionPopulation();
+        engine.initSolutionPopulation(timeTable, initialPopulation);
+        engine.initThreadParameters(
+                endingConditionsJSON.getFitness(),
+                endingConditionsJSON.getFitness(),
+                endingConditionsJSON.getTime()
+        );
+        engine.setName("Engine " + index);
+        engine.start();
 
+        // Save thread at TimeTable:
+        timeTable.getEngineMap().put(SessionUtils.getUsername(request), engine);
     }
 
     private List<SelectionIFC> getSelectionsListFromJson(SelectionsJSON slc) {
@@ -72,8 +94,8 @@ public class StartEngineServlet extends HttpServlet {
                 new SelectionWrapper(
                         Selections.TOURNAMENT,
                         null,
-                        null,
-                        1.0,
+                        slc.getTournament().getElitism(),
+                        slc.getTournament().getPte(),
                         slc.getTournament().getIsActive()));
         return selectionsList;
     }

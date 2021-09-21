@@ -3,10 +3,12 @@ package time_table;
 import Generated.ETTTimeTable;
 import evolution.engine.EvolutionEngine;
 import evolution.engine.problem_solution.*;
+import evolution.util.Pair;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import settings.CrossoverWrapper;
 import settings.Mutations;
+import settings.SelectionWrapper;
 import solution.*;
 
 import java.util.HashMap;
@@ -20,9 +22,9 @@ public class TimeTable implements Problem {
     Teachers teachers;
     Rules rules;
     String uploader;
-    Mutations mutations;
+    /*Mutations mutations;
     List<CrossoverWrapper> crossoversList;
-//    List<Selections> selectionsList;
+    List<SelectionWrapper> selectionsList;*/
     Map<String, EvolutionEngine> engineMap;
 
 
@@ -95,6 +97,10 @@ public class TimeTable implements Problem {
 
     public int getAmountofSubjects() {
         return this.subjects.getSubjectList().size();
+    }
+
+    public Map<String, EvolutionEngine> getEngineMap() {
+        return engineMap;
     }
 
     @Override

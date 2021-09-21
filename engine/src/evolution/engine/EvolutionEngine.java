@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class EvolutionEngine implements Runnable {
+public class EvolutionEngine extends Thread {
     private InitialPopulation initialSolutionPopulation;
 
     private List<MutationIFC> mutations;
@@ -37,6 +37,8 @@ public class EvolutionEngine implements Runnable {
     private EndingConditions endingConditions;
     private Instant startTime;
     private LongProperty currentTime;
+
+
 
     public EvolutionEngine(Integer initial_population,List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList) {
         this.number_of_generations = initial_population;
@@ -140,7 +142,6 @@ public class EvolutionEngine implements Runnable {
         startTime = Instant.now();
         int lastGeneration = 0;
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
-
             updateCurrentTime();
             // Spawn new generation:
             spawnGeneration();
