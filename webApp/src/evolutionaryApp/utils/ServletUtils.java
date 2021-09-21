@@ -1,6 +1,6 @@
 package evolutionaryApp.utils;
 
-import logicEngine.TimeTableManager.TimeTableManager;
+import logicEngine.DescriptorManager.DescriptorManager;
 import logicEngine.chat.ChatManager;
 import logicEngine.users.UserManager;
 
@@ -43,13 +43,13 @@ public class ServletUtils {
         return (ChatManager) servletContext.getAttribute(CHAT_MANAGER_ATTRIBUTE_NAME);
     }
 
-    public static TimeTableManager getTimeTableManager(ServletContext servletContext) {
+    public static DescriptorManager getDescriptorManager(ServletContext servletContext) {
         synchronized (timeTableManagerLock) {
             if (servletContext.getAttribute(TIMETABLE_MANAGER_ATTRIBUTE_NAME) == null) {
-                servletContext.setAttribute(TIMETABLE_MANAGER_ATTRIBUTE_NAME, new TimeTableManager());
+                servletContext.setAttribute(TIMETABLE_MANAGER_ATTRIBUTE_NAME, new DescriptorManager());
             }
         }
-        return (TimeTableManager) servletContext.getAttribute(TIMETABLE_MANAGER_ATTRIBUTE_NAME);
+        return (DescriptorManager) servletContext.getAttribute(TIMETABLE_MANAGER_ATTRIBUTE_NAME);
     }
 
     public static int getIntParameter(HttpServletRequest request, String name) {

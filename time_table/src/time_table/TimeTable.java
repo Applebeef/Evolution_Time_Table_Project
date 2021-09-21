@@ -25,7 +25,7 @@ public class TimeTable implements Problem {
     /*Mutations mutations;
     List<CrossoverWrapper> crossoversList;
     List<SelectionWrapper> selectionsList;*/
-    Map<String, EvolutionEngine> engineMap;
+
 
 
     public TimeTable(ETTTimeTable gen) {
@@ -36,7 +36,7 @@ public class TimeTable implements Problem {
         subjects = new Subjects(gen.getETTSubjects());
         teachers = new Teachers(gen.getETTTeachers());
         rules = new Rules(gen.getETTRules());
-        engineMap = new HashMap<>();
+
 //        mutations = new Mutations(gen.get); OLD - left for future reference on how to build lists
 //
 //        selectionsList = Arrays.stream(Selections.values()).collect(Collectors.toList());
@@ -97,10 +97,6 @@ public class TimeTable implements Problem {
 
     public int getAmountofSubjects() {
         return this.subjects.getSubjectList().size();
-    }
-
-    public Map<String, EvolutionEngine> getEngineMap() {
-        return engineMap;
     }
 
     @Override

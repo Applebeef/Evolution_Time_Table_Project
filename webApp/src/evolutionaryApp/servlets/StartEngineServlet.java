@@ -5,16 +5,14 @@ import evolution.configuration.CrossoverIFC;
 import evolution.configuration.MutationIFC;
 import evolution.configuration.SelectionIFC;
 import evolution.engine.EvolutionEngine;
-import evolution.engine.problem_solution.Problem;
 import evolutionaryApp.utils.ServletUtils;
 import evolutionaryApp.utils.SessionUtils;
 import evolutionaryApp.utils.engineDataUtils.Crossovers.CrossoversJSON;
 import evolutionaryApp.utils.engineDataUtils.EndingConditionsJSON;
 import evolutionaryApp.utils.engineDataUtils.Mutations.MutationsJSON;
 import evolutionaryApp.utils.engineDataUtils.Selections.SelectionsJSON;
-import logicEngine.TimeTableManager.TimeTableManager;
+import logicEngine.DescriptorManager.DescriptorManager;
 import settings.*;
-import solution.TimeTableSolution;
 import time_table.TimeTable;
 
 import javax.servlet.ServletException;
@@ -52,18 +50,17 @@ public class StartEngineServlet extends HttpServlet {
         str = request.getParameter("endingConditions");
         EndingConditionsJSON endingConditionsJSON = gson.fromJson(str, EndingConditionsJSON.class);
 
-
         List<SelectionIFC> selectionsList = getSelectionsListFromJson(selections);
         List<CrossoverIFC> crossoverWrapperList = getCrossoverListFromJson(crossovers);
         List<MutationIFC> mutationWrapperList = getMutationsListFromJson(mutations);
-        TimeTableManager timeTableManager = ServletUtils.getTimeTableManager(request.getServletContext());
-        TimeTable timeTable = timeTableManager.getTimeTable(index);
+        DescriptorManager descriptorManager = ServletUtils.getDescriptorManager(request.getServletContext());
+        TimeTable timeTable = descriptorManager.getTimeTable(index);
 
         // Initiate the engine:
-        EvolutionEngine engine = new EvolutionEngine(initialPopulation, selectionsList, crossoverWrapperList, mutationWrapperList);
+        EvolutionEngine engine = new EvolutionEngine(selectionsList, crossoverWrapperList, mutationWrapperList);
         engine.initSolutionPopulation(timeTable, initialPopulation);
         engine.initThreadParameters(
-                endingConditionsJSON.getFitness(),
+                endingConditionsJSON.getGenerations(),
                 endingConditionsJSON.getFitness(),
                 endingConditionsJSON.getTime()
         );
@@ -71,7 +68,7 @@ public class StartEngineServlet extends HttpServlet {
         engine.start();
 
         // Save thread at TimeTable:
-        timeTable.getEngineMap().put(SessionUtils.getUsername(request), engine);
+        descriptorManager.getDescriptor(index).addEvolutionEngine(SessionUtils.getUsername(request), engine);
     }
 
     private List<SelectionIFC> getSelectionsListFromJson(SelectionsJSON slc) {

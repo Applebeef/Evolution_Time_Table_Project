@@ -2,7 +2,7 @@ package evolutionaryApp.servlets;
 
 import com.google.gson.Gson;
 import evolutionaryApp.utils.ServletUtils;
-import logicEngine.TimeTableManager.TimeTableManager;
+import logicEngine.DescriptorManager.DescriptorManager;
 import time_table.TimeTable;
 
 import javax.servlet.ServletException;
@@ -19,8 +19,8 @@ public class TableListUpdate extends HttpServlet {
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (PrintWriter out = resp.getWriter()) {
             Gson gson = new Gson();
-            TimeTableManager tableManager = ServletUtils.getTimeTableManager(getServletContext());
-            List<TimeTable> list = tableManager.getTimeTables();
+            DescriptorManager descriptorManager = ServletUtils.getDescriptorManager(getServletContext());
+            List<TimeTable> list = descriptorManager.getTimeTables();
             String res = gson.toJson(list);
             out.println(res);
             out.flush();

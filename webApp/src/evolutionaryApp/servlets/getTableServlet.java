@@ -17,7 +17,7 @@ public class getTableServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int index = Integer.parseInt(req.getParameter("index"));
-        TimeTable timeTable = ServletUtils.getTimeTableManager(req.getServletContext()).getTimeTable(index);
+        TimeTable timeTable = ServletUtils.getDescriptorManager(req.getServletContext()).getTimeTable(index);
         Gson gson = new Gson();
         String json = gson.toJson(timeTable);
         try (PrintWriter out = resp.getWriter()) {

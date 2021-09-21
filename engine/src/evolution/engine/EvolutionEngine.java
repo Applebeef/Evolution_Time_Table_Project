@@ -40,8 +40,8 @@ public class EvolutionEngine extends Thread {
 
 
 
-    public EvolutionEngine(Integer initial_population,List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList) {
-        this.number_of_generations = initial_population;
+    public EvolutionEngine(List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList) {
+        this.number_of_generations = 1;
         this.selectionIFCList = selectionIFCList;
         this.crossoverIFCList = crossoverIFCList;
         this.mutations = mutationIFCList;

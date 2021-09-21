@@ -5,11 +5,13 @@ import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Descriptor {
     protected TimeTable timeTable;
-    protected EvolutionEngine evolutionEngine;
+    Map<String, EvolutionEngine> engineMap;
+
 
     public Descriptor(ETTDescriptor gen) {
         timeTable = new TimeTable(gen.getETTTimeTable());
@@ -19,24 +21,22 @@ public class Descriptor {
         return timeTable;
     }
 
-
     public void setTimeTable(TimeTable value) {
         this.timeTable = value;
     }
 
-    public EvolutionEngine getEngine() {
-        return evolutionEngine;
+    public EvolutionEngine getEngine(String userName) {
+        return engineMap.get(userName);
     }
 
-    public void setEvolutionEngine(EvolutionEngine value) {
-        this.evolutionEngine = value;
+    public void addEvolutionEngine(String userName, EvolutionEngine engine) {
+        this.engineMap.put(userName, engine);
     }
 
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        return "Time Table:" + lineSeparator + timeTable + lineSeparator + lineSeparator +
-                "Evolution Engine:" + lineSeparator + evolutionEngine;
+        return "Time Table:" + lineSeparator + timeTable + lineSeparator + lineSeparator;
     }
 
     public Set<String> checkValidity() {
