@@ -6,9 +6,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class InitialPopulation {
     private IntegerProperty size;
 
-//    public InitialPopulation(ETTInitialPopulation gen){ TODO fix
-//        size = new SimpleIntegerProperty(gen.getSize());
-//    }
+    public InitialPopulation(Integer size){
+        this.size = new SimpleIntegerProperty(size);
+    }
 
     public IntegerProperty sizeProperty() {
         return size;

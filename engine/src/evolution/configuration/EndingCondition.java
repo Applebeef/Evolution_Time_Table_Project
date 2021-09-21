@@ -1,18 +1,9 @@
 package evolution.configuration;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.Property;
-
-import java.sql.Time;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
-
 public enum EndingCondition {
     FITNESS() {
         @Override
-        boolean test(Number current) {
+        boolean test(Number current, Number max) {
             if (max.doubleValue() != 0) {
                 return current.doubleValue() > max.doubleValue();
             } else {
@@ -23,7 +14,7 @@ public enum EndingCondition {
     },
     GENERATIONS() {
         @Override
-        boolean test(Number current) {
+        boolean test(Number current, Number max) {
             if (max.intValue() != 0) {
                 return current.intValue() > max.intValue();
             } else {
@@ -34,7 +25,7 @@ public enum EndingCondition {
     },
     TIME() {
         @Override
-        boolean test(Number current) {
+        boolean test(Number current, Number max) {
             //current = ChronoUnit.SECONDS.between(Instant.EPOCH, Instant.now());
             if (max.longValue() != 0) {
                 return current.longValue() > max.longValue();
@@ -43,19 +34,5 @@ public enum EndingCondition {
         }
     };
 
-    Number max;
-
-    EndingCondition() {
-        this.max = 0;
-    }
-
-    public Number getMax() {
-        return max;
-    }
-
-    public void setMax(Number max) {
-        this.max = max;
-    }
-
-    abstract boolean test(Number current);
+    abstract boolean test(Number current, Number max);
 }

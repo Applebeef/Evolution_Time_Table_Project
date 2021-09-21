@@ -33,7 +33,9 @@ public class SelectionWrapper implements SelectionIFC {
 
     @Override
     public List<Solution> select(List<Solution> solutionList) {
-        return selection.select(solutionList, getTopPercentProperty(), getPte());
+        return selection.select(solutionList,
+                this.topPercentProperty != null ? getTopPercent() : null,
+                this.pte != null ? getPte() : null);
     }
 
     @Override
@@ -41,11 +43,11 @@ public class SelectionWrapper implements SelectionIFC {
         return active.get();
     }
 
-    public int getTopPercentProperty() {
+    public int getTopPercent() {
         return topPercentProperty.get();
     }
 
-    public IntegerProperty topPercentPropertyProperty() {
+    public IntegerProperty topPercentProperty() {
         return topPercentProperty;
     }
 

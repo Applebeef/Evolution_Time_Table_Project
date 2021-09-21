@@ -1,21 +1,28 @@
 package evolution.configuration;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class EndingConditions {
-    List<EndingCondition> endingConditions;
+    Map<EndingCondition, EndingConditionWrapper> endingConditions;
 
     public EndingConditions(int generationsMax, double fitnessMax, long timeMax) {
-        endingConditions = Arrays.asList(EndingCondition.values());
-        EndingCondition.FITNESS.setMax(fitnessMax);
-        EndingCondition.GENERATIONS.setMax(generationsMax);
-        EndingCondition.TIME.setMax(timeMax);
-
+        endingConditions = new HashMap<>();
+        endingConditions.put(EndingCondition.GENERATIONS, new EndingConditionWrapper(EndingCondition.GENERATIONS, generationsMax));
+        endingConditions.put(EndingCondition.FITNESS, new EndingConditionWrapper(EndingCondition.FITNESS, fitnessMax));
+        endingConditions.put(EndingCondition.TIME, new EndingConditionWrapper(EndingCondition.TIME, timeMax));
     }
 
     public boolean test(int generationCurrent, double fitnessCurrent, long timeCurrent) {
-        return EndingCondition.FITNESS.test(fitnessCurrent) || EndingCondition.GENERATIONS.test(generationCurrent) || EndingCondition.TIME.test(timeCurrent);
+        return endingConditions.get(EndingCondition.FITNESS).test(fitnessCurrent) ||
+                endingConditions.get(EndingCondition.GENERATIONS).test(generationCurrent) ||
+                endingConditions.get(EndingCondition.TIME).test(timeCurrent);
     }
 
+    public EndingConditionWrapper getEndingConditionWrapper(EndingCondition ec){
+        return endingConditions.get(ec);
+    }
+
+    public void setEndingConditionsMax(EndingCondition ec, Number max){
+        this.endingConditions.get(ec).setMax(max);
+    }
 }

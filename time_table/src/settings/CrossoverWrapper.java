@@ -12,10 +12,11 @@ public class CrossoverWrapper implements CrossoverIFC {
     protected BooleanProperty active;
     protected IntegerProperty cuttingPoints;
 
-    public CrossoverWrapper(Crossovers crossover, String orientation, Integer cuttingPoints) {
+    public CrossoverWrapper(Crossovers crossover, String orientation, Integer cuttingPoints, Boolean active) {
         this.crossover = crossover;
         this.orientation = orientation != null ? new SimpleStringProperty(orientation) : null;
         this.cuttingPoints = cuttingPoints != null ? new SimpleIntegerProperty(cuttingPoints) : null;
+        this.active = new SimpleBooleanProperty(active);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class CrossoverWrapper implements CrossoverIFC {
 
     @Override
     public List<? extends Solution> cross(Solution s_1, Solution s_2) {
-        return crossover.cross(s_1, s_2, getCuttingPoints(), getOrientation());
+        return crossover.cross(s_1, s_2, getCuttingPoints(), this.orientation != null ? getOrientation() : null);
     }
 
     @Override

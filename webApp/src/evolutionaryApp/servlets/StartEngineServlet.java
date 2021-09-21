@@ -40,6 +40,8 @@ public class StartEngineServlet extends HttpServlet {
         Gson gson = new Gson();
         Integer index = Integer.parseInt(request.getParameter("index"));
         Integer initialPopulation = Integer.parseInt(request.getParameter("popSize"));
+        Integer frequency = Integer.parseInt(request.getParameter("frequency"));
+
 
         String str = request.getParameter("selections");
         SelectionsJSON selections = gson.fromJson(str, SelectionsJSON.class);
@@ -57,13 +59,18 @@ public class StartEngineServlet extends HttpServlet {
         TimeTable timeTable = descriptorManager.getTimeTable(index);
 
         // Initiate the engine:
-        EvolutionEngine engine = new EvolutionEngine(selectionsList, crossoverWrapperList, mutationWrapperList);
-        engine.initSolutionPopulation(timeTable, initialPopulation);
+        EvolutionEngine engine = new EvolutionEngine(
+                selectionsList,
+                crossoverWrapperList,
+                mutationWrapperList,
+                initialPopulation);
         engine.initThreadParameters(
+                frequency,
                 endingConditionsJSON.getGenerations(),
                 endingConditionsJSON.getFitness(),
                 endingConditionsJSON.getTime()
         );
+        engine.initSolutionPopulation(timeTable);
         engine.setName("Engine " + index);
         engine.start();
 
@@ -99,16 +106,20 @@ public class StartEngineServlet extends HttpServlet {
 
     private List<CrossoverIFC> getCrossoverListFromJson(CrossoversJSON crs) {
         List<CrossoverIFC> crossoverWrapperList = new ArrayList<>(2);
+        Boolean b = crs.getDayTimeOriented().getIsActive();
         crossoverWrapperList.add(
                 new CrossoverWrapper(
                         Crossovers.DAY_TIME_ORIENTED,
                         null,
-                        crs.getDayTimeOriented().getCuttingPoints()));
+                        crs.getDayTimeOriented().getCuttingPoints(),
+                        crs.getDayTimeOriented().getIsActive()));
+        b = crs.getAspectOriented().getIsActive();
         crossoverWrapperList.add(
                 new CrossoverWrapper(
                         Crossovers.ASPECT_ORIENTED,
                         crs.getAspectOriented().getAspect(),
-                        crs.getAspectOriented().getCuttingPoints()));
+                        crs.getAspectOriented().getCuttingPoints(),
+                        crs.getAspectOriented().getIsActive()));
         return crossoverWrapperList;
     }
 

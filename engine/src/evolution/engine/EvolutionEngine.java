@@ -31,8 +31,6 @@ public class EvolutionEngine extends Thread {
     private BooleanProperty solutionsReady;
     private BooleanProperty newBestSolution;
 
-    private Integer number_of_generations;
-
     private int frequency;
     private EndingConditions endingConditions;
     private Instant startTime;
@@ -40,11 +38,11 @@ public class EvolutionEngine extends Thread {
 
 
 
-    public EvolutionEngine(List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList) {
-        this.number_of_generations = 1;
+    public EvolutionEngine(List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList, Integer initialPopulation) {
         this.selectionIFCList = selectionIFCList;
         this.crossoverIFCList = crossoverIFCList;
         this.mutations = mutationIFCList;
+        this.initialSolutionPopulation = new InitialPopulation(initialPopulation);
 
         solutionList = new ArrayList<>(initialSolutionPopulation.getSize());
         bestSolutionsPerFrequency = new HashMap<>();
@@ -110,9 +108,8 @@ public class EvolutionEngine extends Thread {
     }
 
 
-    public void initSolutionPopulation(Problem problem, Integer number_of_generations) {
+    public void initSolutionPopulation(Problem problem) {
         Solution solution;
-        this.number_of_generations = number_of_generations;
         solutionList = new ArrayList<>();
 
 //        mutations = problem.getMutations(); TODO fix
@@ -263,9 +260,9 @@ public class EvolutionEngine extends Thread {
         runEvolution();
     }
 
-    public void initThreadParameters(int frequency, double max_fitness, long max_time) {
+    public void initThreadParameters(int frequency, int number_of_generations, double max_fitness, long max_time) {
         this.frequency = frequency;
-        this.endingConditions = new EndingConditions(this.number_of_generations, max_fitness, max_time);
+        this.endingConditions = new EndingConditions(number_of_generations, max_fitness, max_time);
     }
 
     public void setEngineStarted(boolean engineStarted) {
@@ -303,8 +300,12 @@ public class EvolutionEngine extends Thread {
     }
 
     public void addToMaxTime(long timeOffset) {
-        if (EndingCondition.TIME.getMax().longValue() != 0) {
-            EndingCondition.TIME.setMax(EndingCondition.TIME.getMax().longValue() + timeOffset);
+        if (endingConditions.getEndingConditionWrapper(EndingCondition.TIME).getMax().longValue() != 0) {
+            endingConditions
+                    .getEndingConditionWrapper(EndingCondition.TIME)
+                    .setMax(endingConditions
+                            .getEndingConditionWrapper(EndingCondition.TIME)
+                            .getMax().longValue() + timeOffset);
         }
     }
 
@@ -312,8 +313,8 @@ public class EvolutionEngine extends Thread {
         return ChronoUnit.SECONDS.between(startTime, Instant.now());
     }
 
-    public Integer getNumber_of_generations() {
-        return number_of_generations;
+    public Integer getnumberOfGenerations() {
+        return (Integer) this.endingConditions.getEndingConditionWrapper(EndingCondition.GENERATIONS).getMax();
     }
 
     public LongProperty currentTimeProperty() {
@@ -329,11 +330,11 @@ public class EvolutionEngine extends Thread {
     }
 
     public long getMaxTime() {
-        return EndingCondition.TIME.getMax().longValue();
+        return this.endingConditions.getEndingConditionWrapper(EndingCondition.TIME).getMax().longValue();
     }
 
     public double getMaxFitness() {
-        return EndingCondition.FITNESS.getMax().doubleValue();
+        return endingConditions.getEndingConditionWrapper(EndingCondition.FITNESS).getMax().doubleValue();
     }
 
     public synchronized Pair<Integer, Solution> getBestSolution() {

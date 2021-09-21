@@ -23,7 +23,7 @@ public class MutationWrapper implements MutationIFC {
     }
 
     public Double getProbability() {
-        return probability.get();
+        return this.probability != null ? probability.get() : null;
     }
 
     public DoubleProperty probabilityProperty() {
@@ -35,12 +35,15 @@ public class MutationWrapper implements MutationIFC {
     }
 
     public Integer getTupples() {
-        return tupples.get();
+        return this.tupples != null ? tupples.get() : null;
     }
 
     @Override
     public <T extends Solution> void mutate(T solution) {
-        mutation.mutate(solution, getComponent(), getProbability(), getTupples());
+        mutation.mutate(solution,
+                getComponent(),
+                getProbability(),
+                getTupples());
     }
 
     public IntegerProperty tupplesProperty() {
@@ -52,7 +55,7 @@ public class MutationWrapper implements MutationIFC {
     }
 
     public String getComponent() {
-        return component.get();
+        return this.component != null ? component.get() : null;
     }
 
     public StringProperty componentProperty() {

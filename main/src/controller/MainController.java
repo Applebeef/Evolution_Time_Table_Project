@@ -19,13 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.converter.NumberStringConverter;
-import settings.Crossovers;
-import settings.Mutation;
-import settings.Mutations;
-import settings.Selections;
 import solution.TimeTableSolution;
-import time_table.Rule;
 import time_table.RuleWrapper;
 import time_table.SchoolClass;
 import time_table.Teacher;
@@ -692,7 +686,7 @@ public class MainController {
 
 
         if (!generationEndConditionTextField.getText().equals("0")) {
-            generationProgressBar.progressProperty().bind(descriptor.getEngine().currentGenerationProperty().divide((double) descriptor.getEngine().getNumber_of_generations()));
+            generationProgressBar.progressProperty().bind(descriptor.getEngine().currentGenerationProperty().divide((double) descriptor.getEngine().getnumberOfGenerations()));
         }
         if (!fitnessEndConditionTextField.getText().equals("0")) {
             fitnessProgressBar.progressProperty().bind(descriptor.getEngine().bestSolutionFitnessProperty().divide(descriptor.getEngine().getMaxFitness()));
