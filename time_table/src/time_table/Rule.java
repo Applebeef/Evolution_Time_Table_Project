@@ -200,46 +200,65 @@ public enum Rule {
             }
             return score;
         }
-
-        private int parseString() {
-            Pattern pattern = Pattern.compile("^TotalHours=(\\d+)$");
-            Matcher m = pattern.matcher(this.getConfiguration());
-            if (m.find()) {
-                return Integer.parseInt(m.group(1));
-            } else
-                return 0;
+    },
+    DAY_OFF_CLASS("DayOffClass") {
+        @Override
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
+            double score = 100;
+            double reduction = (double) 100 / timeTableSolution.getTimeTable().getAmountofSchoolClasses();
+            //Map with the key representing each teacher,
+            //the value is a set, if a class is studying in a certain day this day is added to the set.
+            Map<Integer, Set<Integer>> weeklyMapPerClass = new HashMap<>();
+            for (Fifth fifth : timeTableSolution.getFifthsList()) {
+                if (fifth.getSchoolClass() != 0 && fifth.getSubject() != 0) {
+                    if (!weeklyMapPerClass.containsKey(fifth.getSchoolClass())) {
+                        weeklyMapPerClass.put(fifth.getSchoolClass(), new HashSet<>());
+                    }
+                    weeklyMapPerClass.get(fifth.getSchoolClass()).add(fifth.getDay());
+                }
+            }
+            //for n=day, n(n+1)/2
+            int daysSigma = timeTableSolution.getTimeTable().getDays() * (timeTableSolution.getTimeTable().getDays() + 1) / 2;
+            for (int i = 1; i <= timeTableSolution.getTimeTable().getAmountofSchoolClasses(); i++) {
+                if (weeklyMapPerClass.containsKey(i)) {
+                    int sum = weeklyMapPerClass.get(i).stream().mapToInt(Integer::intValue).sum();
+                    if (sum == daysSigma) {
+                        score -= reduction;
+                    }
+                }
+            }
+            return score;
+        }
+    },
+    WORKING_HOURS_PREFERENCE("WorkingHoursPreference") {
+        @Override
+        public double test(TimeTableSolution timeTableSolution, Integer configuration) {
+            double score = 100;
+            double reduction = (double) 100 / timeTableSolution.getTimeTable().getAmountofTeachers();
+            Map<Integer, Integer> teacherIntegerMap = new HashMap<>(); // map matching each teacher to the amount of hours taught
+            timeTableSolution.getTimeTable().getTeachers().getTeacherList().forEach(teacher -> teacherIntegerMap.put(teacher.getId(), 0));
+            for (Fifth fifth : timeTableSolution.getFifthsList()) {
+                if (fifth.getSubject() != 0 && fifth.getSchoolClass() != 0) {
+                    Integer hours = teacherIntegerMap.get(fifth.getTeacher());
+                    hours++;
+                    teacherIntegerMap.put(fifth.getTeacher(), hours);
+                }
+            }
+            for (Teacher teacher : timeTableSolution.getTimeTable().getTeachers().getTeacherList()) {
+                if (teacher.getWorkingHours() != teacherIntegerMap.get(teacher.getId())) {
+                    score -= reduction;
+                }
+            }
+            return score;
         }
     };
 
     String ruleId;
-    String Configuration;
-    Type type;
 
     abstract public double test(TimeTableSolution timeTableSolution, Integer configuration);
 
     Rule(String id) {
         ruleId = id;
-    }
-
-    public String getConfiguration() {
-        return Configuration;
-    }
-
-    public void setConfiguration(String configuration) {
-        Configuration = configuration;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return ruleId + " is a " + type + " rule.";
     }
 
     public String getRuleId() {

@@ -28,6 +28,10 @@ public class Teacher implements Identifiable {
         return teaching;
     }
 
+    public int getWorkingHours() {
+        return workingHours;
+    }
+
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");

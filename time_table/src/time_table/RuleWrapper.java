@@ -8,14 +8,17 @@ import java.util.regex.Pattern;
 
 public class RuleWrapper {
     Rule rule;
-    int configuration;
+    Integer configuration;
     Type type;
 
     public RuleWrapper(Rule rule, String configuration, Type type) {
         this.rule = rule;
         if (configuration != null) {
             this.configuration = parseString(configuration);
+        } else {
+            this.configuration = null;
         }
+
         this.type = type;
     }
 
