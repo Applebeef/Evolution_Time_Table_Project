@@ -437,6 +437,7 @@ function createEndingConditions() {
 $(function () {
     $("#startEngine").on("click", function () {
         let populationSize = $(".populationSize")[0].value
+        let frequency = $(".frequency")[0].value
         let selections = createSelectionObject()
         let crossovers = createCrossoverObject()
         let mutations = createMutationObject()
@@ -447,6 +448,7 @@ $(function () {
             data: {
                 selections: JSON.stringify(selections),
                 popSize: populationSize,
+                frequency: frequency,
                 crossovers: JSON.stringify(crossovers),
                 mutations: JSON.stringify(mutations),
                 endingConditions: JSON.stringify(endingConditions),
