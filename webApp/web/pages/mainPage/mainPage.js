@@ -55,6 +55,8 @@ function ajaxTableUpdate() {
         },
         error: function (xhr, status, error) {
             console.log(error)
+            console.log(status)
+            console.log(xhr)
         }
     });
 }

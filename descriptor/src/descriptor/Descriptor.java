@@ -4,17 +4,19 @@ import time_table.TimeTable;
 import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class Descriptor {
     protected TimeTable timeTable;
-    Map<String, EvolutionEngine> engineMap;
+    protected Map<String, EvolutionEngine> engineMap;
 
 
     public Descriptor(ETTDescriptor gen) {
         timeTable = new TimeTable(gen.getETTTimeTable());
+        engineMap = new HashMap<>();
     }
 
     public TimeTable getTimeTable() {

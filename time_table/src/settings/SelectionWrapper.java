@@ -15,9 +15,9 @@ public class SelectionWrapper implements SelectionIFC {
 
     public SelectionWrapper(Selections selection, Integer topPercent, Integer elitism, Double pte, Boolean active) {
         this.selection = selection;
-        this.topPercentProperty = new SimpleIntegerProperty(topPercent);
+        this.topPercentProperty = topPercent != null ? new SimpleIntegerProperty(topPercent) : null;
         this.elitism = new SimpleIntegerProperty(elitism);
-        this.pte = new SimpleDoubleProperty(pte);
+        this.pte = pte != null ? new SimpleDoubleProperty(pte) : null;
         this.active = new SimpleBooleanProperty(active);
     }
 

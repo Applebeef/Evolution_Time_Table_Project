@@ -14,8 +14,8 @@ public class CrossoverWrapper implements CrossoverIFC {
 
     public CrossoverWrapper(Crossovers crossover, String orientation, Integer cuttingPoints) {
         this.crossover = crossover;
-        this.orientation = new SimpleStringProperty(orientation);
-        this.cuttingPoints = new SimpleIntegerProperty(cuttingPoints);
+        this.orientation = orientation != null ? new SimpleStringProperty(orientation) : null;
+        this.cuttingPoints = cuttingPoints != null ? new SimpleIntegerProperty(cuttingPoints) : null;
     }
 
     @Override

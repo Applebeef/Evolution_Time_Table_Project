@@ -13,8 +13,8 @@ public class MutationWrapper implements MutationIFC {
     public MutationWrapper(Mutation mutation, Double probability, Integer tupples, String component) {
         this.mutation = mutation;
         this.probability = new SimpleDoubleProperty(probability);
-        this.tupples = new SimpleIntegerProperty(tupples);
-        this.component = new SimpleStringProperty(component);
+        this.tupples = tupples != null ? new SimpleIntegerProperty(tupples) : null;
+        this.component = component != null ? new SimpleStringProperty(component) : null;
     }
 
     @Override
