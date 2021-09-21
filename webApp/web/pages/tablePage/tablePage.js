@@ -1,4 +1,9 @@
 let index
+let days
+let hours
+let subjects
+let teachers
+let schoolClasses
 
 $(function () {
     var acc = document.getElementsByClassName("accordion");
@@ -31,6 +36,7 @@ function printTeaches(teaches) {
 function printTeachers(teacherList) {
     let descriptionList = document.createElement("dl");
     $("#teachers").append(descriptionList)
+    teachers = teacherList.length
     for (let i = 0; i < teacherList.length; i++) {
         let teacherName = document.createElement("dt")
         let teacherInfo = printTeaches(teacherList[i].teaching.teachesList)
@@ -55,6 +61,7 @@ function printRequirements(requirementsList) {
 
 function printClasses(schoolClassList) {
     let descriptionList = document.createElement("dl")
+    schoolClasses = schoolClassList.length
     $("#schoolClasses").append(descriptionList)
     for (let i = 0; i < schoolClassList.length; i++) {
         let schoolClassName = document.createElement("dt")
@@ -68,6 +75,7 @@ function printClasses(schoolClassList) {
 function printSubjects(subjectList) {
     let descriptionList = document.createElement("dl");
     $("#subjects").append(descriptionList)
+    subjects = subjectList.length
     for (let i = 0; i < subjectList.length; i++) {
         let subjectName = document.createElement("dt")
         subjectName.innerText = subjectList[i].id + " - " + subjectList[i].name
@@ -76,8 +84,8 @@ function printSubjects(subjectList) {
 }
 
 function printWeek(timetable) {
-    let days = timetable.days.value
-    let hours = timetable.hours.value
+    days = timetable.days.value
+    hours = timetable.hours.value
     $(".week").append("Days: " + days, " Hours: " + hours)
 }
 
@@ -132,17 +140,19 @@ $(".topPercent").on("change", function () {
     }
 })
 
-$(".populationSize").on("change", function () {
+$("#populationSizeInput").on("change", function () {
     let popSize = $(this)[0]
     if (parseInt(popSize.value) < 100) {
         popSize.value = 100
     }
     $(".elitism").trigger("change")
+    console.log("stuff")
+    $(".tupples").trigger("change")
 })
 
 $(".elitism").on("change", function () {
     let elitisms = $(".elitism")
-    let popSize = parseInt($(".populationSize")[0].value)
+    let popSize = parseInt($("#populationSizeInput")[0].value)
     for (let i = 0; i < elitisms.length; i++) {
         if (parseInt(elitisms[i].value) > popSize)
             elitisms[i].value = popSize
@@ -434,10 +444,11 @@ function createEndingConditions() {
     return new EndingConditions(generations, fitness, time)
 }
 
+//startEngine button
 $(function () {
     $("#startEngine").on("click", function () {
-        let populationSize = $(".populationSize")[0].value
-        let frequency = $(".frequency")[0].value
+        let populationSize = parseInt($("#populationSizeInput")[0].value)
+        let frequency = parseInt($("#frequencyInput")[0].value)
         let selections = createSelectionObject()
         let crossovers = createCrossoverObject()
         let mutations = createMutationObject()
@@ -463,4 +474,63 @@ $(function () {
             }
         })
     })
+})
+
+$("#frequencyInput").on("change", function () {
+    let freq = $(this)[0]
+    if (parseInt(freq.value) < 1) {
+        freq.value = 1
+    }
+})
+
+$(".cuttingPoints").on("change", function () {
+    let cuttingPoint = $(this)[0]
+    if (parseInt(cuttingPoint.value) < 1)
+        cuttingPoint.value = 1
+    if (parseInt(cuttingPoint.value) > days * hours * schoolClasses * teachers * subjects) {
+        cuttingPoint.value = days * hours * schoolClasses * teachers * subjects
+    }
+})
+
+$(".tupples").on("change", function () {
+    let tupple = $(".tupples")
+    let initialPop = parseInt($("#populationSizeInput")[0].value)
+    for (let i = 0; i < tupple.length; i++) {
+        if (Math.abs(parseInt(tupple[i].value)) > initialPop) {
+            tupple[i].value = initialPop * Math.sign(tupple[i].value)
+        }
+    }
+})
+
+$("#maxTupples").on("change", function () {
+    let tupple = $(this)[0]
+    if (parseInt(tupple.value) < 1)
+        tupple.value = 1
+})
+
+$(".probability").on("change", function () {
+    let prob = $(this)[0]
+    if (parseInt(prob.value) < 0)
+        prob.value = 0
+    if (parseInt(prob.value) > 1)
+        prob.value = 1
+})
+
+$(".endingCondition").on("change", function () {
+    let ec = $(this)[0]
+    if (parseInt(ec.value) < 0)
+        ec.value = 0
+
+    if (ec.id === "fitness") {
+        if (parseInt(ec.value) > 100)
+            ec.value = 100
+    }
+
+    let allEC = $(".endingCondition")
+    console.log(allEC)
+    let allZero = true
+    for (let i = 0; i < allEC.length; i++) {
+        allZero = (parseInt(allEC[i].value) === 0) && allZero
+    }
+    $("#startEngine").prop("disabled", allZero)
 })

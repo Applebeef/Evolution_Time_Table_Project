@@ -37,7 +37,6 @@ public class EvolutionEngine extends Thread {
     private LongProperty currentTime;
 
 
-
     public EvolutionEngine(List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList, Integer initialPopulation) {
         this.selectionIFCList = selectionIFCList;
         this.crossoverIFCList = crossoverIFCList;
@@ -112,10 +111,6 @@ public class EvolutionEngine extends Thread {
         Solution solution;
         solutionList = new ArrayList<>();
 
-//        mutations = problem.getMutations(); TODO fix
-//        selectionIFCList = problem.getSelectionsList();
-//        crossoverIFCList = problem.getCrossoverList();
-
         for (int i = 0; i < initialSolutionPopulation.getSize(); i++) {
             // Create solution:
             solution = problem.solve();
@@ -131,6 +126,7 @@ public class EvolutionEngine extends Thread {
         newBestSolution.set(false);
         engineStarted.set(true);
         solutionsReady.set(true);
+        enginePaused.set(false);
     }
 
     public void runEvolution() {
@@ -140,6 +136,7 @@ public class EvolutionEngine extends Thread {
         int lastGeneration = 0;
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
             updateCurrentTime();
+            System.out.println(i);//TODO debug - delete
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):

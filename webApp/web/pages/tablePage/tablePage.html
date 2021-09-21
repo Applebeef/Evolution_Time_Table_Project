@@ -61,11 +61,11 @@
 <div class="panel">
     <button class="accordion">Initial Population</button>
     <div class="panel" id="initPopulation">
-        Population Size: <input type="number" class="populationSize" name="populationSize" min="100" value="100">
+        Population Size: <input type="number" id="populationSizeInput" name="populationSize" min="100" value="100">
     </div>
     <button class="accordion">Frequency</button>
     <div class="panel" id="frequency">
-        Frequency: <input type="number" class="frequency" name="frequency" min="1" value="10">
+        Frequency: <input type="number" id="frequencyInput" class="frequencyInput" name="frequency" min="1" value="10">
     </div>
     <button class="accordion">Selection</button>
     <div class="panel" id="selection">
@@ -84,7 +84,6 @@
             <label for="rouletteIsActive" style="font-weight: bold; text-decoration: underline">
                 Roulette Wheel<br>
             </label>
-            <!--            <a style="font-weight: bold; text-decoration: underline">Roulette Wheel</a><br>-->
             Elitism: <input type="number" class="elitism" name="elitism"
                             min="0" value="0"/>
         </form>
@@ -94,7 +93,7 @@
                 Tournament<br>
             </label>
             PTE: <input type="number" class="PTE" name="PTE" max="1"
-                        min="0.01" value="0" step="0.01"/>
+                        min="0" value="0" step="0.01"/>
             Elitism: <input type="number" class="elitism" name="elitism"
                             min="0" value="0"/>
         </form>
@@ -124,7 +123,7 @@
             <a style="font-weight: bold; text-decoration: underline">Flipping</a><br>
             Probability: <input type="number" class="probability" name="probability" value="0.5" step="0.01" min="0"
                                 max="1">
-            Max Tupples: <input type="number" class="tupples" name="tupples" value="10"/>
+            Max Tupples: <input type="number" id="maxTupples" class="tupples" name="tupples" value="10"/>
             <select name="component" id="component">
                 <option value="D">Day</option>
                 <option value="H">Hour</option>
@@ -144,18 +143,21 @@
     <div class="panel" id="endingConditions">
         <form class="generations" style="border: 1px solid black">
             <a style="font-weight: bold; text-decoration: underline">Generations</a><br>
-            Generations: <input type="number" class="endingCondition" name="generations"
+            Generations: <input type="number" class="endingCondition" id="generationsEC" name="generations"
                                 min="0" value="100"/>
+            <progress id="generations" value="0"></progress>
         </form>
         <form class="fitness" style="border: 1px solid black">
             <a style="font-weight: bold; text-decoration: underline">Fitness</a><br>
-            Generations: <input type="number" class="endingCondition" name="fitness"
-                                min="0" value="0"/>
+            Fitness: <input type="number" class="endingCondition" id="fitnessEC" name="fitness"
+                            min="0" value="0"/>
+            <progress id="fitness" value="0"></progress>
         </form>
         <form class="time" style="border: 1px solid black">
             <a style="font-weight: bold; text-decoration: underline">Time</a><br>
-            Generations: <input type="number" class="endingCondition" name="time"
-                                min="0" value="0"/>
+            Time: <input type="number" class="endingCondition" id="timeEC" name="time"
+                         min="0" value="0"/>
+            <progress id="time" value="0"></progress>
         </form>
     </div>
 </div>
