@@ -18,16 +18,16 @@ public class JavaFXMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        primaryStage.setTitle("Evolutionary Time Table");
-
-        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("../resources/main.fxml")));
-        Parent load = loader.load();
-        MainController controller = loader.getController();
-        controller.setTextBoundaries();
-        controller.setPrimaryStage(primaryStage);
-
-        Scene scene = new Scene(load);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+//        primaryStage.setTitle("Evolutionary Time Table");
+//
+//        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("../resources/main.fxml")));
+//        Parent load = loader.load();
+//        MainController controller = loader.getController();
+//        controller.setTextBoundaries();
+//        controller.setPrimaryStage(primaryStage);
+//
+//        Scene scene = new Scene(load);
+//        primaryStage.setScene(scene);
+//        primaryStage.show();
     }
 }

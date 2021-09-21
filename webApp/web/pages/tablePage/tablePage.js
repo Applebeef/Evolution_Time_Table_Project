@@ -91,7 +91,7 @@ function printRules(rules) {
         descriptionList.append(ruleName)
         let ruleConfig = document.createElement("dd")
         ruleConfig.innerText = "Type: " + rules.ruleList[i].type.charAt(0) + rules.ruleList[i].type.slice(1).toLowerCase()
-        if (rules.ruleList[i].configuration !== 0) {
+        if (rules.ruleList[i].configuration !== undefined) {
             ruleConfig.append(", Total hours: " + rules.ruleList[i].configuration)
         }
         descriptionList.append(ruleConfig)
