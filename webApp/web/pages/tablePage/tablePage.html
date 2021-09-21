@@ -136,6 +136,24 @@
             Total Tupples: <input type="number" class="tupples" name="tupples" value="10"/>
         </form>
     </div>
+    <button class="accordion">Ending Conditions</button>
+    <div class="panel" id="endingConditions">
+        <form class="generations" style="border: 1px solid black">
+            <a style="font-weight: bold; text-decoration: underline">Generations</a><br>
+            Generations: <input type="number" class="endingCondition" name="generations"
+                                min="0" value="100"/>
+        </form>
+        <form class="fitness" style="border: 1px solid black">
+            <a style="font-weight: bold; text-decoration: underline">Fitness</a><br>
+            Generations: <input type="number" class="endingCondition" name="fitness"
+                                min="0" value="0"/>
+        </form>
+        <form class="time" style="border: 1px solid black">
+            <a style="font-weight: bold; text-decoration: underline">Time</a><br>
+            Generations: <input type="number" class="endingCondition" name="time"
+                                min="0" value="0"/>
+        </form>
+    </div>
 </div>
 
 <button class="accordion">Results</button>

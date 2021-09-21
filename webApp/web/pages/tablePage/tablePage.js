@@ -1,3 +1,5 @@
+let index
+
 $(function () {
     var acc = document.getElementsByClassName("accordion");
     var i;
@@ -109,7 +111,7 @@ function updateData(timetable) {
 
 $(function () {
     var url = new URL(window.location.href);
-    var index = url.searchParams.get("index");
+    index = url.searchParams.get("index");
     $.ajax({
         type: "GET",
         data: {index: index},
@@ -157,6 +159,20 @@ $('.selectionIsActive').on('change', function () {
     let allFalse = true
     for (let i = 0; i < selections.not(this).length; i++) {
         if (selections.not(this).prop('checked') === true)
+            allFalse = false
+    }
+    if (allFalse === true) {
+        $(this).prop('checked', true)
+    }
+});
+
+$('.crossoverIsActive').on('change', function () {
+    let crossovers = $('.crossoverIsActive')
+    crossovers.not(this).prop('checked', false);
+
+    let allFalse = true
+    for (let i = 0; i < crossovers.not(this).length; i++) {
+        if (crossovers.not(this).prop('checked') === true)
             allFalse = false
     }
     if (allFalse === true) {
@@ -400,12 +416,31 @@ function createMutationObject() {
     return new Mutations(flipping, sizer)
 }
 
+function createEndingConditions() {
+    class EndingConditions {
+        constructor(generations, fitness, time) {
+            this.generations = generations
+            this.fitness = fitness
+            this.time = time
+        }
+    }
+
+    let generations
+    let fitness
+    let time
+    generations = parseInt($(".generations")[0].elements[0].value)
+    fitness = parseInt($(".fitness")[0].elements[0].value)
+    time = parseInt($(".time")[0].elements[0].value)
+    return new EndingConditions(generations, fitness, time)
+}
+
 $(function () {
     $("#startEngine").on("click", function () {
         let populationSize = $(".populationSize")[0].value
         let selections = createSelectionObject()
         let crossovers = createCrossoverObject()
         let mutations = createMutationObject()
+        let endingConditions = createEndingConditions()
 
         $.ajax({
             type: "GET",
@@ -413,7 +448,9 @@ $(function () {
                 selections: JSON.stringify(selections),
                 popSize: populationSize,
                 crossovers: JSON.stringify(crossovers),
-                mutations: JSON.stringify(mutations)
+                mutations: JSON.stringify(mutations),
+                endingConditions: JSON.stringify(endingConditions),
+                index: index
             },
             url: "startEngine",
             success: function () {
