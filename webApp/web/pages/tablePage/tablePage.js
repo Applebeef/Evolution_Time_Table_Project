@@ -4,6 +4,7 @@ let hours
 let subjects
 let teachers
 let schoolClasses
+const refreshRate = 2000
 
 $(function () {
     var acc = document.getElementsByClassName("accordion");
@@ -147,7 +148,7 @@ function createStartButton() {
     $(".engineControls").append(startButton)
 }
 
-function updateData(timetable) {
+function updateTimeTableData(timetable) {
     let pTimeTable = JSON.parse(timetable)
     console.log(pTimeTable)
     printWeek(pTimeTable)
@@ -159,6 +160,20 @@ function updateData(timetable) {
     createStartButton()
 }
 
+function updateEngineData(data) {
+    console.log(data)
+}
+
+function engineSettingsAndResultsAjax() {
+    $.ajax({
+        data: {index: index},
+        url: "getEngineUpdates",
+        success: function (data) {
+            updateEngineData(data)
+        }
+    })
+}
+
 $(function () {
     var url = new URL(window.location.href);
     index = url.searchParams.get("index");
@@ -167,9 +182,12 @@ $(function () {
         data: {index: index},
         url: "getTableJSON",
         success: function (timetable) {
-            updateData(timetable)
+            updateTimeTableData(timetable)
         }
     })
+
+    engineSettingsAndResultsAjax()
+    setInterval(engineSettingsAndResultsAjax, refreshRate)
 })
 
 $(".topPercent").on("change", function () {
