@@ -487,6 +487,17 @@ function createEndingConditions() {
 
 function stopEngine() {
     $(".engineControls").empty()
+    $.ajax({
+        type: "GET",
+        data: {index: index},
+        url: "stopEngine",
+        success: function () {
+            console.log("stop engine - success")
+        },
+        error: function () {
+            console.log("stop engine - error")
+        }
+    })
     createStartButton()
 }
 
@@ -498,21 +509,22 @@ function engineStarted() {
     pauseButton.id = "pauseButton"
     pauseButton.innerText = "Pause"
     pauseButton.onclick = function () {
-        if (pauseButton.innerText === "Resume")
-            pauseButton.innerText = "Pause"
-        else
-            pauseButton.innerText = "Resume"
         $.ajax({
             type: "GET",
             data: {index: index},
             url: "pause",
             success: function () {
-                console.log("success")
+                console.log(pauseButton.innerText + " success")
             },
             error: function () {
-                console.log("error")
+                console.log(pauseButton.innerText + " error")
             }
         })
+
+        if (pauseButton.innerText === "Resume")
+            pauseButton.innerText = "Pause"
+        else
+            pauseButton.innerText = "Resume"
     }
     stopButton.id = "stopButton"
     stopButton.innerText = "Stop"
