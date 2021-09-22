@@ -106,6 +106,47 @@ function printRules(rules) {
     }
 }
 
+function sendStartRequest() {
+    let populationSize = parseInt($("#populationSizeInput")[0].value)
+    let frequency = parseInt($("#frequencyInput")[0].value)
+    let selections = createSelectionObject()
+    let crossovers = createCrossoverObject()
+    let mutations = createMutationObject()
+    let endingConditions = createEndingConditions()
+
+    $.ajax({
+        type: "GET",
+        data: {
+            selections: JSON.stringify(selections),
+            popSize: populationSize,
+            frequency: frequency,
+            crossovers: JSON.stringify(crossovers),
+            mutations: JSON.stringify(mutations),
+            endingConditions: JSON.stringify(endingConditions),
+            index: index
+        },
+        url: "startEngine",
+        success: function () {
+            console.log("start engine - success")
+            engineStarted()
+
+        },
+        error: function () {
+            console.log("start engine - error")
+        }
+    })
+}
+
+function createStartButton() {
+    let startButton = document.createElement("button")
+    startButton.id = "startEngine"
+    startButton.innerText = "Start engine"
+    startButton.onclick = function () {
+        sendStartRequest()
+    }
+    $(".engineControls").append(startButton)
+}
+
 function updateData(timetable) {
     let pTimeTable = JSON.parse(timetable)
     console.log(pTimeTable)
@@ -115,6 +156,7 @@ function updateData(timetable) {
     printSubjects(pTimeTable.subjects.subjectList)
     printRules(pTimeTable.rules);
 
+    createStartButton()
 }
 
 $(function () {
@@ -189,7 +231,6 @@ $('.crossoverIsActive').on('change', function () {
         $(this).prop('checked', true)
     }
 });
-
 
 function createTruncationObject(form) {
     let Truncation = class {
@@ -444,28 +485,27 @@ function createEndingConditions() {
     return new EndingConditions(generations, fitness, time)
 }
 
-//startEngine button
-$(function () {
-    $("#startEngine").on("click", function () {
-        let populationSize = parseInt($("#populationSizeInput")[0].value)
-        let frequency = parseInt($("#frequencyInput")[0].value)
-        let selections = createSelectionObject()
-        let crossovers = createCrossoverObject()
-        let mutations = createMutationObject()
-        let endingConditions = createEndingConditions()
+function stopEngine() {
+    $(".engineControls").empty()
+    createStartButton()
+}
 
+function engineStarted() {
+    let engineControls = $(".engineControls")
+    engineControls.empty()
+    let pauseButton = document.createElement("button")
+    let stopButton = document.createElement("button")
+    pauseButton.id = "pauseButton"
+    pauseButton.innerText = "Pause"
+    pauseButton.onclick = function () {
+        if (pauseButton.innerText === "Resume")
+            pauseButton.innerText = "Pause"
+        else
+            pauseButton.innerText = "Resume"
         $.ajax({
             type: "GET",
-            data: {
-                selections: JSON.stringify(selections),
-                popSize: populationSize,
-                frequency: frequency,
-                crossovers: JSON.stringify(crossovers),
-                mutations: JSON.stringify(mutations),
-                endingConditions: JSON.stringify(endingConditions),
-                index: index
-            },
-            url: "startEngine",
+            data: {index: index},
+            url: "pause",
             success: function () {
                 console.log("success")
             },
@@ -473,8 +513,15 @@ $(function () {
                 console.log("error")
             }
         })
-    })
-})
+    }
+    stopButton.id = "stopButton"
+    stopButton.innerText = "Stop"
+    stopButton.onclick = function () {
+        stopEngine()
+    }
+    engineControls.append(stopButton)
+    engineControls.append(pauseButton)
+}
 
 $("#frequencyInput").on("change", function () {
     let freq = $(this)[0]
