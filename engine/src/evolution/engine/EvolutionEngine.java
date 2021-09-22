@@ -36,6 +36,8 @@ public class EvolutionEngine extends Thread {
     private Instant startTime;
     private LongProperty currentTime;
 
+    Instant pauseStart;
+
 
     public EvolutionEngine(List<SelectionIFC> selectionIFCList, List<CrossoverIFC> crossoverIFCList, List<MutationIFC> mutationIFCList, Integer initialPopulation) {
         this.selectionIFCList = selectionIFCList;
@@ -134,7 +136,8 @@ public class EvolutionEngine extends Thread {
         //Stop the loop if we reach the desired amount of generations or reach max fitness.
         startTime = Instant.now();
         int lastGeneration = 0;
-        for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !Thread.currentThread().isInterrupted(); i++) {
+        long timeOffset = 0;
+        for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !isInterrupted(); i++) {
             updateCurrentTime();
             System.out.println(i);//TODO debug - delete
             // Spawn new generation:
@@ -162,16 +165,19 @@ public class EvolutionEngine extends Thread {
                     newBestSolution.set(false);
                 }
             }
-            synchronized (Thread.currentThread()) {
-                if (isEnginePaused()) {
-                    try {
-                        Thread.currentThread().wait();
-                    } catch (InterruptedException e) {
-                        break;
+            lastGeneration = i;
+            if (isEnginePaused()) {
+                try {
+                    synchronized (this) {
+                        this.pauseStart = Instant.now();
+                        wait();
+                        timeOffset = ChronoUnit.SECONDS.between(pauseStart, Instant.now());
                     }
+                    addToMaxTime(timeOffset);
+                } catch (InterruptedException e) {
+                    break;
                 }
             }
-            lastGeneration = i;
         }
         currentGenerationProperty.set(lastGeneration);
         engineStarted.set(false);
@@ -348,5 +354,12 @@ public class EvolutionEngine extends Thread {
 
     public void setNewBestSolution(boolean newBestSolution) {
         this.newBestSolution.set(newBestSolution);
+    }
+
+    public synchronized void pauseOrResumeEngine() {
+        if (isEnginePaused()) {
+            notify();
+        }
+        setEnginePaused(!this.enginePaused.get());
     }
 }

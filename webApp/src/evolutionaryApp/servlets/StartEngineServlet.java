@@ -36,12 +36,12 @@ public class StartEngineServlet extends HttpServlet {
         processRequest(req, resp);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)  {
         Gson gson = new Gson();
         Integer index = Integer.parseInt(request.getParameter("index"));
         Integer initialPopulation = Integer.parseInt(request.getParameter("popSize"));
         Integer frequency = Integer.parseInt(request.getParameter("frequency"));
-
+        String user = SessionUtils.getUsername(request);
 
         String str = request.getParameter("selections");
         SelectionsJSON selections = gson.fromJson(str, SelectionsJSON.class);
@@ -57,6 +57,19 @@ public class StartEngineServlet extends HttpServlet {
         List<MutationIFC> mutationWrapperList = getMutationsListFromJson(mutations);
         DescriptorManager descriptorManager = ServletUtils.getDescriptorManager(request.getServletContext());
         TimeTable timeTable = descriptorManager.getTimeTable(index);
+
+        //TODO: If a user is already running an engine on a timetable - reset current engine instead of instantiating new
+
+        EvolutionEngine possibleUserEngine = descriptorManager.getDescriptor(index).getEngine(user);
+        if (possibleUserEngine != null) {
+            if(possibleUserEngine.isAlive()){
+                possibleUserEngine.interrupt();
+                try {
+                    possibleUserEngine.join();
+                }catch(Exception e){
+                }
+            }
+        }
 
         // Initiate the engine:
         EvolutionEngine engine = new EvolutionEngine(
@@ -75,7 +88,7 @@ public class StartEngineServlet extends HttpServlet {
         engine.start();
 
         // Save thread at TimeTable:
-        descriptorManager.getDescriptor(index).addEvolutionEngine(SessionUtils.getUsername(request), engine);
+        descriptorManager.getDescriptor(index).addEvolutionEngine(user, engine);
     }
 
     private List<SelectionIFC> getSelectionsListFromJson(SelectionsJSON slc) {
