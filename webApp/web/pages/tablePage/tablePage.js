@@ -300,6 +300,17 @@ $(function () {
         }
     })
 
+    //TODO change later
+    $.ajax({
+        type: "GET",
+        data: {index: index},
+        url: "result",
+        success: function (result) {
+            console.log(result)
+        }
+
+    })
+
     // engineSettingsAndResultsAjax() TODO
     // setInterval(engineSettingsAndResultsAjax, refreshRate)
 })
