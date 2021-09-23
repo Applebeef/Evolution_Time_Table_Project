@@ -362,4 +362,8 @@ public class EvolutionEngine extends Thread {
         }
         setEnginePaused(!this.enginePaused.get());
     }
+
+    public int getFrequency() {
+        return frequency;
+    }
 }

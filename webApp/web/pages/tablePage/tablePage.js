@@ -159,12 +159,12 @@ function updateTimeTableData(timetable) {
 }
 
 function printCrossovers(crossovers) {
-    console.log(crossovers)
     let aspectOrientedElements = $(".aspectOriented")[0].elements
+    let dayTimeElements = $(".dayTimeOriented")[0].elements
     for (let i = 0; i < aspectOrientedElements.length; i++) {
         switch (aspectOrientedElements[i].name) {
             case "isActive":
-                aspectOrientedElements[i].prop("checked", crossovers.aspectOriented.isActive)
+                aspectOrientedElements[i].checked = crossovers.aspectOriented.isActive
                 break
             case "cuttingPoints":
                 aspectOrientedElements[i].value = crossovers.aspectOriented.cuttingPoints
@@ -174,18 +174,90 @@ function printCrossovers(crossovers) {
                 break
         }
     }
+    for (let i = 0; i < dayTimeElements.length; i++) {
+        switch (dayTimeElements[i].name) {
+            case "isActive":
+                dayTimeElements[i].checked = crossovers.dayTimeOriented.isActive
+                break
+            case "cuttingPoints":
+                dayTimeElements[i].value = crossovers.dayTimeOriented.cuttingPoints
+        }
+    }
 
 }
 
 function printMutations(mutations) {
-
+    let flippingElements = $(".flipping")[0].elements
+    let sizerElements = $(".sizer")[0].elements
+    for (let i = 0; i < flippingElements.length; i++) {
+        switch (flippingElements[i].name) {
+            case "probability":
+                flippingElements[i].value = mutations.flipping.probability
+                break
+            case "tupples":
+                flippingElements[i].value = mutations.flipping.tupples
+                break
+            case "component":
+                flippingElements[i].value = mutations.flipping.component
+                break
+        }
+    }
+    for (let i = 0; i < sizerElements.length; i++) {
+        switch (sizerElements[i].name) {
+            case "probability":
+                sizerElements[i].value = mutations.sizer.probability
+                break
+            case "tupples":
+                sizerElements[i].value = mutations.sizer.tupples
+                break
+        }
+    }
 }
 
 function printSelections(selections) {
-
+    let truncationElements = $(".Truncation")[0].elements
+    let rouletteElements = $(".RouletteWheel")[0].elements
+    let tournamentElements = $(".Tournament")[0].elements
+    for (let i = 0; i < truncationElements.length; i++) {
+        switch (truncationElements[i].name) {
+            case "isActive":
+                truncationElements[i].checked = selections.truncation.isActive
+                break
+            case "topPercent":
+                truncationElements[i].value = selections.truncation.topPercent
+                break
+            case "elitism":
+                truncationElements[i].value = selections.truncation.elitism
+                break
+        }
+    }
+    for (let i = 0; i < rouletteElements.length; i++) {
+        switch (rouletteElements[i].name) {
+            case "isActive":
+                rouletteElements[i].checked = selections.rouletteWheel.isActive
+                break
+            case "elitism":
+                rouletteElements[i].value = selections.rouletteWheel.elitism
+                break
+        }
+    }
+    for (let i = 0; i < tournamentElements.length; i++) {
+        switch (tournamentElements[i].name) {
+            case "isActive":
+                tournamentElements[i].checked = selections.tournament.isActive
+                break
+            case "PTE":
+                tournamentElements[i].value = selections.tournament.pte
+                break
+            case "elitism":
+                tournamentElements[i].value = selections.tournament.elitism
+                break
+        }
+    }
 }
 
 function printEndingConditions(endingConditions) {
+
 
 }
 

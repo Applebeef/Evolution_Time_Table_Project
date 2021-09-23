@@ -44,6 +44,7 @@ public class getTableServlet extends HttpServlet {
         MutationsJSON mutationsJSON = null;
         EndingConditionsJSON endingConditionsJSON = null;
         Integer popSize = null;
+        Integer frequency = null;
         EvolutionEngine evolutionEngine = descriptor.getEngine(SessionUtils.getUsername(req));
         if (evolutionEngine != null) {
             selectionsJSON = createSelectionJSON(evolutionEngine.getSelectionIFCList());
@@ -51,8 +52,9 @@ public class getTableServlet extends HttpServlet {
             mutationsJSON = createMutationsJSON(evolutionEngine.getMutationIFCList());
             endingConditionsJSON = createEndingConditionsJSON(evolutionEngine.getEndingConditions());
             popSize = evolutionEngine.getInitialSolutionPopulation().getSize();
+            frequency = evolutionEngine.getFrequency();
         }
-        EngineData engineData = new EngineData(timeTable, crossoversJSON, selectionsJSON, mutationsJSON, endingConditionsJSON, popSize);
+        EngineData engineData = new EngineData(timeTable, crossoversJSON, selectionsJSON, mutationsJSON, endingConditionsJSON, popSize, frequency);
         Gson gson = new Gson();
         String json = gson.toJson(engineData);
         try (PrintWriter out = resp.getWriter()) {
