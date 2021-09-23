@@ -39,7 +39,7 @@ public class engineUpdates extends HttpServlet {
         Descriptor descriptor = manager.getDescriptor(index);
         EvolutionEngine engine = descriptor.getEngine(username);
         Gson gson = new Gson();
-        String json = gson.toJson(engine);//FIXME stackoverflow
+        String json = gson.toJson(engine);
         //System.out.println(json);
         try (PrintWriter out = response.getWriter()) {
             out.println(json);
