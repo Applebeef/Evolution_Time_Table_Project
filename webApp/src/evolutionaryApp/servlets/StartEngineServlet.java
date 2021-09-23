@@ -36,7 +36,7 @@ public class StartEngineServlet extends HttpServlet {
         processRequest(req, resp);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response)  {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new Gson();
         Integer index = Integer.parseInt(request.getParameter("index"));
         Integer initialPopulation = Integer.parseInt(request.getParameter("popSize"));
@@ -58,19 +58,6 @@ public class StartEngineServlet extends HttpServlet {
         DescriptorManager descriptorManager = ServletUtils.getDescriptorManager(request.getServletContext());
         TimeTable timeTable = descriptorManager.getTimeTable(index);
 
-        //TODO: If a user is already running an engine on a timetable - reset current engine instead of instantiating new
-
-        EvolutionEngine possibleUserEngine = descriptorManager.getDescriptor(index).getEngine(user);
-        if (possibleUserEngine != null) {
-            if(possibleUserEngine.isAlive()){
-                possibleUserEngine.interrupt();
-                try {
-                    possibleUserEngine.join();
-                }catch(Exception e){
-                }
-            }
-        }
-
         // Initiate the engine:
         EvolutionEngine engine = new EvolutionEngine(
                 selectionsList,
@@ -84,7 +71,7 @@ public class StartEngineServlet extends HttpServlet {
                 endingConditionsJSON.getTime()
         );
         engine.initSolutionPopulation(timeTable);
-        engine.setName("Engine " + index);
+        engine.setName(user + "'s Engine" + index);
         engine.start();
 
         // Save thread at TimeTable:
