@@ -149,7 +149,6 @@ function createStartButton() {
 }
 
 function updateTimeTableData(timetable) {
-    console.log(timetable)
     printWeek(timetable)
     printTeachers(timetable.teachers.teacherList)
     printClasses(timetable.schoolClasses.schoolClassList)
@@ -160,8 +159,20 @@ function updateTimeTableData(timetable) {
 }
 
 function printCrossovers(crossovers) {
-    $(".aspectOriented")[0].elements
-    
+    console.log(crossovers)
+    let aspectOrientedElements = $(".aspectOriented")[0].elements
+    for (let i = 0; i < aspectOrientedElements.length; i++) {
+        switch (aspectOrientedElements[i].name) {
+            case "isActive":
+                aspectOrientedElements[i].prop()
+                break
+            case "cuttingPoints":
+                break
+            case "aspect":
+                break
+        }
+    }
+
 }
 
 function printMutations(mutations) {
