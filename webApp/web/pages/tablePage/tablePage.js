@@ -313,7 +313,7 @@ $(function () {
     // setInterval(getResult, refreshRate)
 
     // engineSettingsAndResultsAjax() TODO
-    // setInterval(engineSettingsAndResultsAjax, refreshRate)
+    //setInterval(engineSettingsAndResultsAjax, refreshRate)
 })
 
 $(".topPercent").on("change", function () {
