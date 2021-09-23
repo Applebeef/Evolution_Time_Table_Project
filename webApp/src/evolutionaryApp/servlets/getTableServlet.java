@@ -43,14 +43,16 @@ public class getTableServlet extends HttpServlet {
         SelectionsJSON selectionsJSON = null;
         MutationsJSON mutationsJSON = null;
         EndingConditionsJSON endingConditionsJSON = null;
-        if (descriptor.engineExists(SessionUtils.getUsername(req))) {
-            EvolutionEngine evolutionEngine = descriptor.getEngine(SessionUtils.getUsername(req));
+        Integer popSize = null;
+        EvolutionEngine evolutionEngine = descriptor.getEngine(SessionUtils.getUsername(req));
+        if (evolutionEngine != null) {
             selectionsJSON = createSelectionJSON(evolutionEngine.getSelectionIFCList());
             crossoversJSON = createCrossoverJSON(evolutionEngine.getCrossoverIFCList());
             mutationsJSON = createMutationsJSON(evolutionEngine.getMutationIFCList());
             endingConditionsJSON = createEndingConditionsJSON(evolutionEngine.getEndingConditions());
+            popSize = evolutionEngine.getInitialSolutionPopulation().getSize();
         }
-        EngineData engineData = new EngineData(timeTable, crossoversJSON, selectionsJSON, mutationsJSON, endingConditionsJSON);
+        EngineData engineData = new EngineData(timeTable, crossoversJSON, selectionsJSON, mutationsJSON, endingConditionsJSON, popSize);
         Gson gson = new Gson();
         String json = gson.toJson(engineData);
         try (PrintWriter out = resp.getWriter()) {

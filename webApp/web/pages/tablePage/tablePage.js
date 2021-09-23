@@ -149,29 +149,35 @@ function createStartButton() {
 }
 
 function updateTimeTableData(timetable) {
-    let pTimeTable = JSON.parse(timetable)
-    console.log(pTimeTable)
-    printWeek(pTimeTable)
-    printTeachers(pTimeTable.teachers.teacherList)
-    printClasses(pTimeTable.schoolClasses.schoolClassList)
-    printSubjects(pTimeTable.subjects.subjectList)
-    printRules(pTimeTable.rules);
+    console.log(timetable)
+    printWeek(timetable)
+    printTeachers(timetable.teachers.teacherList)
+    printClasses(timetable.schoolClasses.schoolClassList)
+    printSubjects(timetable.subjects.subjectList)
+    printRules(timetable.rules);
 
     createStartButton()
 }
 
-function updateEngineData(data) {
-    console.log(data)
+function updateEngineData(crossovers,mutations,selections,endingConditions) {
+
 }
 
-function engineSettingsAndResultsAjax() {
-    $.ajax({
-        data: {index: index},
-        url: "getEngineUpdates",
-        success: function (data) {
-            updateEngineData(data)
-        }
-    })
+// function engineSettingsAndResultsAjax() {
+//     $.ajax({
+//         data: {index: index},
+//         url: "getEngineUpdates",
+//         success: function (data) {
+//             updateEngineData(data)
+//         }
+//     })
+// }
+
+function updateLoadData(data) {
+    let pData = JSON.parse(data)
+    console.log(pData)
+    updateTimeTableData(pData.timeTable)
+    updateEngineData(pData.crossoversJSON, pData.mutationsJSON, pData.selectionsJSON, pData.endingConditionsJSON)
 }
 
 $(function () {
@@ -181,13 +187,14 @@ $(function () {
         type: "GET",
         data: {index: index},
         url: "getTableJSON",
-        success: function (timetable) {
-            updateTimeTableData(timetable)
+        success: function (data) {
+            updateLoadData(data)
+            //updateTimeTableData(data)
         }
     })
 
-    engineSettingsAndResultsAjax()
-    setInterval(engineSettingsAndResultsAjax, refreshRate)
+    // engineSettingsAndResultsAjax() TODO
+    // setInterval(engineSettingsAndResultsAjax, refreshRate)
 })
 
 $(".topPercent").on("change", function () {
