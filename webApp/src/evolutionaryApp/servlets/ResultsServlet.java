@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import descriptor.Descriptor;
 import evolution.engine.EvolutionEngine;
 import evolution.engine.problem_solution.Solution;
+import evolution.util.Pair;
 import evolutionaryApp.utils.ServletUtils;
 import evolutionaryApp.utils.SessionUtils;
 import logicEngine.DescriptorManager.DescriptorManager;
@@ -38,10 +39,9 @@ public class ResultsServlet extends HttpServlet {
         DescriptorManager dManager = ServletUtils.getDescriptorManager(request.getServletContext());
         Descriptor descriptor = dManager.getDescriptor(index);
         EvolutionEngine engine = descriptor.getEngine(user);
-        TimeTableSolution bestSolution = (TimeTableSolution) engine.getBestSolution().getV2();
-        Integer bestSolutionGeneration = engine.getBestSolution().getV1();
+        Pair<Integer, Solution> pair = engine.getBestSolution();
 
-        String json = gson.toJson(bestSolution);
+        String json = gson.toJson(pair);
         System.out.println(json);
         try (PrintWriter out = response.getWriter()) {
             out.println(json);
