@@ -257,8 +257,10 @@ function printSelections(selections) {
 }
 
 function printEndingConditions(endingConditions) {
-
-
+    let generationsElements = $(".generations")[0].elements
+    let timeElements = $(".time")[0].elements
+    let fitnessElements = $(".fitness")[0].elements
+    console.log(generationsElements)
 }
 
 function updateEngineData(crossovers, mutations, selections, endingConditions) {
@@ -287,6 +289,18 @@ function updateLoadData(data) {
     }
 }
 
+function getResult() {
+    $.ajax({
+        type: "GET",
+        data: {index: index},
+        url: "result",
+        success: function (result) {
+            console.log(result)
+        }
+
+    })
+}
+
 $(function () {
     var url = new URL(window.location.href);
     index = url.searchParams.get("index");
@@ -301,15 +315,7 @@ $(function () {
     })
 
     //TODO change later
-    $.ajax({
-        type: "GET",
-        data: {index: index},
-        url: "result",
-        success: function (result) {
-            console.log(result)
-        }
-
-    })
+    setInterval(getResult, refreshRate)
 
     // engineSettingsAndResultsAjax() TODO
     // setInterval(engineSettingsAndResultsAjax, refreshRate)
