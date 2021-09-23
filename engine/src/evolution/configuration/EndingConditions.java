@@ -25,4 +25,8 @@ public class EndingConditions {
     public void setEndingConditionsMax(EndingCondition ec, Number max){
         this.endingConditions.get(ec).setMax(max);
     }
+
+    public Map<EndingCondition, EndingConditionWrapper> getEndingConditions() {
+        return endingConditions;
+    }
 }

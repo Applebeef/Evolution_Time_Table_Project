@@ -61,4 +61,8 @@ public class CrossoverWrapper implements CrossoverIFC {
     public boolean isActive() {
         return active.get();
     }
+
+    public String getName() {
+        return crossover.getName();
+    }
 }

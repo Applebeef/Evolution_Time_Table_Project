@@ -27,7 +27,7 @@ public class Descriptor {
         this.timeTable = value;
     }
 
-    public EvolutionEngine getEngine(String userName) {
+    public synchronized EvolutionEngine getEngine(String userName) {
         return engineMap.get(userName);
     }
 
@@ -54,5 +54,9 @@ public class Descriptor {
 //            errorSet.add(selections.checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
 //        });
         return errorSet;
+    }
+
+    public synchronized boolean engineExists(String username) {
+        return engineMap.containsKey(username);
     }
 }
