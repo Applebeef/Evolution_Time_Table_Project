@@ -154,8 +154,6 @@ function updateTimeTableData(timetable) {
     printClasses(timetable.schoolClasses.schoolClassList)
     printSubjects(timetable.subjects.subjectList)
     printRules(timetable.rules);
-
-    createStartButton()
 }
 
 function printCrossovers(crossovers) {
@@ -257,36 +255,34 @@ function printSelections(selections) {
 }
 
 function printEndingConditions(endingConditions) {
-    let generationsElements = $(".generations")[0].elements
-    let timeElements = $(".time")[0].elements
-    let fitnessElements = $(".fitness")[0].elements
-    console.log(generationsElements)
+    $("#generationsEC").prop("value", endingConditions.generations)
+    $("#generations").prop("max", endingConditions.generations)
+    $("#fitnessEC").prop("value", endingConditions.fitness)
+    $("#fitness").prop("max", endingConditions.fitness)
+    $("#timeEC").prop("value", endingConditions.time)
+    $("#time").prop("max", endingConditions.time)
 }
 
-function updateEngineData(crossovers, mutations, selections, endingConditions) {
+function updateEngineData(crossovers, mutations, selections, endingConditions, popSize, frequency) {
     printCrossovers(crossovers)
     printMutations(mutations)
     printSelections(selections)
     printEndingConditions(endingConditions)
+    $("#populationSizeInput").prop("value", popSize)
+    $("#frequencyInput").prop("value", frequency)
 }
-
-// function engineSettingsAndResultsAjax() {
-//     $.ajax({
-//         data: {index: index},
-//         url: "getEngineUpdates",
-//         success: function (data) {
-//             updateEngineData(data)
-//         }
-//     })
-// }
 
 function updateLoadData(data) {
     let pData = JSON.parse(data)
     console.log(pData)
     updateTimeTableData(pData.timeTable)
     if (pData.crossoversJSON !== undefined && pData.mutationsJSON !== undefined && pData.selectionsJSON !== undefined && pData.endingConditionsJSON !== undefined) {
-        updateEngineData(pData.crossoversJSON, pData.mutationsJSON, pData.selectionsJSON, pData.endingConditionsJSON)
+        updateEngineData(pData.crossoversJSON, pData.mutationsJSON, pData.selectionsJSON, pData.endingConditionsJSON, pData.popSize, pData.frequency)
     }
+    if (pData.isAlive === undefined || pData.isAlive === false) {
+        createStartButton()
+    } else
+        engineStarted()
 }
 
 function getResult() {
@@ -310,12 +306,11 @@ $(function () {
         url: "getTableJSON",
         success: function (data) {
             updateLoadData(data)
-            //updateTimeTableData(data)
         }
     })
 
-    //TODO change later
-    setInterval(getResult, refreshRate)
+    // //TODO change later
+    // setInterval(getResult, refreshRate)
 
     // engineSettingsAndResultsAjax() TODO
     // setInterval(engineSettingsAndResultsAjax, refreshRate)
