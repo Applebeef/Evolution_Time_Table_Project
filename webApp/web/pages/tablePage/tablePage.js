@@ -159,8 +159,28 @@ function updateTimeTableData(timetable) {
     createStartButton()
 }
 
-function updateEngineData(crossovers,mutations,selections,endingConditions) {
+function printCrossovers(crossovers) {
+    $(".aspectOriented")[0].elements
+    
+}
 
+function printMutations(mutations) {
+
+}
+
+function printSelections(selections) {
+
+}
+
+function printEndingConditions(endingConditions) {
+
+}
+
+function updateEngineData(crossovers, mutations, selections, endingConditions) {
+    printCrossovers(crossovers)
+    printMutations(mutations)
+    printSelections(selections)
+    printEndingConditions(endingConditions)
 }
 
 // function engineSettingsAndResultsAjax() {
