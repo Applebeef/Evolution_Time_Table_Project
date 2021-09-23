@@ -164,11 +164,13 @@ function printCrossovers(crossovers) {
     for (let i = 0; i < aspectOrientedElements.length; i++) {
         switch (aspectOrientedElements[i].name) {
             case "isActive":
-                aspectOrientedElements[i].prop()
+                aspectOrientedElements[i].prop("checked", crossovers.aspectOriented.isActive)
                 break
             case "cuttingPoints":
+                aspectOrientedElements[i].value = crossovers.aspectOriented.cuttingPoints
                 break
             case "aspect":
+                aspectOrientedElements[i].value = crossovers.aspectOriented.aspect
                 break
         }
     }
@@ -208,7 +210,9 @@ function updateLoadData(data) {
     let pData = JSON.parse(data)
     console.log(pData)
     updateTimeTableData(pData.timeTable)
-    updateEngineData(pData.crossoversJSON, pData.mutationsJSON, pData.selectionsJSON, pData.endingConditionsJSON)
+    if (pData.crossoversJSON !== undefined && pData.mutationsJSON !== undefined && pData.selectionsJSON !== undefined && pData.endingConditionsJSON !== undefined) {
+        updateEngineData(pData.crossoversJSON, pData.mutationsJSON, pData.selectionsJSON, pData.endingConditionsJSON)
+    }
 }
 
 $(function () {
@@ -259,7 +263,7 @@ $(".elitism").on("change", function () {
             elitisms[i].value = 0
     }
 })
-
+//TODO delete
 $('.selectionIsActive').on('change', function () {
     let selections = $('.selectionIsActive')
     selections.not(this).prop('checked', false);

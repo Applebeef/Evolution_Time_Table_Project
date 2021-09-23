@@ -11,9 +11,9 @@ public class EngineData {
     MutationsJSON mutationsJSON;
     EndingConditionsJSON endingConditionsJSON;
     TimeTable timeTable;
-    int popSize;
+    Integer popSize;
 
-    public EngineData(TimeTable timeTable, CrossoversJSON crossoversJSON, SelectionsJSON selectionsJSON, MutationsJSON mutationsJSON, EndingConditionsJSON endingConditionsJSON, int popSize) {
+    public EngineData(TimeTable timeTable, CrossoversJSON crossoversJSON, SelectionsJSON selectionsJSON, MutationsJSON mutationsJSON, EndingConditionsJSON endingConditionsJSON, Integer popSize) {
         this.crossoversJSON = crossoversJSON;
         this.selectionsJSON = selectionsJSON;
         this.mutationsJSON = mutationsJSON;
