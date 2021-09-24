@@ -2,6 +2,7 @@ package evolutionaryApp.utils.resultUtils;
 
 import solution.Fifth;
 import solution.TimeTableSolution;
+import time_table.RuleWrapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ public class TimeTableResults {
     public TimeTableResults(TimeTableSolution solution, ResultDisplay resultDisplay) {
         this.resultDisplay = resultDisplay;
         List<Fifth> filteredSolutionList = null;
-        synchronized (solution){
+        synchronized (solution) {
             switch (resultDisplay) {
                 case CLASS:
                     filteredSolutionList = solution.getFifthsList().stream().filter(fifth -> fifth.getSchoolClass().equals(resultDisplay.getId())).collect(Collectors.toList());
@@ -36,5 +37,9 @@ public class TimeTableResults {
 
     public Row getDisplay(int hour) {
         return mapMap.getOrDefault(hour, null);
+    }
+
+    public void addRuleToMap(RuleWrapper ruleWrapper, Double fitness) {
+        ruleScoreMap.put(ruleWrapper.getRuleName(), fitness);
     }
 }

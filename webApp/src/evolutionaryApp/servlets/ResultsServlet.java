@@ -47,23 +47,27 @@ public class ResultsServlet extends HttpServlet {
         Descriptor descriptor = dManager.getDescriptor(index);
         EvolutionEngine engine = descriptor.getEngine(user);
         Pair<Integer, Solution> pair = engine.getBestSolution();
+        TimeTableSolution timeTableSolution = (TimeTableSolution) pair.getV2();
         TimeTableResults results;
         ResultDisplay resultDisplay;
 
-        switch(str){
+        switch (str) {
             case "Teacher":
                 resultDisplay = ResultDisplay.TEACHER;
                 resultDisplay.setId(id);
-                results = new TimeTableResults((TimeTableSolution) pair.getV2(), resultDisplay);
+                results = new TimeTableResults(timeTableSolution, resultDisplay);
                 break;
             case "Class":
                 resultDisplay = ResultDisplay.CLASS;
                 resultDisplay.setId(id);
-                results = new TimeTableResults((TimeTableSolution) pair.getV2(), resultDisplay);
+                results = new TimeTableResults(timeTableSolution, resultDisplay);
                 break;
             default:
                 results = null;
                 break;
+        }
+        if (results != null) {
+            timeTableSolution.getRuleGradeMap().forEach(results::addRuleToMap);
         }
         String json = gson.toJson(results);
         try (PrintWriter out = response.getWriter()) {
