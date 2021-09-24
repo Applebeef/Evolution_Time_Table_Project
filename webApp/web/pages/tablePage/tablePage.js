@@ -415,6 +415,7 @@ function updateGenAndFitness(genAndFitness) {
             engineStarted()
         } else {
             createStartButton()
+            disableOrEnableSettings(false)
         }
     }
 }
