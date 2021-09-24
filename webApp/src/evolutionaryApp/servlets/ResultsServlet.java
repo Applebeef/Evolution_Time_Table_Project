@@ -35,6 +35,7 @@ public class ResultsServlet extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
         Gson gson = new Gson();
         Integer index = Integer.parseInt(request.getParameter("index"));
         String user = SessionUtils.getUsername(request);
@@ -50,12 +51,12 @@ public class ResultsServlet extends HttpServlet {
         ResultDisplay resultDisplay;
 
         switch(str){
-            case "teacher":
+            case "Teacher":
                 resultDisplay = ResultDisplay.TEACHER;
                 resultDisplay.setId(id);
                 results = new TimeTableResults((TimeTableSolution) pair.getV2(), resultDisplay);
                 break;
-            case "class":
+            case "Class":
                 resultDisplay = ResultDisplay.CLASS;
                 resultDisplay.setId(id);
                 results = new TimeTableResults((TimeTableSolution) pair.getV2(), resultDisplay);

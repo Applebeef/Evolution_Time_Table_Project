@@ -310,11 +310,12 @@ function updateLoadData(data) {
 }
 
 function getResult() {
-    let value = $("#chooseClassOrTeacher").prop("value")
+    let Id = $("#chooseClassOrTeacher").prop("value")
+    let teacher_or_class = $("#classOrTeacherDisplay").prop("value")
     $.ajax({
         type: 'POST',
         url: "result",
-        data: {index: index, id: value},
+        data: {index: index, Id: Id, teacher_or_class: teacher_or_class},
         error: function () {
             console.error("error")
         },
