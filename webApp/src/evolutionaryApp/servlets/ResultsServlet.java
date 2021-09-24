@@ -47,7 +47,10 @@ public class ResultsServlet extends HttpServlet {
         Descriptor descriptor = dManager.getDescriptor(index);
         EvolutionEngine engine = descriptor.getEngine(user);
         Pair<Integer, Solution> pair = engine.getBestSolution();
+        Integer bestSolutionGeneration = pair.getV1();
         TimeTableSolution timeTableSolution = (TimeTableSolution) pair.getV2();
+        Double bestSolutionFitness = timeTableSolution.getFitness();
+        Double fromEngineBestFitness = engine.getMaxFitness();
         TimeTableResults results;
         ResultDisplay resultDisplay;
 
