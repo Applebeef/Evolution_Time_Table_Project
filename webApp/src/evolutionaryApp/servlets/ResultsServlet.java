@@ -55,12 +55,12 @@ public class ResultsServlet extends HttpServlet {
             case "Teacher":
                 resultDisplay = ResultDisplay.TEACHER;
                 resultDisplay.setId(id);
-                results = new TimeTableResults(timeTableSolution, resultDisplay);
+                results = new TimeTableResults(timeTableSolution, resultDisplay, id);
                 break;
             case "Class":
                 resultDisplay = ResultDisplay.CLASS;
                 resultDisplay.setId(id);
-                results = new TimeTableResults(timeTableSolution, resultDisplay);
+                results = new TimeTableResults(timeTableSolution, resultDisplay, id);
                 break;
             default:
                 results = null;

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import evolution.engine.EvolutionEngine;
 import evolutionaryApp.utils.ServletUtils;
 import evolutionaryApp.utils.SessionUtils;
-import evolutionaryApp.utils.resultUtils.pullData;
+import evolutionaryApp.utils.resultUtils.PullData;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,12 +24,12 @@ public class genAndFitness extends HttpServlet {
         int currentGeneration;
         double bestSolutionFitness;
         boolean isAlive;
-        pullData pullData = null;
+        PullData pullData = null;
         if (engine != null) {
             currentGeneration = engine.getCurrentGenerationProperty();
             bestSolutionFitness = engine.getBestSolutionFitness();
             isAlive = engine.isAlive();
-            pullData = new pullData(currentGeneration, bestSolutionFitness, isAlive);
+            pullData = new PullData(currentGeneration, bestSolutionFitness, isAlive);
         }
         String json = new Gson().toJson(pullData);
         try (PrintWriter out = resp.getWriter()) {

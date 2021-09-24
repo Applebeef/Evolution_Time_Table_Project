@@ -35,6 +35,27 @@ public class TimeTableResults {
         }
     }
 
+    public TimeTableResults(TimeTableSolution solution, ResultDisplay resultDisplay, Integer Id) {
+        this.resultDisplay = resultDisplay;
+        List<Fifth> filteredSolutionList = null;
+        synchronized (solution) {
+            switch (resultDisplay) {
+                case CLASS:
+                    filteredSolutionList = solution.getFifthsList().stream().filter(fifth -> fifth.getSchoolClass().equals(Id)).collect(Collectors.toList());
+                    break;
+                case TEACHER:
+                    filteredSolutionList = solution.getFifthsList().stream().filter(fifth -> fifth.getTeacher().equals(Id)).collect(Collectors.toList());
+                    break;
+            }
+        }
+        for (int i = 1; i <= solution.getTimeTable().getHours(); i++) {
+            int finalI = i;
+            if (!mapMap.containsKey(i)) {
+                mapMap.put(i, new Row(i, resultDisplay, filteredSolutionList.stream().filter(fifth -> fifth.getHour().equals(finalI)).collect(Collectors.toList())));
+            }
+        }
+    }
+
     public Row getDisplay(int hour) {
         return mapMap.getOrDefault(hour, null);
     }
