@@ -299,7 +299,6 @@ function updateEngineData(crossovers, mutations, selections, endingConditions, p
 
 function updateLoadData(data) {
     let pData = JSON.parse(data)
-    console.log(pData)
     updateTimeTableData(pData.timeTable)
     if (pData.crossoversJSON !== undefined && pData.mutationsJSON !== undefined && pData.selectionsJSON !== undefined && pData.endingConditionsJSON !== undefined) {
         updateEngineData(pData.crossoversJSON, pData.mutationsJSON, pData.selectionsJSON, pData.endingConditionsJSON, pData.popSize, pData.frequency)
@@ -460,7 +459,6 @@ $("#populationSizeInput").on("change", function () {
         popSize.value = 100
     }
     $(".elitism").trigger("change")
-    console.log("stuff")
     $(".tupples").trigger("change")
 })
 
@@ -870,7 +868,6 @@ $(".endingCondition").on("change", function () {
     }
 
     let allEC = $(".endingCondition")
-    console.log(allEC)
     let allZero = true
     for (let i = 0; i < allEC.length; i++) {
         allZero = (parseInt(allEC[i].value) === 0) && allZero
