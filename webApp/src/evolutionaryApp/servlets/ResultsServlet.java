@@ -65,9 +65,7 @@ public class ResultsServlet extends HttpServlet {
                 results = null;
                 break;
         }
-
         String json = gson.toJson(results);
-        System.out.println(json);
         try (PrintWriter out = response.getWriter()) {
             out.println(json);
             out.flush();

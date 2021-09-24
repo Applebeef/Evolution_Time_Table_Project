@@ -32,7 +32,6 @@ public class genAndFitness extends HttpServlet {
             pullData = new pullData(currentGeneration, bestSolutionFitness, isAlive);
         }
         String json = new Gson().toJson(pullData);
-        System.out.println(json);
         try (PrintWriter out = resp.getWriter()) {
             out.println(json);
             out.flush();
