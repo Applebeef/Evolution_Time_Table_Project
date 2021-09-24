@@ -423,7 +423,7 @@ function getGenAndBestFitness() {
     $.ajax({
         type: "GET",
         data: {index: index},
-        url: "genAndFitness",
+        url: "everyTwoSeconds",
         success: function (genAndFitness) {
             updateGenAndFitness(genAndFitness)
         }
