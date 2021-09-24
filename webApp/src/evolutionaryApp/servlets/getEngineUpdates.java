@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet("/pages/tablePage/getEngineUpdates")
-public class engineUpdates extends HttpServlet {
+public class getEngineUpdates extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

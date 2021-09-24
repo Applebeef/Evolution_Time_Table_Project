@@ -14,9 +14,10 @@ public class EngineData {
     Integer popSize;
     Integer frequency;
     Boolean isAlive;
+    Boolean isPaused;
 
     public EngineData(TimeTable timeTable, CrossoversJSON crossoversJSON, SelectionsJSON selectionsJSON,
-                      MutationsJSON mutationsJSON, EndingConditionsJSON endingConditionsJSON, Integer popSize, Integer frequency, Boolean isAlive) {
+                      MutationsJSON mutationsJSON, EndingConditionsJSON endingConditionsJSON, Integer popSize, Integer frequency, Boolean isAlive, Boolean isPaused) {
         this.crossoversJSON = crossoversJSON;
         this.selectionsJSON = selectionsJSON;
         this.mutationsJSON = mutationsJSON;
@@ -25,5 +26,6 @@ public class EngineData {
         this.popSize = popSize;
         this.frequency = frequency;
         this.isAlive = isAlive;
+        this.isPaused = isPaused;
     }
 }

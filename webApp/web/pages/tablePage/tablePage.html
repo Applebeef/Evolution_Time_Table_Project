@@ -56,9 +56,9 @@
     </div>
 </div>
 
-<button class="accordion">Engine
+<button class="accordion" id="Engine">Engine
 </button>
-<div class="panel">
+<div class="panel" id="enginePanel">
     <button class="accordion">Initial Population</button>
     <div class="panel" id="initPopulation">
         Population Size: <input type="number" id="populationSizeInput" name="populationSize" min="100" value="100">
@@ -166,7 +166,16 @@
 <div class="panel">
     <button class="accordion">Your Results</button>
     <div class="panel" id="yourResults">
-
+        <div id="currentGeneration">Current generation: 0</div>
+        <div id="bestFitness">Best fitness: 0</div>
+        <form id="pullResults">
+            <button id="bestSolutionDisplayButton">Display Best Solution</button>
+            <select name="classOrTeacherDisplay" id="classOrTeacherDisplay">
+                <option value="Teacher">Teacher</option>
+                <option value="Class">Class</option>
+            </select>
+            <select id="chooseClassOrTeacher"></select>
+        </form>
     </div>
     <button class="accordion">Other Results</button>
     <div class="panel" id="otherResults">

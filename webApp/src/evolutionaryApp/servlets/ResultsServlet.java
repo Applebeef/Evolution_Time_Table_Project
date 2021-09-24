@@ -22,16 +22,16 @@ import java.sql.Time;
 @WebServlet("/pages/tablePage/result")
 public class ResultsServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)  {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Gson gson = new Gson();
         Integer index = Integer.parseInt(request.getParameter("index"));
         String user = SessionUtils.getUsername(request);
@@ -42,10 +42,9 @@ public class ResultsServlet extends HttpServlet {
         Pair<Integer, Solution> pair = engine.getBestSolution();
 
         String json = gson.toJson(pair);
-        System.out.println(json);
         try (PrintWriter out = response.getWriter()) {
             out.println(json);
             out.flush();
-        } catch (IOException e) {}
+        }
     }
 }

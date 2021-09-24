@@ -2,7 +2,9 @@ let index
 let days
 let hours
 let subjects
+let teachersAmount
 let teachers
+let schoolClassesAmount
 let schoolClasses
 const refreshRate = 2000
 
@@ -23,6 +25,21 @@ $(function () {
     }
 })
 
+function disableOrEnableSettings(isDisabled) {
+    $(".Truncation :input").prop("disabled", isDisabled)
+    $(".Tournament :input").prop("disabled", isDisabled)
+    $(".RouletteWheel :input").prop("disabled", isDisabled)
+    $("#initPopulation :input").prop("disabled", isDisabled)
+    $("#frequency :input").prop("disabled", isDisabled)
+    $(".dayTimeOriented :input").prop("disabled", isDisabled)
+    $(".aspectOriented :input").prop("disabled", isDisabled)
+    $(".flipping :input").prop("disabled", isDisabled)
+    $(".sizer :input").prop("disabled", isDisabled)
+    $(".fitness :input").prop("disabled", isDisabled)
+    $(".generations :input").prop("disabled", isDisabled)
+    $(".time :input").prop("disabled", isDisabled)
+}
+
 function printTeaches(teaches) {
     let teachesDOM = document.createElement("dd")
     teachesDOM.append("Teaching subjects: ")
@@ -37,7 +54,8 @@ function printTeaches(teaches) {
 function printTeachers(teacherList) {
     let descriptionList = document.createElement("dl");
     $("#teachers").append(descriptionList)
-    teachers = teacherList.length
+    teachersAmount = teacherList.length
+    teachers = teacherList
     for (let i = 0; i < teacherList.length; i++) {
         let teacherName = document.createElement("dt")
         let teacherInfo = printTeaches(teacherList[i].teaching.teachesList)
@@ -62,7 +80,8 @@ function printRequirements(requirementsList) {
 
 function printClasses(schoolClassList) {
     let descriptionList = document.createElement("dl")
-    schoolClasses = schoolClassList.length
+    schoolClassesAmount = schoolClassList.length
+    schoolClasses = schoolClassList
     $("#schoolClasses").append(descriptionList)
     for (let i = 0; i < schoolClassList.length; i++) {
         let schoolClassName = document.createElement("dt")
@@ -129,7 +148,7 @@ function sendStartRequest() {
         url: "startEngine",
         success: function () {
             console.log("start engine - success")
-            engineStarted()
+            engineStarted(false)
 
         },
         error: function () {
@@ -139,13 +158,15 @@ function sendStartRequest() {
 }
 
 function createStartButton() {
+    let engineControls = $(".engineControls")
+    engineControls.empty()
     let startButton = document.createElement("button")
     startButton.id = "startEngine"
     startButton.innerText = "Start engine"
     startButton.onclick = function () {
         sendStartRequest()
     }
-    $(".engineControls").append(startButton)
+    engineControls.append(startButton)
 }
 
 function updateTimeTableData(timetable) {
@@ -282,18 +303,54 @@ function updateLoadData(data) {
     if (pData.isAlive === undefined || pData.isAlive === false) {
         createStartButton()
     } else
-        engineStarted()
+        engineStarted(pData.isPaused)
+    $("#classOrTeacherDisplay").trigger("change")
+    getGenAndBestFitness()
+    setInterval(getGenAndBestFitness, refreshRate)
 }
 
 function getResult() {
+    let value = $("#chooseClassOrTeacher").prop("value")
+    $.ajax({
+        type: 'POST',
+        url: "result",
+        data: {index: index, id: value},
+        error: function () {
+            console.error("error")
+        },
+        success: function (result) {
+            console.log(result)
+            return false
+        }
+    })
+    return false
+}
+
+function updateGenAndFitness(genAndFitness) {
+    let currentGen = $("#currentGeneration")
+    let bestFitness = $("#bestFitness");
+    if (genAndFitness !== null) {
+        currentGen.empty()
+        currentGen.append("Current generation: " + genAndFitness.generation)
+        bestFitness.empty()
+        bestFitness.append("Best fitness: " + genAndFitness.fitness.toFixed(2))
+        if (genAndFitness.isAlive) {
+            engineStarted()
+        } else {
+            createStartButton()
+        }
+    }
+}
+
+function getGenAndBestFitness() {
     $.ajax({
         type: "GET",
         data: {index: index},
-        url: "result",
-        success: function (result) {
-            console.log(result)
+        url: "genAndFitness",
+        success: function (genAndFitness) {
+            let parsed = JSON.parse(genAndFitness)
+            updateGenAndFitness(parsed)
         }
-
     })
 }
 
@@ -308,12 +365,6 @@ $(function () {
             updateLoadData(data)
         }
     })
-
-    // //TODO change later
-    // setInterval(getResult, refreshRate)
-
-    // engineSettingsAndResultsAjax() TODO
-    //setInterval(engineSettingsAndResultsAjax, refreshRate)
 })
 
 $(".topPercent").on("change", function () {
@@ -347,7 +398,7 @@ $(".elitism").on("change", function () {
             elitisms[i].value = 0
     }
 })
-//TODO delete
+
 $('.selectionIsActive').on('change', function () {
     let selections = $('.selectionIsActive')
     selections.not(this).prop('checked', false);
@@ -643,15 +694,24 @@ function stopEngine() {
         }
     })
     createStartButton()
+    disableOrEnableSettings(false)
 }
 
-function engineStarted() {
+function engineStarted(isPaused) {
+    disableOrEnableSettings(true)
     let engineControls = $(".engineControls")
     engineControls.empty()
     let pauseButton = document.createElement("button")
     let stopButton = document.createElement("button")
+    let pauseText
+
+    if (isPaused)
+        pauseText = "Resume"
+    else
+        pauseText = "Pause"
+
     pauseButton.id = "pauseButton"
-    pauseButton.innerText = "Pause"
+    pauseButton.innerText = pauseText
     pauseButton.onclick = function () {
         $.ajax({
             type: "GET",
@@ -665,10 +725,13 @@ function engineStarted() {
             }
         })
 
-        if (pauseButton.innerText === "Resume")
+        if (pauseButton.innerText === "Resume") {
             pauseButton.innerText = "Pause"
-        else
+            disableOrEnableSettings(true)
+        } else {
             pauseButton.innerText = "Resume"
+            disableOrEnableSettings(false)
+        }
     }
     stopButton.id = "stopButton"
     stopButton.innerText = "Stop"
@@ -690,8 +753,8 @@ $(".cuttingPoints").on("change", function () {
     let cuttingPoint = $(this)[0]
     if (parseInt(cuttingPoint.value) < 1)
         cuttingPoint.value = 1
-    if (parseInt(cuttingPoint.value) > days * hours * schoolClasses * teachers * subjects) {
-        cuttingPoint.value = days * hours * schoolClasses * teachers * subjects
+    if (parseInt(cuttingPoint.value) > days * hours * schoolClassesAmount * teachersAmount * subjects) {
+        cuttingPoint.value = days * hours * schoolClassesAmount * teachersAmount * subjects
     }
 })
 
@@ -736,4 +799,33 @@ $(".endingCondition").on("change", function () {
         allZero = (parseInt(allEC[i].value) === 0) && allZero
     }
     $("#startEngine").prop("disabled", allZero)
+})
+
+function appendListToSelect(list) {
+    let ct = $("#chooseClassOrTeacher")
+    ct.empty()
+    for (let i = 0; i < list.length; i++) {
+        let option = document.createElement("option")
+        option.value = list[i].id
+        option.innerText = list[i].id + " - " + list[i].name
+        ct.append(option)
+    }
+}
+
+$("#classOrTeacherDisplay").on("change", function () {
+    let ct = $("#chooseClassOrTeacher")
+    switch ($(this)[0].value) {
+        case "Teacher":
+            appendListToSelect(teachers)
+            break
+        case "Class":
+            appendListToSelect(schoolClasses)
+            break
+    }
+})
+
+$("#bestSolutionDisplayButton").on("click", function () {
+
+    getResult()
+    return false
 })

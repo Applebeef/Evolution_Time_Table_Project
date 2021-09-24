@@ -137,6 +137,7 @@ public class EvolutionEngine extends Thread {
         startTime = Instant.now();
         int lastGeneration = 0;
         long timeOffset = 0;
+        currentGenerationProperty.set(lastGeneration);
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !isInterrupted(); i++) {
             updateCurrentTime();
             System.out.println(i);//TODO debug - delete
