@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 public class genAndFitness extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
         Integer index = Integer.parseInt(req.getParameter("index"));
         EvolutionEngine engine = ServletUtils.getDescriptorManager(req.getServletContext()).getDescriptor(index).getEngine(SessionUtils.getUsername(req));
         int currentGeneration;
@@ -31,6 +32,7 @@ public class genAndFitness extends HttpServlet {
             pullData = new pullData(currentGeneration, bestSolutionFitness, isAlive);
         }
         String json = new Gson().toJson(pullData);
+        System.out.println(json);
         try (PrintWriter out = resp.getWriter()) {
             out.println(json);
             out.flush();

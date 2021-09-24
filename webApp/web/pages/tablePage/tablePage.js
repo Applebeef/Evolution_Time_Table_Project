@@ -348,8 +348,8 @@ function getGenAndBestFitness() {
         data: {index: index},
         url: "genAndFitness",
         success: function (genAndFitness) {
-            let parsed = JSON.parse(genAndFitness)
-            updateGenAndFitness(parsed)
+            //let parsed = JSON.parse(genAndFitness)
+            updateGenAndFitness(genAndFitness)
         }
     })
 }
