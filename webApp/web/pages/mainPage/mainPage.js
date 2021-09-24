@@ -43,7 +43,7 @@ function refreshTableList(tables) {
     }
 
 }
-//TODO delete
+
 function ajaxTableUpdate() {
     $.ajax({
         url: TABLE_UPDATE_SERVLET,

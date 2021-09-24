@@ -17,9 +17,10 @@ import java.util.List;
 @WebServlet("/pages/mainPage/tableListUpdate")
 public class TableListUpdate extends HttpServlet {
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
         try (PrintWriter out = resp.getWriter()) {
             Gson gson = new Gson();
-            DescriptorManager descriptorManager = ServletUtils.getDescriptorManager(getServletContext());
+            DescriptorManager descriptorManager = ServletUtils.getDescriptorManager(req.getServletContext());
             List<TimeTable> list = descriptorManager.getTimeTables();
             String res = gson.toJson(list);
             out.println(res);
