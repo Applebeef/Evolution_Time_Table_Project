@@ -885,7 +885,7 @@ function appendListToSelect(list) {
         ct.append(option)
     }
 }
-
+//TODO delete
 $("#classOrTeacherDisplay").on("change", function () {
     let ct = $("#chooseClassOrTeacher")
     switch ($(this)[0].value) {
