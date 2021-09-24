@@ -1,7 +1,10 @@
 package evolutionaryApp.servlets;
 
 import com.google.gson.Gson;
+import descriptor.Descriptor;
 import evolution.engine.EvolutionEngine;
+import evolution.util.Pair;
+import evolution.util.Triplets;
 import evolutionaryApp.utils.ServletUtils;
 import evolutionaryApp.utils.SessionUtils;
 import evolutionaryApp.utils.resultUtils.PullData;
@@ -13,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/pages/tablePage/everyTwoSeconds")
 public class EveryTwoSeconds extends HttpServlet {
@@ -20,7 +25,9 @@ public class EveryTwoSeconds extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         Integer index = Integer.parseInt(req.getParameter("index"));
-        EvolutionEngine engine = ServletUtils.getDescriptorManager(req.getServletContext()).getDescriptor(index).getEngine(SessionUtils.getUsername(req));
+        Descriptor descriptor = ServletUtils.getDescriptorManager(req.getServletContext()).getDescriptor(index);
+        EvolutionEngine engine = descriptor.getEngine(SessionUtils.getUsername(req));
+
         int currentGeneration;
         double bestSolutionFitness;
         boolean isAlive;
@@ -31,7 +38,17 @@ public class EveryTwoSeconds extends HttpServlet {
             isAlive = engine.isAlive();
             pullData = new PullData(currentGeneration, bestSolutionFitness, isAlive);
         }
-        String json = new Gson().toJson(pullData);
+
+        List<Triplets<String, Double, Integer>> allUsersStatusList = new ArrayList<>();
+        descriptor.getEngineMap().forEach((user_name, map_engine) -> {
+            allUsersStatusList.add(new Triplets<>(
+                    user_name,
+                    map_engine.getMaxFitness(),
+                    map_engine.getCurrentGenerationProperty()));
+        });
+
+        Pair<PullData, List<Triplets<String, Double, Integer>>> pair = new Pair<>(pullData, allUsersStatusList);
+        String json = new Gson().toJson(pair);
         try (PrintWriter out = resp.getWriter()) {
             out.println(json);
             out.flush();
