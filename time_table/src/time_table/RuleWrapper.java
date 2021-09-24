@@ -39,6 +39,10 @@ public class RuleWrapper {
         return rule.ruleId;
     }
 
+    public String getRuleName(){
+        return rule.getName();
+    }
+
     public double test(TimeTableSolution timeTableSolution) {
         return rule.test(timeTableSolution, configuration);
     }

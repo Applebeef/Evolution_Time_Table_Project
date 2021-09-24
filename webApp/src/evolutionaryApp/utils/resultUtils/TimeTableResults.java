@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class TimeTableResults {
     Map<Integer, Row> mapMap = new HashMap<>(); //First key stands for hours, second key stands for days.
+    Map<String, Double> ruleScoreMap = new HashMap<>(); // First key stands for rule name, second key stands for fitness.
     ResultDisplay resultDisplay;
 
     public TimeTableResults(TimeTableSolution solution, ResultDisplay resultDisplay) {

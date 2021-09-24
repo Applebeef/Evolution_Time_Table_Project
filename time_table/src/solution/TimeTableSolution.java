@@ -364,6 +364,12 @@ public class TimeTableSolution implements Solution {
         return this.presentationOption.getDisplayString(this);
     }
 
+    public Map<String, Double> getRuleFitnessMap() {
+        Map<String, Double> map = new HashMap<>();
+        ruleGradeMap.forEach((ruleWrapper, fitness) -> map.put(ruleWrapper.getRuleName(), fitness));
+        return map;
+    }
+
     public Map<RuleWrapper, Double> getRuleGradeMap() {
         return ruleGradeMap;
     }

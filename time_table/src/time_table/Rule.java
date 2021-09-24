@@ -36,6 +36,11 @@ public enum Rule {
             }
             return score;
         }
+
+        public String getName(){
+            return "TeacherIsHuman";
+        }
+
     },
     SINGULARITY("Singularity") {
         @Override
@@ -65,6 +70,10 @@ public enum Rule {
             }
             return score;
         }
+
+        public String getName(){
+            return "Singularity";
+        }
     },
     KNOWLEDGEABLE("Knowledgeable") {
         @Override
@@ -87,6 +96,10 @@ public enum Rule {
                 }
             }
             return score;
+        }
+
+        public String getName(){
+            return "Knowledgeable";
         }
     },
     SATISFACTORY("Satisfactory") {
@@ -134,6 +147,10 @@ public enum Rule {
             }
             return score;
         }
+
+        public String getName(){
+            return "Satisfactory";
+        }
     },
     DAY_OFF_TEACHER("DayOffTeacher") {
         @Override
@@ -162,6 +179,10 @@ public enum Rule {
                 }
             }
             return score;
+        }
+
+        public String getName(){
+            return "DayOffTeacher";
         }
     },
     SEQUENTIALITY("Sequentiality") {
@@ -200,6 +221,10 @@ public enum Rule {
             }
             return score;
         }
+
+        public String getName(){
+            return "Sequentiality";
+        }
     },
     DAY_OFF_CLASS("DayOffClass") {
         @Override
@@ -229,6 +254,10 @@ public enum Rule {
             }
             return score;
         }
+
+        public String getName(){
+            return "DayOffClass";
+        }
     },
     WORKING_HOURS_PREFERENCE("WorkingHoursPreference") {
         @Override
@@ -251,11 +280,17 @@ public enum Rule {
             }
             return score;
         }
+
+        public String getName(){
+            return "WorkingHoursPreference";
+        }
     };
 
     String ruleId;
 
     abstract public double test(TimeTableSolution timeTableSolution, Integer configuration);
+
+    abstract public String getName();
 
     Rule(String id) {
         ruleId = id;
