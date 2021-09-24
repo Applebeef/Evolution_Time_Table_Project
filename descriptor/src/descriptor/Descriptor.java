@@ -35,10 +35,8 @@ public class Descriptor {
         this.engineMap.put(userName, engine);
     }
 
-    @Override
-    public String toString() {
-        String lineSeparator = System.getProperty("line.separator");
-        return "Time Table:" + lineSeparator + timeTable + lineSeparator + lineSeparator;
+    public Map<String, EvolutionEngine> getEngineMap() {
+        return engineMap;
     }
 
     public Set<String> checkValidity() {
@@ -54,6 +52,12 @@ public class Descriptor {
 //            errorSet.add(selections.checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
 //        });
         return errorSet;
+    }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
+        return "Time Table:" + lineSeparator + timeTable + lineSeparator + lineSeparator;
     }
 
     public synchronized boolean engineExists(String username) {
