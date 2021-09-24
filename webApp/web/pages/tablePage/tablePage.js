@@ -1,11 +1,13 @@
 let index
 let days
 let hours
+let subjectsAmount
 let subjects
 let teachersAmount
 let teachers
 let schoolClassesAmount
 let schoolClasses
+let RULES
 const refreshRate = 2000
 
 $(function () {
@@ -95,7 +97,8 @@ function printClasses(schoolClassList) {
 function printSubjects(subjectList) {
     let descriptionList = document.createElement("dl");
     $("#subjects").append(descriptionList)
-    subjects = subjectList.length
+    subjectsAmount = subjectList.length
+    subjects = subjectList
     for (let i = 0; i < subjectList.length; i++) {
         let subjectName = document.createElement("dt")
         subjectName.innerText = subjectList[i].id + " - " + subjectList[i].name
@@ -112,6 +115,7 @@ function printWeek(timetable) {
 function printRules(rules) {
     $(".weight").append("Hard rules weight: " + rules.hardRulesWeight)
     let descriptionList = document.createElement("dl")
+    RULES = rules.ruleList
     $("#rules").append(descriptionList)
     for (let i = 0; i < rules.ruleList.length; i++) {
         let ruleName = document.createElement("dt")
@@ -309,6 +313,76 @@ function updateLoadData(data) {
     setInterval(getGenAndBestFitness, refreshRate)
 }
 
+function createRow(row, fifthMap, resultDisplay) {
+    let data
+    let str
+    let thing
+    let subject
+    for (let i = 1; i <= days; i++) {
+        data = document.createElement("td")
+        if (fifthMap[i] !== undefined) {
+            subject = subjects[subjects.findIndex(s => s.id === fifthMap[i].subject)]
+            switch (resultDisplay) {
+                case "TEACHER":
+                    thing = schoolClasses[schoolClasses.findIndex(sc => sc.id === fifthMap[i].schoolClass)]
+                    break
+                case "CLASS":
+                    thing = teachers[teachers.findIndex(t => t.id === fifthMap[i].teacher)]
+                    break
+            }
+            str = thing.name + " - " + thing.id + "\n" + subject.name + " - " + subject.id
+            data.innerText = str
+        }
+        row.append(data)
+    }
+    return row
+}
+
+function createTable(result) {
+    let table = document.createElement("table")
+    let div = $("#resultTableDiv")
+    let header = document.createElement("th")
+    header.innerText = "Hours\\Days"
+    table.append(header)
+    div.empty()
+    for (let i = 1; i <= days; i++) {
+        header = document.createElement("th")
+        header.innerText = i.toString()
+        table.append(header)
+    }
+    let tBody = document.createElement("tbody")
+    table.append(tBody)
+    let row
+    let hour
+    for (let i = 1; i <= hours; i++) {
+        row = document.createElement("tr")
+        hour = document.createElement("td")
+        hour.innerText = i.toString()
+        hour.style.fontWeight = "bold"
+        row.append(hour)
+        if (result.mapMap[i] !== undefined)
+            tBody.append(createRow(row, result.mapMap[i].fifthMap, result.mapMap[i].resultDisplay))
+        else
+            tBody.append(row)
+    }
+    div.append(table)
+}
+
+function createRulesResultsList(result) {
+    let listDiv = $("#rulesResults")
+    listDiv.empty()
+    let list = document.createElement("ul")
+    let item
+    for (const rule in result.ruleScoreMap) {
+        if (result.ruleScoreMap.hasOwnProperty(rule)) {
+            item = document.createElement("li")
+            item.innerText = rule + " - " + result.ruleScoreMap[rule]
+            list.append(item)
+        }
+    }
+    listDiv.append(list)
+}
+
 function getResult() {
     let Id = $("#chooseClassOrTeacher").prop("value")
     let teacher_or_class = $("#classOrTeacherDisplay").prop("value")
@@ -321,6 +395,8 @@ function getResult() {
         },
         success: function (result) {
             console.log(result)
+            createTable(result)
+            createRulesResultsList(result)
             return false
         }
     })
@@ -753,8 +829,8 @@ $(".cuttingPoints").on("change", function () {
     let cuttingPoint = $(this)[0]
     if (parseInt(cuttingPoint.value) < 1)
         cuttingPoint.value = 1
-    if (parseInt(cuttingPoint.value) > days * hours * schoolClassesAmount * teachersAmount * subjects) {
-        cuttingPoint.value = days * hours * schoolClassesAmount * teachersAmount * subjects
+    if (parseInt(cuttingPoint.value) > days * hours * schoolClassesAmount * teachersAmount * subjectsAmount) {
+        cuttingPoint.value = days * hours * schoolClassesAmount * teachersAmount * subjectsAmount
     }
 })
 
@@ -825,7 +901,6 @@ $("#classOrTeacherDisplay").on("change", function () {
 })
 
 $("#bestSolutionDisplayButton").on("click", function () {
-
     getResult()
     return false
 })
