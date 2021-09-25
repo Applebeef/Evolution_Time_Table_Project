@@ -32,6 +32,7 @@ public class EveryTwoSeconds extends HttpServlet {
         int bestSolutionGeneration;
         double bestSolutionFitness;
         boolean isAlive;
+        boolean isPaused;
         PullData pullData = null;
         if (engine != null) {
             currentGeneration = engine.getCurrentGenerationProperty();
@@ -40,7 +41,8 @@ public class EveryTwoSeconds extends HttpServlet {
                 bestSolutionGeneration = engine.getBestSolution().getV1();
             }
             isAlive = engine.isAlive();
-            pullData = new PullData(currentGeneration, bestSolutionFitness, bestSolutionGeneration, isAlive);
+            isPaused = engine.isEnginePaused();
+            pullData = new PullData(currentGeneration, bestSolutionFitness, bestSolutionGeneration, isAlive, isPaused);
         }
 
         List<Triplets<String, Double, Integer>> allUsersStatusList = new ArrayList<>();

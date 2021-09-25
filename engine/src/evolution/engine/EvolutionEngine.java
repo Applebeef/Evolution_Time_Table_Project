@@ -141,6 +141,7 @@ public class EvolutionEngine extends Thread {
         currentGenerationProperty.set(lastGeneration);
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !isInterrupted(); i++) {
             updateCurrentTime();
+            System.out.println(i);//TODO debug delete
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):

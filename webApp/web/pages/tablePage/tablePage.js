@@ -413,7 +413,8 @@ function updateGenAndFitness(genAndFitness) {
         bestFitness.empty()
         bestFitness.append("Best fitness: " + genAndFitness.fitness.toFixed(2) + " in generation: " + genAndFitness.bestGeneration)
         if (genAndFitness.isAlive) {
-            engineStarted()
+            console.log(genAndFitness)
+            engineStarted(genAndFitness.isPaused)
         } else {
             createStartButton()
             disableOrEnableSettings(false)
@@ -796,19 +797,20 @@ function engineStarted(isPaused) {
             url: "pause",
             success: function () {
                 console.log(pauseButton.innerText + " success")
+                if (pauseButton.innerText === "Resume") {
+                    pauseButton.innerText = "Pause"
+                    disableOrEnableSettings(true)
+                } else {
+                    pauseButton.innerText = "Resume"
+                    disableOrEnableSettings(false)
+                }
             },
             error: function () {
                 console.log(pauseButton.innerText + " error")
             }
         })
 
-        if (pauseButton.innerText === "Resume") {
-            pauseButton.innerText = "Pause"
-            disableOrEnableSettings(true)
-        } else {
-            pauseButton.innerText = "Resume"
-            disableOrEnableSettings(false)
-        }
+
     }
     stopButton.id = "stopButton"
     stopButton.innerText = "Stop"
