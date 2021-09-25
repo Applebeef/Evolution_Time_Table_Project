@@ -8,7 +8,7 @@ let teachers
 let schoolClassesAmount
 let schoolClasses
 let RULES
-const refreshRate = 2000
+const refreshRate = 500
 
 $(function () {
     var acc = document.getElementsByClassName("accordion");
@@ -394,8 +394,10 @@ function getResult() {
         },
         success: function (result) {
             console.log(result)
-            createTable(result)
-            createRulesResultsList(result)
+            if (result != null) {
+                createTable(result)
+                createRulesResultsList(result)
+            }
             return false
         }
     })
@@ -405,11 +407,11 @@ function getResult() {
 function updateGenAndFitness(genAndFitness) {
     let currentGen = $("#currentGeneration")
     let bestFitness = $("#bestFitness");
-    if (genAndFitness !== null) {
+    if (genAndFitness !== undefined) {
         currentGen.empty()
         currentGen.append("Current generation: " + genAndFitness.generation)
         bestFitness.empty()
-        bestFitness.append("Best fitness: " + genAndFitness.fitness.toFixed(2))
+        bestFitness.append("Best fitness: " + genAndFitness.fitness.toFixed(2) + " in generation: " + genAndFitness.bestGeneration)
         if (genAndFitness.isAlive) {
             engineStarted()
         } else {
@@ -425,7 +427,7 @@ function getGenAndBestFitness() {
         data: {index: index},
         url: "everyTwoSeconds",
         success: function (genAndFitness) {
-            updateGenAndFitness(genAndFitness)
+            updateGenAndFitness(genAndFitness.v1)
         }
     })
 }
@@ -885,6 +887,7 @@ function appendListToSelect(list) {
         ct.append(option)
     }
 }
+
 //TODO delete
 $("#classOrTeacherDisplay").on("change", function () {
     let ct = $("#chooseClassOrTeacher")
