@@ -39,16 +39,18 @@ public class EveryTwoSeconds extends HttpServlet {
             pullData = new PullData(currentGeneration, bestSolutionFitness, isAlive);
         }
 
-        List<Triplets<String, Double, Integer>> allUsersStatusList = new ArrayList<>();
-        descriptor.getEngineMap().forEach((user_name, map_engine) -> {
-            allUsersStatusList.add(new Triplets<>(
-                    user_name,
-                    map_engine.getMaxFitness(),
-                    map_engine.getCurrentGenerationProperty()));
-        });
+        //TODO: this servlet needs to return the list of other users aswell
 
-        Pair<PullData, List<Triplets<String, Double, Integer>>> pair = new Pair<>(pullData, allUsersStatusList);
-        String json = new Gson().toJson(pair);
+//        List<Triplets<String, Double, Integer>> allUsersStatusList = new ArrayList<>();
+//        descriptor.getEngineMap().forEach((user_name, map_engine) -> {
+//            allUsersStatusList.add(new Triplets<>(
+//                    user_name,
+//                    map_engine.getMaxFitness(),
+//                    map_engine.getCurrentGenerationProperty()));
+//        });
+//
+//        Pair<PullData, List<Triplets<String, Double, Integer>>> pair = new Pair<>(pullData, allUsersStatusList);
+        String json = new Gson().toJson(pullData);
         try (PrintWriter out = resp.getWriter()) {
             out.println(json);
             out.flush();
