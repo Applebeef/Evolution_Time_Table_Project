@@ -10,6 +10,7 @@ import javafx.beans.property.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EvolutionEngine extends Thread {
     private InitialPopulation initialSolutionPopulation;
@@ -140,7 +141,6 @@ public class EvolutionEngine extends Thread {
         currentGenerationProperty.set(lastGeneration);
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !isInterrupted(); i++) {
             updateCurrentTime();
-            System.out.println(i);//TODO debug - delete
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
@@ -150,15 +150,15 @@ public class EvolutionEngine extends Thread {
             // Sort by fitness (highest to lowest):
             solutionList.sort(Collections.reverseOrder());
             // Handle generation by frequency:
+            currentGenerationProperty.set(i);
             if (i % frequency == 0) {
                 synchronized (bestSolutionsPerFrequency) {
                     Solution solution = solutionList.get(0);
                     bestSolutionsPerFrequency.put(i, solution);
                 }
-                currentGenerationProperty.set(i);
             }
-            if (solutionList.get(0).getFitness() > bestSolution.getV2().getFitness()) {
-                synchronized (bestSolution) {
+            synchronized (bestSolution) {
+                if (solutionList.get(0).getFitness() > bestSolution.getV2().getFitness()) {
                     bestSolution.setV1(i);
                     bestSolution.setV2(solutionList.get(0));
                     bestSolutionFitness.set(solutionList.get(0).getFitness());

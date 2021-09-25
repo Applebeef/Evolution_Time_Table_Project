@@ -29,14 +29,18 @@ public class EveryTwoSeconds extends HttpServlet {
         EvolutionEngine engine = descriptor.getEngine(SessionUtils.getUsername(req));
 
         int currentGeneration;
+        int bestSolutionGeneration;
         double bestSolutionFitness;
         boolean isAlive;
         PullData pullData = null;
         if (engine != null) {
             currentGeneration = engine.getCurrentGenerationProperty();
-            bestSolutionFitness = engine.getBestSolutionFitness();
+            synchronized (engine.getBestSolution()) {
+                bestSolutionFitness = engine.getBestSolution().getV2().getFitness();
+                bestSolutionGeneration = engine.getBestSolution().getV1();
+            }
             isAlive = engine.isAlive();
-            pullData = new PullData(currentGeneration, bestSolutionFitness, isAlive);
+            pullData = new PullData(currentGeneration, bestSolutionFitness, bestSolutionGeneration, isAlive);
         }
 
         //TODO: this servlet needs to return the list of other users aswell

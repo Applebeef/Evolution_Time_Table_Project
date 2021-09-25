@@ -46,31 +46,36 @@ public class ResultsServlet extends HttpServlet {
         DescriptorManager dManager = ServletUtils.getDescriptorManager(request.getServletContext());
         Descriptor descriptor = dManager.getDescriptor(index);
         EvolutionEngine engine = descriptor.getEngine(user);
-        Pair<Integer, Solution> pair = engine.getBestSolution();
-        Integer bestSolutionGeneration = pair.getV1();
-        TimeTableSolution timeTableSolution = (TimeTableSolution) pair.getV2();
-        Double bestSolutionFitness = timeTableSolution.getFitness();
-        Double fromEngineBestFitness = engine.getMaxFitness();
-        TimeTableResults results;
-        ResultDisplay resultDisplay;
+        TimeTableResults results = null;
+        TimeTableSolution timeTableSolution;
+        Integer bestSolutionGeneration;
+        if (engine != null) {
+            synchronized (engine.getBestSolution()) {
+                bestSolutionGeneration = engine.getBestSolution().getV1();
+                timeTableSolution = (TimeTableSolution) engine.getBestSolution().getV2();
+            }
+            Double bestSolutionFitness = timeTableSolution.getFitness();
+            Double fromEngineBestFitness = engine.getMaxFitness();
+            ResultDisplay resultDisplay;
 
-        switch (str) {
-            case "Teacher":
-                resultDisplay = ResultDisplay.TEACHER;
-                resultDisplay.setId(id);
-                results = new TimeTableResults(timeTableSolution, resultDisplay, id);
-                break;
-            case "Class":
-                resultDisplay = ResultDisplay.CLASS;
-                resultDisplay.setId(id);
-                results = new TimeTableResults(timeTableSolution, resultDisplay, id);
-                break;
-            default:
-                results = null;
-                break;
-        }
-        if (results != null) {
-            timeTableSolution.getRuleGradeMap().forEach(results::addRuleToMap);
+            switch (str) {
+                case "Teacher":
+                    resultDisplay = ResultDisplay.TEACHER;
+                    resultDisplay.setId(id);
+                    results = new TimeTableResults(timeTableSolution, resultDisplay, id, bestSolutionGeneration);
+                    break;
+                case "Class":
+                    resultDisplay = ResultDisplay.CLASS;
+                    resultDisplay.setId(id);
+                    results = new TimeTableResults(timeTableSolution, resultDisplay, id, bestSolutionGeneration);
+                    break;
+                default:
+                    results = null;
+                    break;
+            }
+            if (results != null) {
+                timeTableSolution.getRuleGradeMap().forEach(results::addRuleToMap);
+            }
         }
         String json = gson.toJson(results);
         try (PrintWriter out = response.getWriter()) {

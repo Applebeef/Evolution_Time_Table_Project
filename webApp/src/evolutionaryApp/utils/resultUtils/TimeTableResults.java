@@ -13,6 +13,7 @@ public class TimeTableResults {
     Map<Integer, Row> mapMap = new HashMap<>(); //First key stands for hours, second key stands for days.
     Map<String, Double> ruleScoreMap = new HashMap<>(); // First key stands for rule name, second key stands for fitness.
     ResultDisplay resultDisplay;
+    Integer generation;
 
     public TimeTableResults(TimeTableSolution solution, ResultDisplay resultDisplay) {
         this.resultDisplay = resultDisplay;
@@ -35,8 +36,9 @@ public class TimeTableResults {
         }
     }
 
-    public TimeTableResults(TimeTableSolution solution, ResultDisplay resultDisplay, Integer Id) {
+    public TimeTableResults(TimeTableSolution solution, ResultDisplay resultDisplay, Integer Id, Integer generation) {
         this.resultDisplay = resultDisplay;
+        this.generation = generation;
         List<Fifth> filteredSolutionList = null;
         synchronized (solution) {
             switch (resultDisplay) {
