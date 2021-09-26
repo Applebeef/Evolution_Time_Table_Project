@@ -214,13 +214,13 @@ public class TimeTableSolution implements Solution {
             int position = getPosition(fifth);
             // Add the current fifth to the correct List according to position:
             if (position < cuttingPointsList.get(0)) {
-                res.get(0).add(fifth);
+                res.get(0).add(fifth.copy());
             } else if (position >= cuttingPointsList.get(cuttingPointsList.size() - 1)) {
-                res.get(res.size() - 1).add(fifth);
+                res.get(res.size() - 1).add(fifth.copy());
             } else {
                 for (int i = 0; i < cuttingPointsList.size() - 1; i++) {
                     if (position >= cuttingPointsList.get(i) && position < cuttingPointsList.get(i + 1)) {
-                        res.get(i + 1).add(fifth);
+                        res.get(i + 1).add(fifth.copy());
                         break;
                     }
                 }

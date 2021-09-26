@@ -101,7 +101,7 @@ public class EvolutionEngine extends Thread {
         return crossoverIFCList;
     }
 
-    public List<Solution> getSolutionList() {
+    public synchronized List<Solution> getSolutionList() {
         return solutionList;
     }
 
@@ -141,11 +141,11 @@ public class EvolutionEngine extends Thread {
         currentGenerationProperty.set(lastGeneration);
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !isInterrupted(); i++) {
             updateCurrentTime();
-            System.out.println(i);//TODO debug delete
+            //System.out.println(i);//TODO debug delete
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
-            for (Solution solution : solutionList) {
+            for (Solution solution : getSolutionList()) {
                 mutations.forEach(mutationIFC -> mutationIFC.mutate(solution));
             }
             // Sort by fitness (highest to lowest):
@@ -235,20 +235,27 @@ public class EvolutionEngine extends Thread {
                 // Receive the solutions to be crossed over:
                 selectedSolutions = activeSelection.select(solutionList);
                 // Crossover the two solutions:
-
                 offspringSolutionsList.addAll(activeCrossover.cross(selectedSolutions.get(0), selectedSolutions.get(1)));
+                if (offspringSolutionsList.contains(getBestSolution().getV2())) {//TODO debug - delete
+                    System.out.println("wtf");
+                }
                 /**/
             }
             // Shrink to initial population size:
             if (offspringSolutionsList.size() != initialSolutionPopulation.getSize()) {
                 this.solutionList = offspringSolutionsList.subList(0, initialSolutionPopulation.getSize());
             } else {
-                this.solutionList = offspringSolutionsList;
+                setSolutionList(offspringSolutionsList);
+                //this.solutionList = offspringSolutionsList;
             }
         }
 
     }
 
+    public synchronized void setSolutionList(List<Solution> solutionList) {
+        this.solutionList.clear();
+        this.solutionList = solutionList;
+    }
 
     @Override
     public String toString() {
