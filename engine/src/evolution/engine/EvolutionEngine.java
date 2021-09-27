@@ -141,7 +141,6 @@ public class EvolutionEngine extends Thread {
         currentGenerationProperty.set(lastGeneration);
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !isInterrupted(); i++) {
             updateCurrentTime();
-            //System.out.println(i);//TODO debug delete
             // Spawn new generation:
             spawnGeneration();
             // Mutate each solution (includes calculate fitness):
@@ -236,9 +235,6 @@ public class EvolutionEngine extends Thread {
                 selectedSolutions = activeSelection.select(solutionList);
                 // Crossover the two solutions:
                 offspringSolutionsList.addAll(activeCrossover.cross(selectedSolutions.get(0), selectedSolutions.get(1)));
-                if (offspringSolutionsList.contains(getBestSolution().getV2())) {//TODO debug - delete
-                    System.out.println("wtf");
-                }
                 /**/
             }
             // Shrink to initial population size:

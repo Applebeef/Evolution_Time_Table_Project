@@ -55,14 +55,6 @@ public enum Selections {
         }
     },
     TOURNAMENT("Tournament") {
-//        void parseString(String configuration) { OLD
-//            Pattern pattern = Pattern.compile("^pte=([0-9]+\\.?[0-9]*)$");
-//            double value = 0.5;
-//            Matcher m = pattern.matcher(configuration);
-//            if (m.find())
-//                value = Double.parseDouble(m.group(1));
-//            selectionValue.set(value);
-//        }
 
         public List<Solution> select(List<Solution> solutionList, Integer topPercent, Double pte) {
             List<Solution> res = new ArrayList<>();

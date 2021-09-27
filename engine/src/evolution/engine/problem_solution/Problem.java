@@ -8,7 +8,4 @@ import java.util.List;
 
 public interface Problem {
     Solution solve();
-    //<M extends MutationsIFC> M getMutations(); TODO add settings to engine
-    //<S extends SelectionIFC> List<S> getSelectionsList();
-    //<C extends CrossoverIFC> List<C> getCrossoverList();
 }

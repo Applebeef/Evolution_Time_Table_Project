@@ -9,17 +9,6 @@ import java.util.List;
 public class Mutations implements MutationsIFC {
     private List<MutationWrapper> mutationList;
 
-//    public Mutations(ETTMutations gen) { //TODO fix
-//        mutationList = Arrays.asList(Mutation.values());
-//        for (ETTMutation m : gen.getETTMutation()) {
-//            for (MutationIFC mutation : mutationList) {
-//                if (mutation.getName().equals(m.getName())) {
-//                    mutation.initFromXML(m);
-//                }
-//            }
-//        }
-//    }
-
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
