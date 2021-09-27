@@ -45,8 +45,6 @@ public class EveryTwoSeconds extends HttpServlet {
             pullData = new PullData(currentGeneration, bestSolutionFitness, bestSolutionGeneration, isAlive, isPaused);
         }
 
-        //TODO: this servlet needs to return the list of other users aswell
-
         List<Triplets<String, Double, Integer>> allUsersStatusList = new ArrayList<>();
         descriptor.getEngineMap().forEach((user_name, map_engine) -> {
             allUsersStatusList.add(new Triplets<>(
