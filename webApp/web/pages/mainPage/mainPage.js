@@ -107,3 +107,13 @@ $("#submitBtn").on("click", function () {
     })
     return false
 })
+
+$("#logOutButton").on("click", function () {
+    $.ajax({
+        type: "POST",
+        url: "logout",
+        success: function () {
+            window.location = "../../index.html"
+        }
+    })
+})

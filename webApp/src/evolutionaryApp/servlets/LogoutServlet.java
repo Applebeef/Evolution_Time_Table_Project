@@ -25,7 +25,7 @@ import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
 
-@WebServlet("/pages/tablePage/logout")
+@WebServlet("/pages/mainPage/logout")
 public class LogoutServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
