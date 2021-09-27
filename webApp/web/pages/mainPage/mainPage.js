@@ -67,7 +67,6 @@ function ajaxTableUpdate() {
 
 $(function () {
     ajaxTableUpdate()
-
     setInterval(ajaxTableUpdate, refreshRate)
 })
 
