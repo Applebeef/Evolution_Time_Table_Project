@@ -49,13 +49,25 @@ function refreshTableList(tables) {
 
 }
 
+function createUserList(usersList) {
+    let list = $("#userList")
+    list.empty()
+    let item
+    usersList.forEach(user => {
+        item = document.createElement("li")
+        item.innerText = user
+        list.append(item)
+    })
+}
+
 function ajaxTableUpdate() {
     $.ajax({
         url: TABLE_UPDATE_SERVLET,
         dataType: 'json',
         success: function (tables) {
             totalTables = tables.v1.length
-            refreshTableList(tables.v1);
+            refreshTableList(tables.v1)
+            createUserList(tables.v2)
 
         },
         error: function (xhr, status, error) {
