@@ -131,19 +131,13 @@ function printRules(rules) {
     }
 }
 
-function sendStartRequest() {
+function StartRequest() {
     let populationSize = parseInt($("#populationSizeInput")[0].value)
     let frequency = parseInt($("#frequencyInput")[0].value)
     let selections = createSelectionObject()
     let crossovers = createCrossoverObject()
     let mutations = createMutationObject()
     let endingConditions = createEndingConditions()
-    if (isAlive !== undefined) {
-        if (confirm("You have already started this engine, starting a new run will overwrite the previous results" +
-            "\nare you sure you'd like to overwrite the results?")) {
-            
-        }
-    }
     $.ajax({
         type: "GET",
         data: {
@@ -165,6 +159,16 @@ function sendStartRequest() {
             console.log("start engine - error")
         }
     })
+}
+
+function sendStartRequest() {
+    if (isAlive !== undefined) {
+        if (confirm("You have already started this engine,\nstarting a new run will overwrite the previous results" +
+            "\nare you sure you'd like to overwrite the results?")) {
+            StartRequest();
+        }
+    } else
+        StartRequest()
 }
 
 function createStartButton() {
