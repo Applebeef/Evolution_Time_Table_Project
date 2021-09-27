@@ -56,8 +56,6 @@ public class ResultsServlet extends HttpServlet {
                 bestSolutionGeneration = engine.getBestSolution().getV1();
                 timeTableSolution = (TimeTableSolution) engine.getBestSolution().getV2();
             }
-            Double bestSolutionFitness = timeTableSolution.getFitness();
-            Double fromEngineBestFitness = engine.getMaxFitness();
             ResultDisplay resultDisplay;
 
             switch (str) {

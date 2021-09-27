@@ -6,20 +6,23 @@ function refreshTableList(tables) {
     let table = $("#table")
     table.empty()
     table.append('<th>Uploader </th> <th>Days </th> <th>Hours </th> <th>Teachers </th> <th>Classes </th> <th>Subjects </th>' +
-        '<th>Hard Rules </th><th>Soft Rules </th>')
+        '<th>Hard Rules </th><th>Soft Rules </th><th>Users</th><th>Best Fitness</th>')
 
 
     for (let i = 0; i < tables.length; i++) {
-        let uploader = tables[i].uploader
-        let days = tables[i].days.value
-        let hours = tables[i].hours.value
-        let teachers = tables[i].teachers.teacherList.length
-        let subjects = tables[i].subjects.subjectList.length
-        let classes = tables[i].schoolClasses.schoolClassList.length
+        let timetable = tables[i].v1
+        let uploader = timetable.uploader
+        let days = timetable.days.value
+        let hours = timetable.hours.value
+        let teachers = timetable.teachers.teacherList.length
+        let subjects = timetable.subjects.subjectList.length
+        let classes = timetable.schoolClasses.schoolClassList.length
         let softCount = 0
         let hardCount = 0
-        for (let j = 0; j < tables[i].rules.ruleList.length; j++) {
-            if (tables[i].rules.ruleList[j].type === "HARD") {
+        let totalUsers = tables[i].v2
+        let bestFitness = tables[i].v3.toFixed(2)
+        for (let j = 0; j < timetable.rules.ruleList.length; j++) {
+            if (timetable.rules.ruleList[j].type === "HARD") {
                 hardCount++
             } else {
                 softCount++
@@ -34,6 +37,8 @@ function refreshTableList(tables) {
             + '<td>' + classes + '</td>'
             + '<td>' + hardCount + '</td>'
             + '<td>' + softCount + '</td>'
+            + '<td>' + totalUsers + '</td>'
+            + '<td>' + bestFitness + '</td>'
             + '<td>' +
             '<form method="GET" action="enterTable">' +
             '<input type="hidden" name="index" value=' + i + '>' +

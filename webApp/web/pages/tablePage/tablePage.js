@@ -422,6 +422,26 @@ function updateGenAndFitness(genAndFitness) {
     }
 }
 
+function updateOthersResults(tripletsArray) {
+    let tableBody = $("#otherResultsTableBody")
+    tableBody.empty()
+    let row
+    let cell
+    tripletsArray.forEach(triplet => {
+        row = document.createElement("tr")
+        cell = document.createElement("td")
+        cell.innerText = triplet.v1
+        row.append(cell)
+        cell = document.createElement("td")
+        cell.innerText = triplet.v2.toFixed(2)
+        row.append(cell)
+        cell = document.createElement("td")
+        cell.innerText = triplet.v3
+        row.append(cell)
+        tableBody.append(row)
+    })
+}
+
 function getGenAndBestFitness() {
     $.ajax({
         type: "GET",
@@ -429,6 +449,8 @@ function getGenAndBestFitness() {
         url: "everyTwoSeconds",
         success: function (genAndFitness) {
             updateGenAndFitness(genAndFitness.v1)
+            console.log(genAndFitness)
+            updateOthersResults(genAndFitness.v2)
         }
     })
 }

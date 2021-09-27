@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet("/pages/tablePage/everyTwoSeconds")
 public class EveryTwoSeconds extends HttpServlet {
@@ -44,13 +46,15 @@ public class EveryTwoSeconds extends HttpServlet {
             isPaused = engine.isEnginePaused();
             pullData = new PullData(currentGeneration, bestSolutionFitness, bestSolutionGeneration, isAlive, isPaused);
         }
-
+        String currentUserName = SessionUtils.getUsername(req);
         List<Triplets<String, Double, Integer>> allUsersStatusList = new ArrayList<>();
         descriptor.getEngineMap().forEach((user_name, map_engine) -> {
-            allUsersStatusList.add(new Triplets<>(
-                    user_name,
-                    map_engine.getMaxFitness(),
-                    map_engine.getCurrentGenerationProperty()));
+            if (!user_name.equals(currentUserName)) {
+                allUsersStatusList.add(new Triplets<>(
+                        user_name,
+                        map_engine.getBestSolutionFitness(),
+                        map_engine.getCurrentGenerationProperty()));
+            }
         });
 
         Pair<PullData, List<Triplets<String, Double, Integer>>> pair = new Pair<>(pullData, allUsersStatusList);

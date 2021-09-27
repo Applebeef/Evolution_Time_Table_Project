@@ -35,6 +35,10 @@ public class DescriptorManager {
         return timeTableList;
     }
 
+    public synchronized List<Descriptor> getDescriptorList() {
+        return descriptorList;
+    }
+
     public synchronized TimeTable getTimeTable(int index) {
         return descriptorList.get(index).getTimeTable();
     }
