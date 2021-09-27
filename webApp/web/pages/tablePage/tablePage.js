@@ -404,7 +404,6 @@ function getResult() {
             console.error("error")
         },
         success: function (result) {
-            console.log(result)
             if (result != null) {
                 createTable(result)
                 createRulesResultsList(result)
@@ -425,7 +424,6 @@ function updateGenAndFitness(genAndFitness) {
         bestFitness.append("Best fitness: " + genAndFitness.fitness.toFixed(2) + " in generation: " + genAndFitness.bestGeneration)
         isAlive = genAndFitness.isAlive
         if (genAndFitness.isAlive) {
-            console.log(genAndFitness)
             engineStarted(genAndFitness.isPaused)
         } else {
             createStartButton()
@@ -461,7 +459,6 @@ function getGenAndBestFitness() {
         url: "everyTwoSeconds",
         success: function (genAndFitness) {
             updateGenAndFitness(genAndFitness.v1)
-            console.log(genAndFitness)
             updateOthersResults(genAndFitness.v2)
         }
     })

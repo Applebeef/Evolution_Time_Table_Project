@@ -55,7 +55,6 @@ function ajaxTableUpdate() {
         dataType: 'json',
         success: function (tables) {
             totalTables = tables.length
-            console.log(tables)
             refreshTableList(tables);
         },
         error: function (xhr, status, error) {
