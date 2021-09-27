@@ -3,9 +3,11 @@ package evolutionaryApp.servlets;
 import com.google.gson.Gson;
 import descriptor.Descriptor;
 import evolution.engine.EvolutionEngine;
+import evolution.util.Pair;
 import evolution.util.Triplets;
 import evolutionaryApp.utils.ServletUtils;
 import logicEngine.DescriptorManager.DescriptorManager;
+import logicEngine.users.UserManager;
 import time_table.TimeTable;
 
 import javax.servlet.ServletException;
@@ -18,6 +20,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.Set;
 
 @WebServlet("/pages/mainPage/tableListUpdate")
 public class TableListUpdate extends HttpServlet {
@@ -34,7 +37,13 @@ public class TableListUpdate extends HttpServlet {
                     list.add(triplet);
                 });
             }
-            String res = gson.toJson(list);
+
+            UserManager userManager = ServletUtils.getUserManager(getServletContext());
+            Set<String> users = userManager.getUsers();
+
+            Pair<List<Triplets<TimeTable, Integer, Double>>, Set<String>> pair = new Pair<>(list, users);
+
+            String res = gson.toJson(pair);
             out.println(res);
             out.flush();
         }

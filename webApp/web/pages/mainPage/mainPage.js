@@ -54,8 +54,8 @@ function ajaxTableUpdate() {
         url: TABLE_UPDATE_SERVLET,
         dataType: 'json',
         success: function (tables) {
-            totalTables = tables.length
-            refreshTableList(tables);
+            totalTables = tables.v1.length
+            refreshTableList(tables.v1);
         },
         error: function (xhr, status, error) {
             console.log(error)
