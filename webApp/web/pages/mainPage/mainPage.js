@@ -90,6 +90,7 @@ $("#submitBtn").on("click", function () {
             console.error("Failed to submit")
         },
         success: function (r) {
+            alert(r)
             return false
         }
     })

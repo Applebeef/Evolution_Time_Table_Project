@@ -8,6 +8,7 @@ let teachers
 let schoolClassesAmount
 let schoolClasses
 let RULES
+let isAlive
 const refreshRate = 500
 
 $(function () {
@@ -137,7 +138,12 @@ function sendStartRequest() {
     let crossovers = createCrossoverObject()
     let mutations = createMutationObject()
     let endingConditions = createEndingConditions()
-
+    if (isAlive !== undefined) {
+        if (confirm("You have already started this engine, starting a new run will overwrite the previous results" +
+            "\nare you sure you'd like to overwrite the results?")) {
+            
+        }
+    }
     $.ajax({
         type: "GET",
         data: {
@@ -299,6 +305,7 @@ function updateEngineData(crossovers, mutations, selections, endingConditions, p
 
 function updateLoadData(data) {
     let pData = JSON.parse(data)
+    isAlive = pData.isAlive
     updateTimeTableData(pData.timeTable)
     if (pData.crossoversJSON !== undefined && pData.mutationsJSON !== undefined && pData.selectionsJSON !== undefined && pData.endingConditionsJSON !== undefined) {
         updateEngineData(pData.crossoversJSON, pData.mutationsJSON, pData.selectionsJSON, pData.endingConditionsJSON, pData.popSize, pData.frequency)
@@ -412,6 +419,7 @@ function updateGenAndFitness(genAndFitness) {
         currentGen.append("Current generation: " + genAndFitness.generation)
         bestFitness.empty()
         bestFitness.append("Best fitness: " + genAndFitness.fitness.toFixed(2) + " in generation: " + genAndFitness.bestGeneration)
+        isAlive = genAndFitness.isAlive
         if (genAndFitness.isAlive) {
             console.log(genAndFitness)
             engineStarted(genAndFitness.isPaused)

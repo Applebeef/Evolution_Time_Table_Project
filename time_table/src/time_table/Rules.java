@@ -47,11 +47,11 @@ public class Rules {
     }
 
     public String checkValidity() {
-        Set<RuleWrapper> ruleSet = new HashSet<>();
+        Set<String> ruleSet = new HashSet<>();
         List<String> duplicates = new ArrayList<>();
 
         for (RuleWrapper rule : ruleList) {
-            if (!ruleSet.add(rule)) {
+            if (!ruleSet.add(rule.getRuleName())) {
                 duplicates.add(rule.getRuleId());
             }
         }
@@ -60,9 +60,12 @@ public class Rules {
         } else {
             StringBuilder res = new StringBuilder("There are duplicate rules in the file: ");
             for (String id : duplicates) {
-                res.append(id).append(", ");
+                res.append(id);
+                if (duplicates.indexOf(id) < duplicates.size() - 1) {
+                    res.append(", ");
+                }
             }
-            res.append(".");
+            res.append(".").append(System.lineSeparator());
             return res.toString();
         }
     }

@@ -31,14 +31,14 @@ public class SchoolClasses {
         List<Integer> list = new ArrayList<>();
         for (SchoolClass schoolClass : schoolClassList) {
             if (list.contains(schoolClass.getId())) {
-                return "File contains 2 classes with the same ID.";
+                return "File contains 2 classes with the same ID." + System.lineSeparator();
             } else
                 list.add(schoolClass.getId());
         }
         Collections.sort(list);
         for (int i = 0; i < list.size() - 1; i++) {
             if (!list.get(i).equals(list.get(i + 1) - 1)) {
-                return "Class IDs aren't a running sequence.";
+                return "Class IDs aren't a running sequence." + System.lineSeparator();
             }
         }
         return "";

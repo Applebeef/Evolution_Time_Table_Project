@@ -17,7 +17,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Set;
 
 
 @WebServlet("/pages/mainPage/uploadTimeTable")
@@ -27,13 +29,25 @@ public class UploadTimeTableServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Collection<Part> partCollection = request.getParts();
+        String str = "File uploaded successfully.";
         for (Part part : partCollection) {
             try {
                 Descriptor descriptor = getDescriptor(part.getInputStream());
-                descriptor.getTimeTable().setUploader(SessionUtils.getUsername(request));
-                ServletUtils.getDescriptorManager(request.getServletContext()).addDescriptor(descriptor);
+                Set<String> set = descriptor.checkValidity();
+                if (set.isEmpty() || (set.size() == 1 && set.contains(""))) {
+                    descriptor.getTimeTable().setUploader(SessionUtils.getUsername(request));
+                    ServletUtils.getDescriptorManager(request.getServletContext()).addDescriptor(descriptor);
+                } else {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    set.forEach(stringBuilder::append);
+                    str = stringBuilder.toString();
+                }
             } catch (JAXBException ignored) {
             }
+        }
+        try (PrintWriter out = response.getWriter()) {
+            out.println(str);
+            out.flush();
         }
     }
 

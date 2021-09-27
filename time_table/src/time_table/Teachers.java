@@ -34,14 +34,14 @@ public class Teachers {
         List<Integer> list = new ArrayList<>();
         for (Teacher teacher : teacherList) {
             if (list.contains(teacher.getId())) {
-                return "File contains 2 teachers with the same ID.";
+                return "File contains 2 teachers with the same ID." + System.lineSeparator();
             } else
                 list.add(teacher.getId());
         }
         Collections.sort(list);
         for (int i = 0; i < list.size() - 1; i++) {
             if (!list.get(i).equals(list.get(i + 1) - 1)) {
-                return "Teacher IDs aren't a running sequence.";
+                return "Teacher IDs aren't a running sequence." + System.lineSeparator();
             }
         }
         return "";
@@ -69,6 +69,17 @@ public class Teachers {
         for (String str : errorList) {
             res.append(str).append(System.getProperty("line.separator"));
         }
+        return res.toString();
+    }
+
+    public String checkWorkingHoursValidity(int days, int hours) {
+        StringBuilder res = new StringBuilder("");
+        teacherList.forEach(teacher -> {
+            if (teacher.getWorkingHours() > days * hours) {
+                res.append("Teacher ").append(teacher.getName()).append(", id: ").append(teacher.getId())
+                        .append(" requires too many working hours").append(System.lineSeparator());
+            }
+        });
         return res.toString();
     }
 }

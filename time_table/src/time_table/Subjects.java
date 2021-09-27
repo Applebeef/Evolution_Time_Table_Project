@@ -34,14 +34,14 @@ public class Subjects {
         List<Integer> list = new ArrayList<>();
         for (Subject subject : subjectList) {
             if (list.contains(subject.getId())) {
-                return "File contains 2 subjects with the same ID.";
+                return "File contains 2 subjects with the same ID." + System.lineSeparator();
             } else
                 list.add(subject.getId());
         }
         Collections.sort(list);
         for (int i = 0; i < list.size() - 1; i++) {
             if (!list.get(i).equals(list.get(i + 1) - 1)) {
-                return "Subject IDs aren't a running sequence.";
+                return "Subject IDs aren't a running sequence." + System.lineSeparator();
             }
         }
         return "";

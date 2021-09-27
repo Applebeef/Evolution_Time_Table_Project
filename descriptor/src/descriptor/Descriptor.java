@@ -46,11 +46,9 @@ public class Descriptor {
         errorSet.add(timeTable.getSchoolClasses().checkHourValidity(timeTable.getHours(), timeTable.getDays()));
         errorSet.add(timeTable.getTeachers().checkIDValidity());
         errorSet.add(timeTable.getTeachers().checkSubjectValidity(timeTable.getSubjects()));
+        errorSet.add(timeTable.getTeachers().checkWorkingHoursValidity(timeTable.getDays(), timeTable.getHours()));
         errorSet.add(timeTable.getSubjects().checkValidity());
         errorSet.add(timeTable.getRules().checkValidity());
-//        timeTable.getSelectionsList().forEach(selections -> { TODO check if needs fix or delete
-//            errorSet.add(selections.checkElitismValidity(evolutionEngine.getInitialSolutionPopulation().getSize()));
-//        });
         return errorSet;
     }
 
