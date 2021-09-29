@@ -140,6 +140,7 @@ public class EvolutionEngine extends Thread {
         long timeOffset = 0;
         currentGenerationProperty.set(lastGeneration);
         for (int i = 1; !endingConditions.test(i, getBestSolutionFitness(), ChronoUnit.SECONDS.between(startTime, Instant.now())) && !isInterrupted(); i++) {
+            System.out.println(i);
             updateCurrentTime();
             // Spawn new generation:
             spawnGeneration();
@@ -370,5 +371,17 @@ public class EvolutionEngine extends Thread {
 
     public int getFrequency() {
         return frequency;
+    }
+
+    public void setMutations(List<MutationIFC> mutations) {
+        this.mutations = mutations;
+    }
+
+    public void setSelectionIFCList(List<SelectionIFC> selectionIFCList) {
+        this.selectionIFCList = selectionIFCList;
+    }
+
+    public void setCrossoverIFCList(List<CrossoverIFC> crossoverIFCList) {
+        this.crossoverIFCList = crossoverIFCList;
     }
 }

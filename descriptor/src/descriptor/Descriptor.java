@@ -1,13 +1,16 @@
 package descriptor;
 
+import evolution.configuration.CrossoverIFC;
+import evolution.configuration.MutationIFC;
+import evolution.configuration.SelectionIFC;
+import settings.CrossoverWrapper;
+import settings.MutationWrapper;
+import settings.SelectionWrapper;
 import time_table.TimeTable;
 import evolution.engine.EvolutionEngine;
 import Generated.ETTDescriptor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Descriptor {
     protected TimeTable timeTable;
@@ -33,6 +36,12 @@ public class Descriptor {
 
     public void addEvolutionEngine(String userName, EvolutionEngine engine) {
         this.engineMap.put(userName, engine);
+    }
+
+    public void updateEngineDetails(String user, List<CrossoverIFC> crossoverIFC, List<SelectionIFC> selectionIFC, List<MutationIFC> mutationIFC) {
+        engineMap.get(user).setCrossoverIFCList(crossoverIFC);
+        engineMap.get(user).setMutations(mutationIFC);
+        engineMap.get(user).setSelectionIFCList(selectionIFC);
     }
 
     public Map<String, EvolutionEngine> getEngineMap() {

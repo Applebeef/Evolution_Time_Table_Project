@@ -132,6 +132,34 @@ function printRules(rules) {
     }
 }
 
+function updateRequest() {
+    let populationSize = parseInt($("#populationSizeInput")[0].value)
+    let frequency = parseInt($("#frequencyInput")[0].value)
+    let selections = createSelectionObject()
+    let crossovers = createCrossoverObject()
+    let mutations = createMutationObject()
+    let endingConditions = createEndingConditions()
+    $.ajax({
+        type: "GET",
+        data: {
+            selections: JSON.stringify(selections),
+            popSize: populationSize,
+            frequency: frequency,
+            crossovers: JSON.stringify(crossovers),
+            mutations: JSON.stringify(mutations),
+            endingConditions: JSON.stringify(endingConditions),
+            index: index
+        },
+        url: "update_engine",
+        success: function () {
+            console.log("update engine - success")
+        },
+        error: function () {
+            console.log("update engine - error")
+        }
+    })
+}
+
 function StartRequest() {
     let populationSize = parseInt($("#populationSizeInput")[0].value)
     let frequency = parseInt($("#frequencyInput")[0].value)
@@ -823,6 +851,9 @@ function engineStarted(isPaused) {
     pauseButton.id = "pauseButton"
     pauseButton.innerText = pauseText
     pauseButton.onclick = function () {
+        if(pauseButton.innerText==="Resume"){
+            updateRequest()
+        }
         $.ajax({
             type: "GET",
             data: {index: index},
