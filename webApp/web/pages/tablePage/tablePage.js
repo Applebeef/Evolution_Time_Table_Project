@@ -897,7 +897,7 @@ $(".endingCondition").on("change", function () {
     if (parseInt(ec.value) < 0)
         ec.value = 0
 
-    if (ec.id === "fitness") {
+    if (ec.id === "fitnessEC") {
         if (parseInt(ec.value) > 100)
             ec.value = 100
     }
