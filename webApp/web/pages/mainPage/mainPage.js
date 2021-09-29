@@ -89,22 +89,26 @@ $("#submitBtn").on("click", function () {
     const fd = new FormData();
 
     const files = $('#timeTableXML').prop('files');
-    fd.append('file', files[0]);
-    $.ajax({
-        type: 'POST',
-        processData: false,
-        contentType: false,
-        url: "uploadTimeTable",
-        data: fd,
-        timeout: 2000,
-        error: function () {
-            console.error("Failed to submit")
-        },
-        success: function (r) {
-            alert(r)
-            return false
-        }
-    })
+    if (files.length !== 0) {
+        fd.append('file', files[0]);
+        $.ajax({
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            url: "uploadTimeTable",
+            data: fd,
+            timeout: 2000,
+            error: function () {
+                console.error("Failed to submit")
+            },
+            success: function (r) {
+                alert(r)
+                return false
+            }
+        })
+    } else {
+        alert("Please choose a file to upload.")
+    }
     return false
 })
 
