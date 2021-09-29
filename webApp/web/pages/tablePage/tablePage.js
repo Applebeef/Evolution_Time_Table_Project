@@ -32,15 +32,16 @@ function disableOrEnableSettings(isDisabled) {
     $(".Truncation :input").prop("disabled", isDisabled)
     $(".Tournament :input").prop("disabled", isDisabled)
     $(".RouletteWheel :input").prop("disabled", isDisabled)
-    $("#initPopulation :input").prop("disabled", isDisabled)
     $("#frequency :input").prop("disabled", isDisabled)
     $(".dayTimeOriented :input").prop("disabled", isDisabled)
     $(".aspectOriented :input").prop("disabled", isDisabled)
     $(".flipping :input").prop("disabled", isDisabled)
     $(".sizer :input").prop("disabled", isDisabled)
-    $(".fitness :input").prop("disabled", isDisabled)
-    $(".generations :input").prop("disabled", isDisabled)
-    $(".time :input").prop("disabled", isDisabled)
+
+    $("#initPopulation :input").prop("disabled", isAlive)
+    $(".fitness :input").prop("disabled", isAlive)
+    $(".generations :input").prop("disabled", isAlive)
+    $(".time :input").prop("disabled", isAlive)
 }
 
 function printTeaches(teaches) {
