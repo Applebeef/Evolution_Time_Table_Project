@@ -807,7 +807,7 @@ function stopEngine() {
 }
 
 function engineStarted(isPaused) {
-    disableOrEnableSettings(true)
+    disableOrEnableSettings(!isPaused)
     let engineControls = $(".engineControls")
     engineControls.empty()
     let pauseButton = document.createElement("button")
